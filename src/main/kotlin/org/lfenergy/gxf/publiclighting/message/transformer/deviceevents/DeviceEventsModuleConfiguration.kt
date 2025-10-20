@@ -20,17 +20,11 @@ class DeviceEventsModuleConfiguration(
     private val connectionFactory: JmsPoolConnectionFactory,
     private val properties: DeviceEventsConfigurationProperties,
 ) {
-    // TODO: replace hard coded values with properties as needed
     @Bean
     fun jmsListenerContainerFactory(): DefaultJmsListenerContainerFactory {
         val factory = DefaultJmsListenerContainerFactory()
         factory.setConnectionFactory(connectionFactory)
         factory.setConcurrency("${properties.consumer.minConcurrency}-${properties.consumer.maxConcurrency}")
-        factory.setSessionTransacted(true)
-        // TODO: implement error handling as needed
-        factory.setErrorHandler { /* handle error, e.g. log */ }
-        factory.setRecoveryInterval(1000L)
-        factory.setMaxMessagesPerTask(10)
         return factory
     }
 
@@ -39,10 +33,12 @@ class DeviceEventsModuleConfiguration(
         val template = JmsTemplate(connectionFactory)
         template.defaultDestinationName = properties.producer.outboundQueue
         with(properties.producer.qualityOfService) {
-            template.isExplicitQosEnabled = explicitQosEnabled
-            template.setDeliveryPersistent(deliveryPersistent)
-            template.priority = priority
-            template.timeToLive = timeToLive
+            if (explicitQosEnabled) {
+                template.isExplicitQosEnabled = explicitQosEnabled
+                template.setDeliveryPersistent(deliveryPersistent)
+                template.priority = priority
+                template.timeToLive = timeToLive
+            }
         }
         return template
     }

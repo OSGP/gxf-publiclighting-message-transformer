@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: Copyright Contributors to the GXF project
+#
+# SPDX-License-Identifier: Apache-2.0
+
 spring:
   application:
     name: gxf-publiclighting-message-transformer
@@ -10,25 +14,14 @@ spring:
       max-connections: 10
 
   jms:
-    # TODO switch to use environment variables again after testing
-    #    keystore:
-    #      url-params: keyStorePath=${JMS_KEY_STORE_PATH}&keyStorePassword=${JMS_KEY_STORE_PASSWORD}
-    #    truststore:
-    #      url-params: trustStorePath=${JMS_TRUST_STORE_PATH}&trustStorePassword=${JMS_TRUST_STORE_PASSWORD}
     keystore:
-      url-params: keyStorePath=/etc/ssl/store.ks&keyStorePassword=KS-secret
+      url-params: keyStorePath=${JMS_KEY_STORE_PATH}&keyStorePassword=${JMS_KEY_STORE_PASSWORD}
     truststore:
-      url-params: trustStorePath=/etc/ssl/store.ts&trustStorePassword=TS-secret
+      url-params: trustStorePath=${JMS_TRUST_STORE_PATH}&trustStorePassword=${JMS_TRUST_STORE_PASSWORD}
 
-    # TODO decide on custom settings per listener container vs global settings
     listener:
-      min-concurrency: 2
-      max-concurrency: 10
-      max-messages-per-task: 1
-      receive-timeout: 1s
       session:
         transacted: true
-        acknowledge-mode: auto
 
   main:
     web-application-type: none
@@ -67,7 +60,7 @@ device-events:
 
 # TODO configure redelivery policy in broker configuration
 # Artemis does not support redelivery policies per queue via configuration.
-# Redelivery policies must be set programmatically or via address-settings in the broker configuration.
+# Redelivery policies must be set via address-settings in the broker configuration.
 # Example of Artemis address-setting configuration for redelivery and dead-letter queue
 #  <address-settings>
 #    <address-setting match="jms.queue.#">
@@ -79,6 +72,7 @@ device-events:
 #    </address-setting>
 #  </address-settings>
 #
+# Not supported by Artemis
 #    redelivery-policy:
 #      initial-delay: 600000
 #      maximum-retries: 5

@@ -1,6 +1,11 @@
-spring.application.name: gxf-publiclighting-message-transformer
+# SPDX-FileCopyrightText: Copyright Contributors to the GXF project
+#
+# SPDX-License-Identifier: Apache-2.0
 
 spring:
+  application:
+    name: gxf-publiclighting-message-transformer
+
   artemis:
     mode: native
     broker-url: tcp://localhost:61616
@@ -8,18 +13,11 @@ spring:
     password: "artemis"
     pool:
       enabled: true
-      max-connections: 10
-      idle-timeout: 30000
 
   jms:
     listener:
-      min-concurrency: 2
-      max-concurrency: 10
-      max-messages-per-task: 1
-      receive-timeout: 1s
       session:
-        transacted: true
-        acknowledge-mode: auto
+        transacted: false
 
   main:
     web-application-type: none
@@ -32,6 +30,7 @@ management:
   server:
     port: 9080
 
+# MODULE CONFIGURATIONS
 common:
   messaging:
     deserialization-policy:

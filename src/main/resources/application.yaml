@@ -47,16 +47,37 @@ common:
 device-events:
   enabled: true
   consumer:
-    inbound-queue: device-events.inbound
+    inbound-queue: gxf.publiclighting.device-events.inbound-protobuf
     min-concurrency: 2
     max-concurrency: 10
   producer:
-    outbound-queue: device-events.outbound
+    outbound-queue: gxf.publiclighting.device-events.outbound-objectmessage
     quality-of-service:
       explicit-qos-enabled: true    # enable the use of deliveryMode, priority, and timeToLive
       delivery-persistent: true     # whether messages are persistent or non-persistent
       priority: 4                   # value between 0 (lowest) and 9 (highest), default is 4
       time-to-live: 0               # time to live in milliseconds, 0 means messages never expire
+
+device-message-logs:
+  enabled: true
+  inbound-queue: gxf.publiclighting.device-message-logs.inbound-protobuf
+  outbound-queue: gxf.publiclighting.device-message-logs.outbound-objectmessage
+
+device-requests:
+  enabled: true
+  inbound-queue: gxf.publiclighting.device-requests.inbound-objectmessage
+  outbound-queue: gxf.publiclighting.device-requests.outbound-protobuf
+
+device-responses:
+  enabled: true
+  inbound-queue: gxf.publiclighting.device-responses.inbound-protobuf
+  outbound-queue: gxf.publiclighting.device-responses.outbound-objectmessage
+
+# TODO verify if the platform actually sends responses back to devices
+#platform-responses:
+#  enabled: true
+#  inbound-queue: gxf.publiclighting.platform-responses.inbound-objectmessage
+#  outbound-queue: gxf.publiclighting.platform-responses.outbound-protobuf
 
 # TODO configure redelivery policy in broker configuration
 # Artemis does not support redelivery policies per queue via configuration.
@@ -65,33 +86,10 @@ device-events:
 #  <address-settings>
 #    <address-setting match="jms.queue.#">
 #      <max-delivery-attempts>5</max-delivery-attempts>
-#      <redelivery-delay>1000</redelivery-delay>                        <!-- 1 seconde initieel -->
-#      <redelivery-delay-multiplier>2.0</redelivery-delay-multiplier>   <!-- exponentieel -->
-#      <max-redelivery-delay>10000</max-redelivery-delay>               <!-- max 10 sec tussen retries -->
+#      <redelivery-delay>1000</redelivery-delay>                        <!-- initial delay: 1 second    -->
+#      <redelivery-delay-multiplier>2.0</redelivery-delay-multiplier>   <!-- exponential back-off       -->
+#      <max-redelivery-delay>10000</max-redelivery-delay>               <!-- max 10 sec between retries -->
 #      <dead-letter-address>jms.queue.DLQ</dead-letter-address>
 #    </address-setting>
 #  </address-settings>
-#
-# Not supported by Artemis
-#    redelivery-policy:
-#      initial-delay: 600000
-#      maximum-retries: 5
-#      maximum-delay: 3600000
-#      delay: 60000
-#      back-off-multiplier: 2
-#      use-exponential-back-off: true
 
-device-message-logs:
-  enabled: true
-  inbound-queue: device-message-logs.inbound
-  outbound-queue: device-message-logs.outbound
-
-device-requests:
-  enabled: true
-  inbound-queue: device-requests.inbound
-  outbound-queue: device-requests.outbound
-
-device-responses:
-  enabled: true
-  inbound-queue: device-responses.inbound
-  outbound-queue: device-responses.outbound

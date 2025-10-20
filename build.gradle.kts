@@ -117,6 +117,7 @@ testing {
 
                 implementation(libs.assertJ)
                 implementation(libs.awaitility)
+                implementation(libs.pooledJms)
                 implementation(libs.protobufKotlin)
                 implementation(libs.springBootStarterArtemis)
                 implementation(libs.springBootStarterTest)

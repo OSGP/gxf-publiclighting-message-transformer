@@ -8,17 +8,21 @@ spring:
 
   artemis:
     mode: native
-    broker-url: tcp://localhost:61617?sslEnabled=true&${spring.jms.truststore.url-params}&${spring.jms.keystore.url-params}
+    ## Non-SSL:
+    broker-url: tcp://localhost:61616
+    ## SSL:
+    # broker-url: tcp://localhost:61617?sslEnabled=true&keyStorePath=${JMS_KEY_STORE_PATH}&keyStorePassword=${JMS_KEY_STORE_PASSWORD}&trustStorePath=${JMS_TRUST_STORE_PATH}&trustStorePassword=${JMS_TRUST_STORE_PASSWORD}
+
+    ## SSL using params to reduce line length:
+    # broker-url: tcp://localhost:61617?${spring.artemis.ssl-params}
+    # ssl-params: sslEnabled=true&${spring.artemis.key-store-params}&${spring.artemis.trust-store-params}
+    # trust-store-params: trustStorePath=${JMS_TRUST_STORE_PATH}&trustStorePassword=${JMS_TRUST_STORE_PASSWORD}
+    # key-store-params: keyStorePath=${JMS_KEY_STORE_PATH}&keyStorePassword=${JMS_KEY_STORE_PASSWORD}
     pool:
       enabled: true
       max-connections: 10
 
   jms:
-    keystore:
-      url-params: keyStorePath=${JMS_KEY_STORE_PATH}&keyStorePassword=${JMS_KEY_STORE_PASSWORD}
-    truststore:
-      url-params: trustStorePath=${JMS_TRUST_STORE_PATH}&trustStorePassword=${JMS_TRUST_STORE_PASSWORD}
-
     listener:
       session:
         transacted: true

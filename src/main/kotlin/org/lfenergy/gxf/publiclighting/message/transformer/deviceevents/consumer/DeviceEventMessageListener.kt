@@ -5,7 +5,7 @@ package org.lfenergy.gxf.publiclighting.message.transformer.deviceevents.consume
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_events.DeviceEventMessage
-import org.lfenergy.gxf.publiclighting.message.transformer.deviceevents.domain.DeviceEventMessageFactory
+import org.lfenergy.gxf.publiclighting.message.transformer.deviceevents.domain.DeviceEventMessageMapper.toDeviceEventMessageDto
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceevents.producer.DeviceEventMessageSender
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.jms.annotation.JmsListener
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component
 @ConditionalOnProperty("device-events.enabled", havingValue = "true")
 class DeviceEventMessageListener(
     val deviceEventMessageSender: DeviceEventMessageSender,
-    val factory: DeviceEventMessageFactory,
 ) {
     private val logger = KotlinLogging.logger { }
 
@@ -23,7 +22,7 @@ class DeviceEventMessageListener(
     fun onMessage(event: DeviceEventMessage) {
         logger.info { "Received event for device ${event.header.deviceIdentification} of type ${event.header.eventType}." }
         try {
-            deviceEventMessageSender.send(factory.fromProtobufMessage(event))
+            deviceEventMessageSender.send(event.toDeviceEventMessageDto())
         } catch (e: IllegalArgumentException) {
             logger.error(e) { "Received invalid event for device ${event.header.deviceIdentification}." }
         }

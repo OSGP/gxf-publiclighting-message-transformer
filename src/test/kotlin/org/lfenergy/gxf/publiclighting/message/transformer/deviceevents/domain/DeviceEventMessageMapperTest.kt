@@ -3,25 +3,21 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.lfenergy.gxf.publiclighting.message.transformer.deviceevents.domain
 
-import io.mockk.junit5.MockKExtension
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.catchThrowable
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_events.EventType
 import org.lfenergy.gxf.publiclighting.message.transformer.ProtobufTestMessageFactory
+import org.lfenergy.gxf.publiclighting.message.transformer.deviceevents.domain.DeviceEventMessageMapper.toDeviceEventMessageDto
 
-@ExtendWith(MockKExtension::class)
-class DeviceEventMessageFactoryTest {
-    val factory = DeviceEventMessageFactory()
-
+class DeviceEventMessageMapperTest {
     @Test
     fun `should create device registration message from protobuf message`() {
         // Arrange
         val message = ProtobufTestMessageFactory.protobufMessageForEventOfType(EventType.DEVICE_REGISTRATION)
 
         // Act
-        val result = factory.fromProtobufMessage(message)
+        val result = message.toDeviceEventMessageDto()
 
         // Assert
         assertThat(result).isInstanceOf(DeviceEventMessageDto::class.java)
@@ -34,7 +30,7 @@ class DeviceEventMessageFactoryTest {
         val message = ProtobufTestMessageFactory.protobufMessageForEventOfType(EventType.DEVICE_NOTIFICATION)
 
         // Act
-        val result = factory.fromProtobufMessage(message)
+        val result = message.toDeviceEventMessageDto()
 
         // Assert
         assertThat(result).isInstanceOf(DeviceEventMessageDto::class.java)
@@ -47,7 +43,7 @@ class DeviceEventMessageFactoryTest {
         val message = ProtobufTestMessageFactory.protobufMessageForEventOfType(EventType.UNRECOGNIZED)
 
         // Act
-        val result = catchThrowable { factory.fromProtobufMessage(message) }
+        val result = catchThrowable { message.toDeviceEventMessageDto() }
 
         // Assert
         assertThat(result)

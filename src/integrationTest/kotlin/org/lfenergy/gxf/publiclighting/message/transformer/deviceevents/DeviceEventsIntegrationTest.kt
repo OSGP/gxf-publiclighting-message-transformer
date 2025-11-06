@@ -39,13 +39,13 @@ class DeviceEventsIntegrationTest {
 
     @Test
     fun `test device registration message processing`() {
-        // Given
+        // Arrange
         val inboundMessage = ProtobufTestMessageFactory.protobufMessageForEventOfType(EventType.DEVICE_REGISTRATION)
 
-        // When
-        jmsTemplate.convertAndSend(inboundQueue, inboundMessage)
+        // Act
+        jmsTemplate.convertAndSend(inboundQueue, inboundMessage.toByteArray())
 
-        // Then
+        // Assert
         val outboundMessage = jmsTemplate.receive(outboundQueue) as ObjectMessage?
         assertThat(outboundMessage).isNotNull()
         assertThat(outboundMessage?.jmsType).isEqualTo(EventType.DEVICE_REGISTRATION.name)
@@ -54,13 +54,13 @@ class DeviceEventsIntegrationTest {
 
     @Test
     fun `test device notification message processing`() {
-        // Given
+        // Arrange
         val inboundMessage = ProtobufTestMessageFactory.protobufMessageForEventOfType(EventType.DEVICE_NOTIFICATION)
 
-        // When
-        jmsTemplate.convertAndSend(inboundQueue, inboundMessage)
+        // Act
+        jmsTemplate.convertAndSend(inboundQueue, inboundMessage.toByteArray())
 
-        // Then
+        // Assert
         val outboundMessage = jmsTemplate.receive(outboundQueue) as ObjectMessage?
         assertThat(outboundMessage).isNotNull()
         assertThat(outboundMessage?.jmsType).isEqualTo(EventType.DEVICE_NOTIFICATION.name)
@@ -69,13 +69,13 @@ class DeviceEventsIntegrationTest {
 
     @Test
     fun `test unrecognized message processing`() {
-        // Given
+        // Assert
         val inboundMessage = ProtobufTestMessageFactory.protobufMessageForEventOfType(EventType.UNRECOGNIZED)
 
-        // When
-        jmsTemplate.convertAndSend(inboundQueue, inboundMessage)
+        // Act
+        jmsTemplate.convertAndSend(inboundQueue, inboundMessage.toByteArray())
 
-        // Then
+        // Assert
         val outboundMessage = jmsTemplate.receive(outboundQueue) as ObjectMessage?
         assertThat(outboundMessage).isNull()
     }

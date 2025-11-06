@@ -3,7 +3,9 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.lfenergy.gxf.publiclighting.message.transformer.deviceevents.consumer
 
+import com.google.protobuf.InvalidProtocolBufferException
 import io.github.oshai.kotlinlogging.KotlinLogging
+import jakarta.jms.BytesMessage
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_events.DeviceEventMessage
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceevents.domain.DeviceEventMessageMapper.toDeviceEventMessageDto
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceevents.producer.DeviceEventMessageSender
@@ -19,12 +21,23 @@ class DeviceEventMessageListener(
     private val logger = KotlinLogging.logger { }
 
     @JmsListener(destination = $$"${device-events.consumer.inbound-queue}")
-    fun onMessage(event: DeviceEventMessage) {
-        logger.info { "Received event for device ${event.header.deviceIdentification} of type ${event.header.eventType}." }
+    fun onMessage(message: BytesMessage) {
+        var event: DeviceEventMessage? = null
         try {
+            event = message.toDeviceEventMessage()
+            logger.info { "Received event for device ${event.header.deviceIdentification} of type ${event.header.eventType}." }
             deviceEventMessageSender.send(event.toDeviceEventMessageDto())
+        } catch (e: InvalidProtocolBufferException) {
+            logger.error(e) { "Received invalid protocol buffer message with correlation uid ${message.jmsCorrelationID}." }
         } catch (e: IllegalArgumentException) {
-            logger.error(e) { "Received invalid event for device ${event.header.deviceIdentification}." }
+            logger.error(e) { "Received invalid event for device ${event?.header?.deviceIdentification}." }
         }
+    }
+
+    private fun BytesMessage.toDeviceEventMessage(): DeviceEventMessage {
+        val length = this.bodyLength.toInt()
+        val bytes = ByteArray(length)
+        this.readBytes(bytes)
+        return DeviceEventMessage.parseFrom(bytes)
     }
 }

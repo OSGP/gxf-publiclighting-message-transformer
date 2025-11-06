@@ -16,7 +16,6 @@ import org.springframework.jms.core.JmsTemplate
 @Configuration
 @ConditionalOnProperty("device-events.enabled", havingValue = "true")
 @EnableConfigurationProperties(DeviceEventsConfigurationProperties::class)
-@Import(CommonModuleConfiguration::class)
 class DeviceEventsModuleConfiguration(
     private val connectionFactory: JmsPoolConnectionFactory,
     private val properties: DeviceEventsConfigurationProperties,

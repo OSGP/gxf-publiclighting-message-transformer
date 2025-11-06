@@ -31,15 +31,6 @@ management:
     port: 9080
 
 # MODULE CONFIGURATIONS
-common:
-  messaging:
-    deserialization-policy:
-      whitelist:
-        - org.lfenergy.gxf.*
-        - com.alliander.gxf.*
-        - java.util.*
-        - java.datetime.*
-
 device-events:
   enabled: true
   consumer:

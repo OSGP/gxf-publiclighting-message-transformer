@@ -14,6 +14,12 @@ data class CommonConfigurationProperties(
     )
 
     data class DeserializationPolicy(
-        var whitelist: List<String> = emptyList(),
+        var whitelist: List<String> = listOf(
+            "org.lfenergy.gxf.messaging.model.*",
+            "org.lfenergy.gxf.publiclighting.model.*",
+            "org.lfenergy.gxf.publiclighting.message.model.*",
+            "java.util.*",
+            "java.time.*"
+        )
     )
 }

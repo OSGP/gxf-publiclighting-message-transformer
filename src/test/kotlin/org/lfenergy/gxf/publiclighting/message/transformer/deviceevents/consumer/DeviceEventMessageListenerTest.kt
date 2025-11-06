@@ -16,7 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_events.EventType
 import org.lfenergy.gxf.publiclighting.message.transformer.ProtobufTestMessageFactory
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceevents.domain.DeviceEventMessageDto
-import org.lfenergy.gxf.publiclighting.message.transformer.deviceevents.domain.DeviceRegistrationDataDto
+import org.opensmartgridplatform.dto.valueobjects.DeviceRegistrationDataDto
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceevents.producer.DeviceEventMessageSender
 import org.springframework.boot.test.system.CapturedOutput
 import org.springframework.boot.test.system.OutputCaptureExtension

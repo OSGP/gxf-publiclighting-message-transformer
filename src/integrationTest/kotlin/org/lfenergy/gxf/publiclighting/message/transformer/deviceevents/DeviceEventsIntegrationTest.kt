@@ -11,8 +11,8 @@ import org.lfenergy.gxf.publiclighting.contracts.internal.device_events.EventTyp
 import org.lfenergy.gxf.publiclighting.message.transformer.ArtemisContainerConfiguration
 import org.lfenergy.gxf.publiclighting.message.transformer.ProtobufTestMessageFactory
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceevents.config.DeviceEventsConfigurationProperties
-import org.lfenergy.gxf.publiclighting.message.transformer.deviceevents.domain.DeviceRegistrationDataDto
-import org.lfenergy.gxf.publiclighting.message.transformer.deviceevents.domain.EventNotificationDto
+import org.opensmartgridplatform.dto.valueobjects.DeviceRegistrationDataDto
+import org.opensmartgridplatform.dto.valueobjects.EventNotificationDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.testcontainers.context.ImportTestcontainers

@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_events.EventType
 import org.lfenergy.gxf.publiclighting.message.transformer.ProtobufTestMessageFactory
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceevents.domain.DeviceEventMessageMapper.toDeviceEventMessageDto
+import org.opensmartgridplatform.dto.valueobjects.DeviceRegistrationDataDto
+import org.opensmartgridplatform.dto.valueobjects.EventNotificationDto
 
 class DeviceEventMessageMapperTest {
     @Test

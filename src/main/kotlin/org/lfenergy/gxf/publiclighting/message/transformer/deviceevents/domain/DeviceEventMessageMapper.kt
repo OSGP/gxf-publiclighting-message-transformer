@@ -6,6 +6,9 @@ package org.lfenergy.gxf.publiclighting.message.transformer.deviceevents.domain
 import com.google.protobuf.Timestamp
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_events.EventType.DEVICE_NOTIFICATION
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_events.EventType.DEVICE_REGISTRATION
+import org.opensmartgridplatform.dto.valueobjects.DeviceRegistrationDataDto
+import org.opensmartgridplatform.dto.valueobjects.EventNotificationDto
+import org.opensmartgridplatform.dto.valueobjects.EventTypeDto
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.ZonedDateTime

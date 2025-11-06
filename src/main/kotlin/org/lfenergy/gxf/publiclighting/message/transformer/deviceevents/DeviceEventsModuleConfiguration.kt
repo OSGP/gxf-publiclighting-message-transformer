@@ -6,6 +6,7 @@ package org.lfenergy.gxf.publiclighting.message.transformer.deviceevents
 import org.lfenergy.gxf.publiclighting.message.transformer.common.CommonModuleConfiguration
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceevents.config.DeviceEventsConfigurationProperties
 import org.messaginghub.pooled.jms.JmsPoolConnectionFactory
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -14,6 +15,7 @@ import org.springframework.jms.config.DefaultJmsListenerContainerFactory
 import org.springframework.jms.core.JmsTemplate
 
 @Configuration
+@ConditionalOnProperty("device-events.enabled", havingValue = "true")
 @EnableConfigurationProperties(DeviceEventsConfigurationProperties::class)
 @Import(CommonModuleConfiguration::class)
 class DeviceEventsModuleConfiguration(

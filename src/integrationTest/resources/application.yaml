@@ -49,10 +49,10 @@ device-events:
   producer:
     outbound-queue: device-events.outbound.IT
     quality-of-service:
-      explicit-qos-enabled: true    # enable the use of deliveryMode, priority, and timeToLive
-      delivery-persistent: true     # whether messages are persistent or non-persistent
-      priority: 4                   # value between 0 (lowest) and 9 (highest), default is 4
-      time-to-live: 0               # time to live in milliseconds, 0 means messages never expire
+      explicit-qos-enabled: true
+      delivery-persistent: true
+      priority: 4
+      time-to-live: 0
 
 device-message-logs:
   enabled: true

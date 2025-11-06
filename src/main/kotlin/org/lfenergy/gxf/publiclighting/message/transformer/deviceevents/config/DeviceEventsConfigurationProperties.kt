@@ -23,9 +23,13 @@ data class DeviceEventsConfigurationProperties(
     )
 
     data class QualityOfService(
-        var explicitQosEnabled: Boolean = false,
-        var deliveryPersistent: Boolean = false,
-        var priority: Int = 4,
-        var timeToLive: Long = 0L,
+        /** when set to true enables the use of deliveryMode, priority, and timeToLive */
+        var explicitQosEnabled: Boolean,
+        /** when set to true enables persistent message delivery */
+        var deliveryPersistent: Boolean,
+        /** value between 0 (lowest) and 9 (highest), default is 4 */
+        var priority: Int,
+        /** time to live in milliseconds, 0 means messages never expire */
+        var timeToLive: Long,
     )
 }

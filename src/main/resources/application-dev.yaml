@@ -24,11 +24,6 @@ device-events:
     max-concurrency: 10
   producer:
     outbound-queue: device-events.outbound.DEV
-    quality-of-service:
-      explicit-qos-enabled: true    # enable the use of deliveryMode, priority, and timeToLive
-      delivery-persistent: true     # whether messages are persistent or non-persistent
-      priority: 4                   # value between 0 (lowest) and 9 (highest), default is 4
-      time-to-live: 0               # time to live in milliseconds, 0 means messages never expire
 
 device-message-logs:
   enabled: true

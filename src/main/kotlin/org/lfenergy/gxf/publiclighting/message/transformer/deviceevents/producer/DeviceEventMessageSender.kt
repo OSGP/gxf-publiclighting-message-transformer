@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class DeviceEventMessageSender(
-    val jmsTemplate: JmsTemplate,
-    val properties: DeviceEventsConfigurationProperties,
+    private val jmsTemplate: JmsTemplate,
+    private val properties: DeviceEventsConfigurationProperties,
 ) {
     private val logger = KotlinLogging.logger {}
 

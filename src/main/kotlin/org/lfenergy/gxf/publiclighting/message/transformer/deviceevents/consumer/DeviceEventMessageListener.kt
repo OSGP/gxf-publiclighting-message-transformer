@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component
 @Component
 @ConditionalOnProperty("device-events.enabled", havingValue = "true")
 class DeviceEventMessageListener(
-    val deviceEventMessageSender: DeviceEventMessageSender,
+    private val deviceEventMessageSender: DeviceEventMessageSender,
 ) {
     private val logger = KotlinLogging.logger { }
 

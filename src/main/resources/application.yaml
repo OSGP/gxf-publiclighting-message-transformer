@@ -8,22 +8,18 @@ spring:
 
   artemis:
     mode: native
-    ## Non-SSL:
-    broker-url: tcp://localhost:61616
-    ## SSL:
-    # broker-url: tcp://localhost:61617?sslEnabled=true&keyStorePath=${spring.jms.broker.keyStorePath}&keyStorePassword=${spring.jms.broker.keyStorePassword}&trustStorePath=${spring.jms.broker.trustStorePath}&trustStorePassword=${spring.jms.broker.trustStorePassword}
+    broker-url: tcp://localhost:61617?sslEnabled=true&keyStorePath=${spring.jms.broker.keyStorePath}&keyStorePassword=${spring.jms.broker.keyStorePassword}&trustStorePath=${spring.jms.broker.trustStorePath}&trustStorePassword=${spring.jms.broker.trustStorePassword}
 
     pool:
       enabled: true
       max-connections: 10
 
   jms:
-    # SSL keystore/truststore configuration for broker connection
-    # broker:
-    #   keyStorePassword: ${JMS_KEY_STORE_PASSWORD}
-    #   keyStorePath: ${JMS_KEY_STORE_PATH}
-    #   trustStorePassword: ${JMS_TRUST_STORE_PASSWORD}
-    #   trustStorePath: ${JMS_TRUST_STORE_PATH}
+    broker:
+       keyStorePassword: ${JMS_KEY_STORE_PASSWORD}
+       keyStorePath: ${JMS_KEY_STORE_PATH}
+       trustStorePassword: ${JMS_TRUST_STORE_PASSWORD}
+       trustStorePath: ${JMS_TRUST_STORE_PATH}
     listener:
       session:
         transacted: true
@@ -68,24 +64,3 @@ device-responses:
   enabled: true
   inbound-queue: gxf.publiclighting.device-responses.inbound-protobuf
   outbound-queue: gxf.publiclighting.device-responses.outbound-objectmessage
-
-# TODO verify if the platform actually sends responses back to devices
-#platform-responses:
-#  enabled: true
-#  inbound-queue: gxf.publiclighting.platform-responses.inbound-objectmessage
-#  outbound-queue: gxf.publiclighting.platform-responses.outbound-protobuf
-
-# TODO configure redelivery policy in broker configuration
-# Artemis does not support redelivery policies per queue via configuration.
-# Redelivery policies must be set via address-settings in the broker configuration.
-# Example of Artemis address-setting configuration for redelivery and dead-letter queue
-#  <address-settings>
-#    <address-setting match="jms.queue.#">
-#      <max-delivery-attempts>5</max-delivery-attempts>
-#      <redelivery-delay>1000</redelivery-delay>                        <!-- initial delay: 1 second    -->
-#      <redelivery-delay-multiplier>2.0</redelivery-delay-multiplier>   <!-- exponential back-off       -->
-#      <max-redelivery-delay>10000</max-redelivery-delay>               <!-- max 10 sec between retries -->
-#      <dead-letter-address>jms.queue.DLQ</dead-letter-address>
-#    </address-setting>
-#  </address-settings>
-

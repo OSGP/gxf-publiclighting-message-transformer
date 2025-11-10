@@ -8,7 +8,7 @@ import org.assertj.core.api.Assertions.catchThrowable
 import org.junit.jupiter.api.Test
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_events.EventType
 import org.lfenergy.gxf.publiclighting.message.transformer.ProtobufTestMessageFactory
-import org.lfenergy.gxf.publiclighting.message.transformer.deviceevents.domain.DeviceEventMessageMapper.toDeviceEventMessageDto
+import org.lfenergy.gxf.publiclighting.message.transformer.deviceevents.domain.DeviceEventMessageMapper.mapToDeviceEventMessageDto
 import org.opensmartgridplatform.dto.valueobjects.DeviceRegistrationDataDto
 import org.opensmartgridplatform.dto.valueobjects.EventNotificationDto
 
@@ -19,7 +19,7 @@ class DeviceEventMessageMapperTest {
         val message = ProtobufTestMessageFactory.protobufMessageForEventOfType(EventType.DEVICE_REGISTRATION)
 
         // Act
-        val result = message.toDeviceEventMessageDto()
+        val result = message.mapToDeviceEventMessageDto()
 
         // Assert
         assertThat(result).isInstanceOf(DeviceEventMessageDto::class.java)
@@ -32,7 +32,7 @@ class DeviceEventMessageMapperTest {
         val message = ProtobufTestMessageFactory.protobufMessageForEventOfType(EventType.DEVICE_NOTIFICATION)
 
         // Act
-        val result = message.toDeviceEventMessageDto()
+        val result = message.mapToDeviceEventMessageDto()
 
         // Assert
         assertThat(result).isInstanceOf(DeviceEventMessageDto::class.java)
@@ -45,7 +45,7 @@ class DeviceEventMessageMapperTest {
         val message = ProtobufTestMessageFactory.protobufMessageForEventOfType(EventType.UNRECOGNIZED)
 
         // Act
-        val result = catchThrowable { message.toDeviceEventMessageDto() }
+        val result = catchThrowable { message.mapToDeviceEventMessageDto() }
 
         // Assert
         assertThat(result)

@@ -15,7 +15,7 @@ import java.time.ZonedDateTime
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_events.DeviceEventMessage as ProtobufMessage
 
 object DeviceEventMessageMapper {
-    fun ProtobufMessage.toDeviceEventMessageDto(): DeviceEventMessageDto =
+    fun ProtobufMessage.mapToDeviceEventMessageDto(): DeviceEventMessageDto =
         DeviceEventMessageDto(
             deviceIdentification = header.deviceIdentification,
             correlationUid = header.correlationUid,

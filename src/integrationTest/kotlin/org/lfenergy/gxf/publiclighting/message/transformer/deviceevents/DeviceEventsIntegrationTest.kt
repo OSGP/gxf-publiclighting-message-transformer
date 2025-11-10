@@ -69,7 +69,7 @@ class DeviceEventsIntegrationTest {
 
     @Test
     fun `test unrecognized message processing`() {
-        // Assert
+        // Arrange
         val inboundMessage = ProtobufTestMessageFactory.protobufMessageForEventOfType(EventType.UNRECOGNIZED)
 
         // Act

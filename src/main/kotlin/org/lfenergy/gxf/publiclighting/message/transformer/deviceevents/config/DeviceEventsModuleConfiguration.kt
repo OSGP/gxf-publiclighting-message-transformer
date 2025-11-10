@@ -3,13 +3,11 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.lfenergy.gxf.publiclighting.message.transformer.deviceevents.config
 
-import org.lfenergy.gxf.publiclighting.message.transformer.common.CommonModuleConfiguration
 import org.messaginghub.pooled.jms.JmsPoolConnectionFactory
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Import
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory
 import org.springframework.jms.core.JmsTemplate
 

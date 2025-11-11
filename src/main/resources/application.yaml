@@ -33,7 +33,7 @@ management:
       probes:
         enabled: true
   server:
-    port: 9080
+    port: 9404
 
 # MODULE CONFIGURATIONS
 device-events:

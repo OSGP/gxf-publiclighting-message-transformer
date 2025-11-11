@@ -15,6 +15,10 @@ spring:
       enabled: true
       max-connections: 10
 
+management:
+  server:
+    port: 9080
+
 # MODULE CONFIGURATION
 device-events:
   enabled: true

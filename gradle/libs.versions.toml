@@ -1,0 +1,63 @@
+[versions]
+assertJ = "3.27.6"
+awaitility = "4.3.0"
+dependencyManagement = "1.1.7"
+gradleWrapperUpgrade = "0.12"
+kotlin = "2.2.20"
+kotlinLogging = "7.0.13"
+mockk = "1.14.5"
+mockkSpring = "4.0.2"
+pooledJms = "3.1.7"
+protobufKotlin = "4.32.1"
+sonarqube = "6.3.1.5724"
+spotless = "8.0.0"
+springBoot = "3.5.6"
+springModulith = "1.4.3"
+testcontainers = "1.21.3"
+
+[libraries]
+# Annotation processors
+springBootConfigurationProcessor = { group = "org.springframework.boot", name = "spring-boot-configuration-processor", version.ref = "springBoot" }
+
+# Development dependencies
+springBootCompose = { group = "org.springframework.boot", name = "spring-boot-docker-compose", version.ref = "springBoot" }
+springBootDevtools = { group = "org.springframework.boot", name = "spring-boot-devtools", version.ref = "springBoot" }
+
+# Implementation dependencies
+kotlinLoggingJvm = { group = "io.github.oshai", name = "kotlin-logging-jvm", version.ref = "kotlinLogging" }
+kotlinReflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
+pooledJms = { group = "org.messaginghub", name = "pooled-jms", version.ref = "pooledJms" }
+protobufKotlin = { group = "com.google.protobuf", name = "protobuf-kotlin", version.ref = "protobufKotlin" }
+springBootStarterActuator = { group = "org.springframework.boot", name = "spring-boot-starter-actuator", version.ref = "springBoot" }
+springBootStarterArtemis = { group = "org.springframework.boot", name = "spring-boot-starter-artemis", version.ref = "springBoot" }
+springModulithStarterCore = { group = "org.springframework.modulith", name = "spring-modulith-starter-core", version.ref = "springModulith" }
+
+# Runtime dependencies
+springModulithActuator = { group = "org.springframework.modulith", name = "spring-modulith-actuator", version.ref = "springModulith" }
+springModulithObservability = { group = "org.springframework.modulith", name = "spring-modulith-observability", version.ref = "springModulith" }
+
+# Test dependencies
+assertJ = { group = "org.assertj", name = "assertj-core", version.ref = "assertJ" }
+awaitility = { group = "org.awaitility", name = "awaitility", version.ref = "awaitility" }
+junitLauncher = { group = "org.junit.platform", name = "junit-platform-launcher" }
+kotlinJunit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit5", version.ref = "kotlin" }
+mockkJvm = { group = "io.mockk", name = "mockk-jvm", version.ref = "mockk" }
+mockkSpring = { group = "com.ninja-squad", name = "springmockk", version.ref = "mockkSpring" }
+springBootStarterTest = { group = "org.springframework.boot", name = "spring-boot-starter-test", version.ref = "springBoot" }
+springBootTestcontainers = { group = "org.springframework.boot", name = "spring-boot-testcontainers", version.ref = "springBoot" }
+springModulithStarterTest = { group = "org.springframework.modulith", name = "spring-modulith-starter-test", version.ref = "springModulith" }
+testContainers = { group = "org.testcontainers", name = "testcontainers", version.ref = "testcontainers" }
+testContainersJUnit = { group = "org.testcontainers", name = "junit-jupiter", version.ref = "testcontainers" }
+testContainersArtemis = { group = "org.testcontainers", name = "activemq", version.ref = "testcontainers" }
+
+[plugins]
+dependencyManagement = { id = "io.spring.dependency-management", version.ref = "dependencyManagement" }
+gradleWrapperUpgrade = { id = "org.gradle.wrapper-upgrade", version.ref = "gradleWrapperUpgrade" }
+jacoco = { id = "jacoco" }
+jacocoReportAggregation = { id = "jacoco-report-aggregation" }
+javaTestFixtures = { id = "java-test-fixtures" }
+kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlinSpring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
+sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+springBoot = { id = "org.springframework.boot", version.ref = "springBoot" }

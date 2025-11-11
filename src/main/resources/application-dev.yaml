@@ -1,0 +1,45 @@
+# SPDX-FileCopyrightText: Copyright Contributors to the GXF project
+#
+# SPDX-License-Identifier: Apache-2.0
+
+# SPRING CONFIGURATION
+spring:
+  application:
+    name: gxf-publiclighting-message-transformer
+
+  artemis:
+    broker-url: tcp://localhost:61616
+    user: "artemis"
+    password: "artemis"
+    pool:
+      enabled: true
+      max-connections: 10
+
+management:
+  server:
+    port: 9080
+
+# MODULE CONFIGURATION
+device-events:
+  enabled: true
+  consumer:
+    inbound-queue: device-events.inbound.DEV
+    min-concurrency: 2
+    max-concurrency: 10
+  producer:
+    outbound-queue: device-events.outbound.DEV
+
+device-message-logs:
+  enabled: true
+  inbound-queue: device-message-logs.inbound.DEV
+  outbound-queue: device-message-logs.outbound.DEV
+
+device-requests:
+  enabled: true
+  inbound-queue: device-requests.inbound.DEV
+  outbound-queue: device-requests.outbound.DEV
+
+device-responses:
+  enabled: true
+  inbound-queue: device-responses.inbound.DEV
+  outbound-queue: device-responses.outbound.DEV

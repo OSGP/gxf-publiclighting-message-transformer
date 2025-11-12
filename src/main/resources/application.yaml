@@ -24,14 +24,15 @@ spring:
       session:
         transacted: true
 
-  main:
-    web-application-type: none
-
 management:
   endpoint:
     health:
       probes:
         enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
   server:
     port: 9404
 

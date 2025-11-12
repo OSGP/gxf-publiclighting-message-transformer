@@ -58,10 +58,13 @@ dependencies {
 
     implementation(libs.kotlinLoggingJvm)
     implementation(libs.kotlinReflect)
+    implementation(libs.micrometerRegistryPrometheus)
     implementation(libs.pooledJms)
     implementation(libs.protobufKotlin)
     implementation(libs.springBootStarterActuator)
     implementation(libs.springBootStarterArtemis)
+    implementation(libs.springBootStarterWeb)
+
     implementation(libs.springModulithStarterCore)
 
     runtimeOnly(libs.springModulithActuator)

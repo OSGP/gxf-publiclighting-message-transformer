@@ -5,6 +5,7 @@ dependencyManagement = "1.1.7"
 gradleWrapperUpgrade = "0.12"
 kotlin = "2.2.20"
 kotlinLogging = "7.0.13"
+micrometer = "1.15.4"
 mockk = "1.14.5"
 mockkSpring = "4.0.2"
 pooledJms = "3.1.7"
@@ -26,10 +27,12 @@ springBootDevtools = { group = "org.springframework.boot", name = "spring-boot-d
 # Implementation dependencies
 kotlinLoggingJvm = { group = "io.github.oshai", name = "kotlin-logging-jvm", version.ref = "kotlinLogging" }
 kotlinReflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
+micrometerRegistryPrometheus = { group = "io.micrometer", name = "micrometer-registry-prometheus", version.ref = "micrometer" }
 pooledJms = { group = "org.messaginghub", name = "pooled-jms", version.ref = "pooledJms" }
 protobufKotlin = { group = "com.google.protobuf", name = "protobuf-kotlin", version.ref = "protobufKotlin" }
 springBootStarterActuator = { group = "org.springframework.boot", name = "spring-boot-starter-actuator", version.ref = "springBoot" }
 springBootStarterArtemis = { group = "org.springframework.boot", name = "spring-boot-starter-artemis", version.ref = "springBoot" }
+springBootStarterWeb = { group = "org.springframework.boot", name = "spring-boot-starter-web", version.ref = "springBoot" }
 springModulithStarterCore = { group = "org.springframework.modulith", name = "spring-modulith-starter-core", version.ref = "springModulith" }
 
 # Runtime dependencies

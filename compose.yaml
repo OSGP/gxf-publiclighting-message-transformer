@@ -1,12 +1,12 @@
 services:
   artemis:
-    image: 'apache/activemq-artemis:latest'
+    image: apache/activemq-artemis:latest
     container_name: artemis-container.gxf-publiclighting-message-transformer
     environment:
-      - ARTEMIS_USERNAME=artemis
-      - ARTEMIS_PASSWORD=artemis
-      - ARTEMIS_MIN_MEMORY=512M
-      - ARTEMIS_MAX_MEMORY=512M
+      ARTEMIS_USERNAME: artemis
+      ARTEMIS_PASSWORD: artemis
+      ARTEMIS_MIN_MEMORY: 512M
+      ARTEMIS_MAX_MEMORY: 512M
     ports:
-      - '61616:61616'
-      - '58161:8161'
+      - "61616:61616"
+      - "58161:8161"

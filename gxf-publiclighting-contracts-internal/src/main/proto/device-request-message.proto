@@ -51,7 +51,7 @@ message SetLightRequest {
 }
 
 message SetScheduleRequest {
-  // TODO - define schedule structure here
+  repeated ScheduleEntry schedule_entries = 1; // maximum count of 50 entries
 }
 
 message ResumeScheduleRequest {
@@ -61,11 +61,11 @@ message ResumeScheduleRequest {
 
 message SetTransitionRequest {
   TransitionType transition_type = 1;
-  string time = 2;  // format: hhmmss UTC
+  string time = 2;  // Format: hhmmss UTC
 }
 
 message SetEventNotificationMaskRequest {
-  // TODO - define notification bitmask structure here
+  uint32 notification_mask = 1; // Bitmask for max 32 events, using NotificationBit for bit positions
 }
 
 message SetConfigurationRequest {
@@ -75,6 +75,50 @@ message SetConfigurationRequest {
 message LightValue {
   RelayIndex index = 1;
   bool light_on = 2;
+}
+
+message ScheduleEntry {
+  Weekday weekday = 1;
+  string start_day = 2;           // Format YYYYMMDD UTC
+  string end_day = 3;             // Format YYYYMMDD UTC
+  ActionTime action_time = 4;
+  string time = 5;                // Format hhmmss local time, only set when action_time = ABSOLUTETIME
+  TriggerWindow window = 6;       // Window to wait for light sensor trigger
+  repeated LightValue value = 7;  // Maximum count of 6 light values
+  TriggerType trigger_type = 8;   // Switch on astronomical time or light transition
+  uint32 minimum_lights_on = 9;   // Minimal time (in seconds) the lights should burn before deciding to switch the lights on
+  uint32 index = 10;              // Index of schedule entry in the schedule list
+//  bool is_enabled = 11;           // Is this schedule entry enabled?}
+}
+
+message TriggerWindow {
+  uint32 minutes_before = 1;
+  uint32 minutes_after = 2;
+}
+
+enum TriggerType {
+  LIGHT_TRANSITION = 1;
+  ASTRONOMICAL = 2;
+}
+
+enum Weekday {
+  MONDAY = 1;
+  TUESDAY = 2;
+  WEDNESDAY = 3;
+  THURSDAY = 4;
+  FRIDAY = 5;
+  SATURDAY = 6;
+  SUNDAY = 7;
+  WEEKDAY = 8;
+  WEEKEND = 9;
+  ABSOLUTE_DAY = 10;
+  EVERY_DAY = 11;
+}
+
+enum ActionTime {
+  ABSOLUTE_TIME = 1;
+  SUNRISE_TIME = 2;
+  SUNSET_TIME = 3;
 }
 
 enum RelayIndex{
@@ -89,4 +133,3 @@ enum TransitionType {
   SUNRISE = 0;
   SUNSET = 1;
 }
-

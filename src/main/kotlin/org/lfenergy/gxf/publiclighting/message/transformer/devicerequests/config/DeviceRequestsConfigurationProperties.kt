@@ -3,14 +3,13 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.config
 
-import org.lfenergy.gxf.publiclighting.message.transformer.deviceevents.config.DeviceEventsConfigurationProperties
 import org.springframework.boot.context.properties.ConfigurationProperties
 
 @ConfigurationProperties(prefix = "device-requests")
 data class DeviceRequestsConfigurationProperties(
     var enabled: Boolean,
-    var consumer: DeviceEventsConfigurationProperties.ConsumerProperties,
-    var producer: DeviceEventsConfigurationProperties.ProducerProperties,
+    var consumer: ConsumerProperties,
+    var producer: ProducerProperties,
 ) {
     data class ConsumerProperties(
         var inboundQueue: String,

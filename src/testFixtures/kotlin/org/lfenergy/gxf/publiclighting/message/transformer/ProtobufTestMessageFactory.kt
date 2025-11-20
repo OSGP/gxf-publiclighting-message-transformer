@@ -25,37 +25,42 @@ object ProtobufTestMessageFactory {
 
     private fun deviceRegistrationEventMessage() =
         deviceEventMessage {
-            header = header {
-                deviceIdentification = DEVICE_IDENTIFICATION
-                correlationUid = CORRELATION_UID
-                eventType = EventType.DEVICE_REGISTRATION
-            }
-            deviceRegistrationReceivedEvent = deviceRegistrationReceivedEvent {
-                networkAddress = "127.0.0.1"
-                hasSchedule = true
-            }
+            header =
+                header {
+                    deviceIdentification = DEVICE_IDENTIFICATION
+                    correlationUid = CORRELATION_UID
+                    eventType = EventType.DEVICE_REGISTRATION
+                }
+            deviceRegistrationReceivedEvent =
+                deviceRegistrationReceivedEvent {
+                    networkAddress = "127.0.0.1"
+                    hasSchedule = true
+                }
         }
 
     private fun deviceNotificationEventMessage() =
         deviceEventMessage {
-            header = header {
-                deviceIdentification = DEVICE_IDENTIFICATION
-                correlationUid = CORRELATION_UID
-                eventType = EventType.DEVICE_NOTIFICATION
-            }
-            deviceNotificationReceivedEvent = deviceNotificationReceivedEvent {
-                notificationType = NotificationType.LIGHT_EVENTS_LIGHT_ON
-                description = "Light turned on"
-                index = 0
-            }
+            header =
+                header {
+                    deviceIdentification = DEVICE_IDENTIFICATION
+                    correlationUid = CORRELATION_UID
+                    eventType = EventType.DEVICE_NOTIFICATION
+                }
+            deviceNotificationReceivedEvent =
+                deviceNotificationReceivedEvent {
+                    notificationType = NotificationType.LIGHT_EVENTS_LIGHT_ON
+                    description = "Light turned on"
+                    index = 0
+                }
         }
 
     private fun unrecognizedEventMessage() =
         deviceEventMessage {
-            header = header {
-                deviceIdentification = DEVICE_IDENTIFICATION
-                correlationUid = CORRELATION_UID
-                eventTypeValue = UNRECOGNIZED_VALUE
-            }
+            header =
+                header {
+                    deviceIdentification = DEVICE_IDENTIFICATION
+                    correlationUid = CORRELATION_UID
+                    eventTypeValue = UNRECOGNIZED_VALUE
+                }
         }
 }

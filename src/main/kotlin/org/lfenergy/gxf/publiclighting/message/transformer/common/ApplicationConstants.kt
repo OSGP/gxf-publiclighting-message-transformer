@@ -5,4 +5,5 @@ package org.lfenergy.gxf.publiclighting.message.transformer.common
 
 object ApplicationConstants {
     const val JMS_PROPERTY_DEVICE_IDENTIFICATION = "DeviceIdentification"
+    const val JMS_PROPERTY_ORGANIZATION_IDENTIFICATION = "OrganizationIdentification"
 }

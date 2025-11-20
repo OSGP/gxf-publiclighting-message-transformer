@@ -4,11 +4,12 @@
 package org.lfenergy.gxf.publiclighting.message.transformer
 
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_events.DeviceEventMessage
-import org.lfenergy.gxf.publiclighting.contracts.internal.device_events.DeviceNotificationReceivedEvent
-import org.lfenergy.gxf.publiclighting.contracts.internal.device_events.DeviceRegistrationReceivedEvent
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_events.EventType
-import org.lfenergy.gxf.publiclighting.contracts.internal.device_events.Header
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_events.NotificationType
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_events.deviceEventMessage
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_events.deviceNotificationReceivedEvent
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_events.deviceRegistrationReceivedEvent
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_events.header
 
 object ProtobufTestMessageFactory {
     private const val DEVICE_IDENTIFICATION = "device1"
@@ -23,51 +24,39 @@ object ProtobufTestMessageFactory {
         }
 
     private fun deviceRegistrationEventMessage() =
-        DeviceEventMessage
-            .newBuilder()
-            .setHeader(
-                Header
-                    .newBuilder()
-                    .setDeviceIdentification(DEVICE_IDENTIFICATION)
-                    .setCorrelationUid(CORRELATION_UID)
-                    .setEventType(EventType.DEVICE_REGISTRATION)
-                    .build(),
-            ).setDeviceRegistrationReceivedEvent(
-                DeviceRegistrationReceivedEvent
-                    .newBuilder()
-                    .setNetworkAddress("127.0.0.1")
-                    .setHasSchedule(true)
-                    .build(),
-            ).build()
+        deviceEventMessage {
+            header {
+                deviceIdentification = DEVICE_IDENTIFICATION
+                correlationUid = CORRELATION_UID
+                eventType = EventType.DEVICE_REGISTRATION
+            }
+            deviceRegistrationReceivedEvent {
+                networkAddress = "127.0.0.1"
+                hasSchedule = true
+            }
+        }
 
     private fun deviceNotificationEventMessage() =
-        DeviceEventMessage
-            .newBuilder()
-            .setHeader(
-                Header
-                    .newBuilder()
-                    .setDeviceIdentification(DEVICE_IDENTIFICATION)
-                    .setCorrelationUid(CORRELATION_UID)
-                    .setEventType(EventType.DEVICE_NOTIFICATION)
-                    .build(),
-            ).setDeviceNotificationReceivedEvent(
-                DeviceNotificationReceivedEvent
-                    .newBuilder()
-                    .setNotificationType(NotificationType.LIGHT_EVENTS_LIGHT_ON)
-                    .setDescription("Light turned on")
-                    .setIndex(0)
-                    .build(),
-            ).build()
+
+        deviceEventMessage {
+            header {
+                deviceIdentification = DEVICE_IDENTIFICATION
+                correlationUid = CORRELATION_UID
+                eventType = EventType.DEVICE_NOTIFICATION
+            }
+            deviceNotificationReceivedEvent {
+                notificationType = NotificationType.LIGHT_EVENTS_LIGHT_ON
+                description = "Light turned on"
+                index = 0
+            }
+        }
 
     private fun unrecognizedEventMessage() =
-        DeviceEventMessage
-            .newBuilder()
-            .setHeader(
-                Header
-                    .newBuilder()
-                    .setDeviceIdentification(DEVICE_IDENTIFICATION)
-                    .setCorrelationUid(CORRELATION_UID)
-                    .setEventTypeValue(UNRECOGNIZED_VALUE)
-                    .build(),
-            ).build()
+        deviceEventMessage {
+            header {
+                deviceIdentification = DEVICE_IDENTIFICATION
+                correlationUid = CORRELATION_UID
+                eventTypeValue = UNRECOGNIZED_VALUE
+            }
+        }
 }

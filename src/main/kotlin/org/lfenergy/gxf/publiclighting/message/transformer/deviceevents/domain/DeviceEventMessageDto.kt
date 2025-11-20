@@ -8,7 +8,7 @@ import java.io.Serializable
 data class DeviceEventMessageDto(
     val deviceIdentification: String,
     val correlationUid: String,
-    val organisationIdentification: String,
+    val organizationIdentification: String,
     val messageType: String,
     val payload: Serializable,
 )

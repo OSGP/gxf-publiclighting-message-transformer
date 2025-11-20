@@ -19,7 +19,7 @@ object DeviceEventMessageMapper {
         DeviceEventMessageDto(
             deviceIdentification = header.deviceIdentification,
             correlationUid = header.correlationUid,
-            organisationIdentification = header.organizationIdentification,
+            organizationIdentification = header.organizationIdentification,
             messageType = header.eventType.name,
             payload =
                 when (header.eventType) {

@@ -66,5 +66,14 @@ device-requests:
 
 device-responses:
   enabled: true
-  inbound-queue: device-responses.inbound.IT
-  outbound-queue: device-responses.outbound.IT
+  consumer:
+    inbound-queue: device-responses.inbound.IT
+    min-concurrency: 2
+    max-concurrency: 10
+  producer:
+    outbound-queue: device-responses.outbound.IT
+    quality-of-service:
+      explicit-qos-enabled: true
+      delivery-persistent: true
+      priority: 4
+      time-to-live: 0

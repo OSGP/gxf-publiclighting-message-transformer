@@ -3,11 +3,12 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.config
 
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ModuleConfigurationProperties
 import org.springframework.boot.context.properties.ConfigurationProperties
 
 @ConfigurationProperties(prefix = "device-responses")
-data class DeviceResponsesConfigurationProperties(
-    var enabled: Boolean,
-    var inboundQueue: String,
-    var outboundQueue: String,
-)
+class DeviceResponsesConfigurationProperties(
+    enabled: Boolean,
+    consumer: ConsumerProperties,
+    producer: ProducerProperties,
+) : ModuleConfigurationProperties(enabled, consumer, producer)

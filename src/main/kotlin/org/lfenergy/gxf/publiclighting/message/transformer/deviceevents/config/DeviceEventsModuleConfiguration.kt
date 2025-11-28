@@ -18,7 +18,7 @@ class DeviceEventsModuleConfiguration(
     private val connectionFactory: JmsPoolConnectionFactory,
     private val properties: DeviceEventsConfigurationProperties,
 ) {
-    @Bean
+    @Bean("deviceEventsJmsListenerContainerFactory")
     fun jmsListenerContainerFactory(): DefaultJmsListenerContainerFactory {
         val factory = DefaultJmsListenerContainerFactory()
         factory.setConnectionFactory(connectionFactory)
@@ -26,7 +26,7 @@ class DeviceEventsModuleConfiguration(
         return factory
     }
 
-    @Bean
+    @Bean("deviceEventsJmsTemplate")
     fun jmsTemplate(): JmsTemplate {
         val template = JmsTemplate(connectionFactory)
         template.defaultDestinationName = properties.producer.outboundQueue

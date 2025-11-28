@@ -14,6 +14,8 @@ plugins {
     `jvm-test-suite`
 }
 
+extra["junit-jupiter.version"] = libs.junitJupiterApi.get().version
+
 group = "org.lfenergy.gxf"
 description = "GXF public lighting transformer between protobuf and object messages"
 
@@ -55,6 +57,8 @@ dependencies {
     developmentOnly(libs.springBootDevtools)
 
     implementation("org.lfenergy.gxf:gxf-publiclighting-contracts-internal")
+
+    implementation(libs.jodaTime)
 
     implementation(libs.kotlinLoggingJvm)
     implementation(libs.kotlinReflect)
@@ -119,7 +123,12 @@ testing {
                 implementation("org.lfenergy.gxf:gxf-publiclighting-contracts-internal")
 
                 implementation(libs.assertJ)
-                implementation(libs.awaitility)
+                implementation(libs.cucumberJava)
+                implementation(libs.cucumberJunitPlatformEngine)
+                implementation(libs.cucumberSpring)
+                implementation(libs.junitJupiterApi)
+                implementation(libs.junitPlatformSuite)
+                implementation(libs.junitPlatformConsole)
                 implementation(libs.pooledJms)
                 implementation(libs.protobufKotlin)
                 implementation(libs.springBootStarterArtemis)

@@ -72,5 +72,14 @@ device-requests:
 
 device-responses:
   enabled: true
-  inbound-queue: gxf.publiclighting.device-responses.inbound-protobuf
-  outbound-queue: gxf.publiclighting.device-responses.outbound-objectmessage
+  consumer:
+    inbound-queue: gxf.publiclighting.device-responses.inbound-protobuf
+    min-concurrency: 2
+    max-concurrency: 10
+  producer:
+    outbound-queue: gxf.publiclighting.device-responses.outbound-objectmessage
+    quality-of-service:
+      explicit-qos-enabled: true
+      delivery-persistent: true
+      priority: 4
+      time-to-live: 0

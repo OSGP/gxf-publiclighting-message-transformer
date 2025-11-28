@@ -9,7 +9,7 @@ import java.time.ZonedDateTime
 class EventNotificationDto(
     val deviceUid: String?,
     val dateTime: ZonedDateTime?,
-    val eventType: EventTypeDto?,
+    val eventType: org.opensmartgridplatform.dto.valueobjects.EventTypeDto?,
     val description: String?,
     val index: Int?,
 ) : Serializable {

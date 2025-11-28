@@ -11,14 +11,16 @@ import org.lfenergy.gxf.publiclighting.contracts.internal.device_events.deviceNo
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_events.deviceRegistrationReceivedEvent
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_events.header
 
-object ProtobufTestMessageFactory {
+object DeviceEventMessageFactory {
     private const val DEVICE_IDENTIFICATION = "device1"
     private const val CORRELATION_UID = "corr1"
     private const val UNRECOGNIZED_VALUE = -1
+    private const val DEVICE_TYPE = "SSLD"
 
     fun protobufMessageForEventOfType(eventType: EventType): DeviceEventMessage =
         when (eventType) {
             EventType.DEVICE_REGISTRATION -> deviceRegistrationEventMessage()
+            EventType.DEVICE_REGISTRATION_CONFIRMATION -> deviceRegistrationConfirmationEventMessage()
             EventType.DEVICE_NOTIFICATION -> deviceNotificationEventMessage()
             else -> unrecognizedEventMessage()
         }
@@ -28,6 +30,7 @@ object ProtobufTestMessageFactory {
             header =
                 header {
                     deviceIdentification = DEVICE_IDENTIFICATION
+                    deviceType = DEVICE_TYPE
                     correlationUid = CORRELATION_UID
                     eventType = EventType.DEVICE_REGISTRATION
                 }
@@ -35,6 +38,17 @@ object ProtobufTestMessageFactory {
                 deviceRegistrationReceivedEvent {
                     networkAddress = "127.0.0.1"
                     hasSchedule = true
+                }
+        }
+
+    private fun deviceRegistrationConfirmationEventMessage() =
+        deviceEventMessage {
+            header =
+                header {
+                    deviceIdentification = DEVICE_IDENTIFICATION
+                    deviceType = DEVICE_TYPE
+                    correlationUid = CORRELATION_UID
+                    eventType = EventType.DEVICE_REGISTRATION_CONFIRMATION
                 }
         }
 

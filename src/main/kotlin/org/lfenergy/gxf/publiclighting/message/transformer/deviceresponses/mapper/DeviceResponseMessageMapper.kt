@@ -57,7 +57,7 @@ object DeviceResponseMessageMapper {
             null
         }
 
-    fun ProtobufMessage.toSerializable(): Serializable? {
+    private fun ProtobufMessage.toSerializable(): Serializable? {
         if (this.result == Result.NOT_OK) {
             return null
         }
@@ -65,6 +65,7 @@ object DeviceResponseMessageMapper {
         return when (this.header.responseType) {
             ResponseType.GET_STATUS_RESPONSE -> this.getStatusResponse.toDto()
             ResponseType.SET_LIGHT_RESPONSE -> null
+            ResponseType.SET_SCHEDULE_RESPONSE -> null
             else -> throw IllegalArgumentException("Unsupported message type: ${this.header.responseType}")
         }
     }

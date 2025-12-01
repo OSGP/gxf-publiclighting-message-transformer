@@ -20,10 +20,8 @@ import org.lfenergy.gxf.publiclighting.contracts.internal.device_events.EventTyp
 import org.lfenergy.gxf.publiclighting.message.transformer.DeviceEventMessageFactory
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_DEVICE_IDENTIFICATION
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceevents.producer.DeviceEventMessageSender
-import org.springframework.boot.test.system.OutputCaptureExtension
 
 @ExtendWith(MockKExtension::class)
-@ExtendWith(OutputCaptureExtension::class)
 class DeviceEventMessageListenerTest {
     @MockK
     lateinit var deviceEventMessageSender: DeviceEventMessageSender
@@ -52,22 +50,6 @@ class DeviceEventMessageListenerTest {
             )
         }
     }
-
-//    @Test
-//    fun `should log unrecognized protobuf event and not send dto`(capturedOutput: CapturedOutput) {
-//        // Arrange
-//        val event = DeviceEventMessageFactory.protobufMessageForEventOfType(EventType.UNRECOGNIZED)
-//        val bytesMessage = setupBytesMessageMock(event)
-//
-//        // Act
-//        deviceEventMessageListener.onMessage(bytesMessage)
-//
-//        // Assert
-//        assertThat(capturedOutput.out)
-//            .contains("Received invalid event for device")
-//            .contains("Unsupported event type")
-//        verify(exactly = 0) { deviceEventMessageSender.send(any()) }
-//    }
 
     private fun setupBytesMessageMock(deviceEventMessage: DeviceEventMessage): BytesMessage {
         val bytesMessage = mockk<BytesMessage>()

@@ -17,6 +17,7 @@ object DeviceResponseMessageFactory {
         when (responseType) {
             ResponseType.GET_STATUS_RESPONSE -> getStatusResponseMessage()
             ResponseType.SET_LIGHT_RESPONSE -> setLightResponseMessage()
+            ResponseType.SET_SCHEDULE_RESPONSE -> setScheduleResponseMessage()
             else -> unrecognizedResponseMessage()
         }
 
@@ -41,7 +42,17 @@ object DeviceResponseMessageFactory {
                     responseType = ResponseType.SET_LIGHT_RESPONSE
                 }
             result = Result.OK
-            // Add payload fields as needed
+        }
+
+    private fun setScheduleResponseMessage() =
+        deviceResponseMessage {
+            header =
+                responseHeader {
+                    deviceIdentification = DEVICE_IDENTIFICATION
+                    correlationUid = CORRELATION_UID
+                    responseType = ResponseType.SET_SCHEDULE_RESPONSE
+                }
+            result = Result.OK
         }
 
     private fun unrecognizedResponseMessage() =

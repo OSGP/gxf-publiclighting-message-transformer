@@ -26,17 +26,21 @@ class DeviceResponseMessageSender(
         val deviceIdentification = protobufMessage.header.deviceIdentification
         val messageType = protobufMessage.header.responseType
         logger.info { "Sending device response message for device $deviceIdentification of type $messageType." }
-        jmsTemplate.send(properties.producer.outboundQueue) { session ->
-            val message = session.createObjectMessage()
-            message.jmsType = messageType.name.removeSuffix("_RESPONSE")
-            message.jmsCorrelationID = protobufMessage.header.correlationUid
-            message.jmsPriority = protobufMessage.header.priority
-            message.setStringProperty(JMS_PROPERTY_DEVICE_IDENTIFICATION, protobufMessage.header.deviceIdentification)
-            message.setStringProperty(JMS_PROPERTY_ORGANIZATION_IDENTIFICATION, protobufMessage.header.organizationIdentification)
-            message.setStringProperty(JMS_PROPERTY_DOMAIN, protobufMessage.header.domain)
-            message.setStringProperty(JMS_PROPERTY_DOMAIN_VERSION, protobufMessage.header.domainVersion)
-            message.`object` = protobufMessage.toResponseDto()
-            message
+        try {
+            jmsTemplate.send(properties.producer.outboundQueue) { session ->
+                val message = session.createObjectMessage()
+                message.jmsType = messageType.name.removeSuffix("_RESPONSE")
+                message.jmsCorrelationID = protobufMessage.header.correlationUid
+                message.jmsPriority = protobufMessage.header.priority
+                message.setStringProperty(JMS_PROPERTY_DEVICE_IDENTIFICATION, protobufMessage.header.deviceIdentification)
+                message.setStringProperty(JMS_PROPERTY_ORGANIZATION_IDENTIFICATION, protobufMessage.header.organizationIdentification)
+                message.setStringProperty(JMS_PROPERTY_DOMAIN, protobufMessage.header.domain)
+                message.setStringProperty(JMS_PROPERTY_DOMAIN_VERSION, protobufMessage.header.domainVersion)
+                message.`object` = protobufMessage.toResponseDto()
+                message
+            }
+        } catch (e: Exception) {
+            logger.error(e) { "Failed to send device response message for device $deviceIdentification of type $messageType." }
         }
     }
 }

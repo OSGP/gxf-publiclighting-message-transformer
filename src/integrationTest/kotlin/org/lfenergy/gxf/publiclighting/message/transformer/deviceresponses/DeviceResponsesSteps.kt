@@ -59,13 +59,13 @@ class DeviceResponsesSteps(
         }
     }
 
-    @Then("the device response object message should contain a valid set light response")
-    fun thenObjectMessageShouldContainSetLightResponse() {
+    @Then("the device response object message should contain a valid empty response for type {objectMessageType}")
+    fun thenObjectMessageShouldContainEmptyResponse(objectMessageType: ObjectMessageType) {
         assertThat(scenarioContext.outboundResponseMessage)
             .isNotNull()
             .isInstanceOf(ProtocolResponseMessage::class.java)
         with(scenarioContext.outboundResponseMessage!!) {
-            assertThat(this.messageType).isEqualTo(ObjectMessageType.SET_LIGHT.name)
+            assertThat(this.messageType).isEqualTo(objectMessageType.name)
             assertThat(this.result).isNotNull().isEqualTo(ResponseMessageResultType.OK)
             assertThat(this.dataObject).isNull()
         }

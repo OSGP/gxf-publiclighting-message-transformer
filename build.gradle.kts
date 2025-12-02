@@ -76,6 +76,7 @@ dependencies {
 
     annotationProcessor(libs.springBootConfigurationProcessor)
 
+    testFixturesImplementation(libs.jodaTime)
     testFixturesImplementation(libs.protobufKotlin)
     testFixturesImplementation("org.lfenergy.gxf:gxf-publiclighting-contracts-internal")
 

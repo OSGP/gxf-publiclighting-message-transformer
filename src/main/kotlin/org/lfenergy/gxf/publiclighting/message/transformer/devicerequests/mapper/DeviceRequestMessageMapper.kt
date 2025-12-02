@@ -4,18 +4,36 @@
 package org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.mapper
 
 import jakarta.jms.ObjectMessage
+import org.joda.time.DateTime
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.ActionTime
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.DeviceRequestMessage
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.LightValue
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.RelayIndex
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.RequestType
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.ScheduleEntry
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.SetLightRequest
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.SetScheduleRequest
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.TriggerType
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.TriggerWindow
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.Weekday
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.deviceRequestMessage
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.lightValue
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.requestHeader
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.scheduleEntry
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.setLightRequest
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.setScheduleRequest
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.triggerWindow
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_DEVICE_IDENTIFICATION
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_NETWORK_ADDRESS
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_ORGANIZATION_IDENTIFICATION
+import org.opensmartgridplatform.dto.valueobjects.ActionTimeTypeDto
+import org.opensmartgridplatform.dto.valueobjects.LightValueDto
 import org.opensmartgridplatform.dto.valueobjects.LightValueMessageDataContainerDto
+import org.opensmartgridplatform.dto.valueobjects.ScheduleDto
+import org.opensmartgridplatform.dto.valueobjects.ScheduleEntryDto
+import org.opensmartgridplatform.dto.valueobjects.TriggerTypeDto
+import org.opensmartgridplatform.dto.valueobjects.WeekDayTypeDto
+import org.opensmartgridplatform.dto.valueobjects.WindowTypeDto
 
 object DeviceRequestMessageMapper {
     fun ObjectMessage.toProtobufMessage(): DeviceRequestMessage {
@@ -34,6 +52,7 @@ object DeviceRequestMessageMapper {
             when (messageType) {
                 RequestType.GET_STATUS_REQUEST -> {} // No payload for get status request
                 RequestType.SET_LIGHT_REQUEST -> setLightRequest = (`object` as LightValueMessageDataContainerDto).toProtobufMessage()
+                RequestType.SET_SCHEDULE_REQUEST -> setScheduleRequest = (`object` as ScheduleDto).toProtobufMessage()
                 else -> throw IllegalArgumentException("Unsupported message type: $jmsType")
             }
         }
@@ -58,6 +77,83 @@ object DeviceRequestMessageMapper {
                     }
                 },
             )
+        }
+    }
+
+    fun ScheduleDto.toProtobufMessage(): SetScheduleRequest {
+        val dto = this
+        if (dto.scheduleList == null || dto.scheduleList.isEmpty()) {
+            return setScheduleRequest {}
+        }
+        return setScheduleRequest {
+            scheduleEntries.addAll(
+                dto.scheduleList.map { scheduleEntryDto ->
+                    scheduleEntryDto!!.toProtobufMessage()
+                },
+            )
+        }
+    }
+
+    fun ScheduleEntryDto.toProtobufMessage(): ScheduleEntry {
+        val dto = this
+        return scheduleEntry {
+            dto.weekDay?.let { weekday = dto.weekDay.toProtobuf() }
+            dto.startDay?.let { startDay = it.toProtobuf() }
+            dto.endDay?.let { endDay = it.toProtobuf() }
+            dto.actionTime?.let { actionTime = dto.actionTime.toProtobuf() }
+            dto.time?.let { time = it }
+            dto.triggerWindow?.let { window = triggerWindow { it.toProtobuf() } }
+            dto.lightValue?.let { value.addAll(dto.lightValue.map { it!!.toProtobuf() }) }
+            dto.triggerType?.let { triggerType = dto.triggerType.toProtobuf() }
+            dto.index?.let { index = it }
+//            dto.isEnabled?.let { enabled = it }
+            dto.minimumLightsOn?.let { minimumLightsOn = it }
+        }
+    }
+
+    fun WindowTypeDto.toProtobuf(): TriggerWindow {
+        val dto = this
+        return triggerWindow {
+            minutesBefore = dto.minutesBefore.toInt()
+            minutesAfter = dto.minutesAfter.toInt()
+        }
+    }
+
+    fun DateTime.toProtobuf(): String = this.toString("HHmmss")
+
+    fun WeekDayTypeDto.toProtobuf() =
+        when (this) {
+            WeekDayTypeDto.MONDAY -> Weekday.MONDAY
+            WeekDayTypeDto.TUESDAY -> Weekday.TUESDAY
+            WeekDayTypeDto.WEDNESDAY -> Weekday.WEDNESDAY
+            WeekDayTypeDto.THURSDAY -> Weekday.THURSDAY
+            WeekDayTypeDto.FRIDAY -> Weekday.FRIDAY
+            WeekDayTypeDto.SATURDAY -> Weekday.SATURDAY
+            WeekDayTypeDto.SUNDAY -> Weekday.SUNDAY
+            WeekDayTypeDto.WEEKDAY -> Weekday.WEEKDAY
+            WeekDayTypeDto.WEEKEND -> Weekday.WEEKEND
+            WeekDayTypeDto.ALL -> Weekday.EVERY_DAY
+            WeekDayTypeDto.ABSOLUTEDAY -> Weekday.ABSOLUTE_DAY
+        }
+
+    fun ActionTimeTypeDto.toProtobuf() =
+        when (this) {
+            ActionTimeTypeDto.SUNSET -> ActionTime.SUNSET_TIME
+            ActionTimeTypeDto.SUNRISE -> ActionTime.SUNRISE_TIME
+            ActionTimeTypeDto.ABSOLUTETIME -> ActionTime.ABSOLUTE_TIME
+        }
+
+    fun TriggerTypeDto.toProtobuf() =
+        when (this) {
+            TriggerTypeDto.ASTRONOMICAL -> TriggerType.ASTRONOMICAL
+            TriggerTypeDto.LIGHT_TRIGGER -> TriggerType.LIGHT_TRANSITION
+        }
+
+    fun LightValueDto.toProtobuf(): LightValue {
+        val dto = this
+        return lightValue {
+            index = dto.index!!.toRelayIndex()
+            lightOn = dto.on
         }
     }
 

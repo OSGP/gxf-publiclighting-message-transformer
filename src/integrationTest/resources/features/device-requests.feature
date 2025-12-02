@@ -11,3 +11,9 @@ Feature: Device request message processing
     When the object message is sent to the inbound requests queue
     Then a device request bytes message of type SET_LIGHT_REQUEST should be sent to the outbound requests queue
     And the device request bytes message should contain a valid set light request
+
+  Scenario: Transform set schedule device request from object to bytes message
+    Given a device request object message of type SET_SCHEDULE
+    When the object message is sent to the inbound requests queue
+    Then a device request bytes message of type SET_SCHEDULE_REQUEST should be sent to the outbound requests queue
+    And the device request bytes message should contain a valid set schedule request

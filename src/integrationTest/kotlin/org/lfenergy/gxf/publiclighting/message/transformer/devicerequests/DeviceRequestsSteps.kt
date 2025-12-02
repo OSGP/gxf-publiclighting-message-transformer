@@ -9,10 +9,13 @@ import io.cucumber.java.en.When
 import jakarta.annotation.PostConstruct
 import jakarta.jms.BytesMessage
 import org.assertj.core.api.Assertions.assertThat
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.ActionTime
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.DeviceRequestMessage
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.RelayIndex
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.RequestHeader
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.RequestType
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.TriggerType
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.Weekday
 import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType
 import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.CORRELATION_UID
 import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.DEFAULT_PRIORITY
@@ -69,6 +72,15 @@ class DeviceRequestsSteps(
             assertThat(this).isNotNull().isInstanceOf(DeviceRequestMessage::class.java)
             verifyHeader(this!!.header, RequestType.SET_LIGHT_REQUEST)
             verifySetLightPayload(this)
+        }
+    }
+
+    @Then("the device request bytes message should contain a valid set schedule request")
+    fun thenBytesMessageShouldContainSetScheduleRequest() {
+        with(scenarioContext.outboundRequestMessage) {
+            assertThat(this).isNotNull().isInstanceOf(DeviceRequestMessage::class.java)
+            verifyHeader(this!!.header, RequestType.SET_SCHEDULE_REQUEST)
+            verifySetSchedulePayload(this)
         }
     }
 
@@ -132,6 +144,54 @@ class DeviceRequestsSteps(
             with(this.getLightValues(1)) {
                 assertThat(index).isEqualTo(RelayIndex.RELAY_THREE)
                 assertThat(lightOn).isTrue()
+            }
+        }
+    }
+
+    private fun verifySetSchedulePayload(message: DeviceRequestMessage) {
+        assertThat(message.hasSetScheduleRequest()).isTrue()
+        with(message.getSetScheduleRequest()) {
+            assertThat(this).isNotNull()
+            assertThat(scheduleEntriesList.size).isEqualTo(4)
+            with(this.scheduleEntriesList[0]) {
+                assertThat(weekday).isEqualTo(Weekday.EVERY_DAY)
+                assertThat(actionTime).isEqualTo(ActionTime.SUNSET_TIME)
+                assertThat(triggerType).isEqualTo(TriggerType.ASTRONOMICAL)
+                assertThat(valueList.size).isEqualTo(1)
+                with(this.valueList[0]) {
+                    assertThat(index).isEqualTo(RelayIndex.RELAY_ALL)
+                    assertThat(lightOn).isTrue()
+                }
+            }
+            with(this.scheduleEntriesList[1]) {
+                assertThat(weekday).isEqualTo(Weekday.EVERY_DAY)
+                assertThat(actionTime).isEqualTo(ActionTime.SUNRISE_TIME)
+                assertThat(triggerType).isEqualTo(TriggerType.ASTRONOMICAL)
+                assertThat(valueList.size).isEqualTo(1)
+                with(this.valueList[0]) {
+                    assertThat(index).isEqualTo(RelayIndex.RELAY_ALL)
+                    assertThat(lightOn).isFalse()
+                }
+            }
+            with(this.scheduleEntriesList[2]) {
+                assertThat(weekday).isEqualTo(Weekday.EVERY_DAY)
+                assertThat(actionTime).isEqualTo(ActionTime.ABSOLUTE_TIME)
+                assertThat(time).isEqualTo("230000")
+                assertThat(valueList.size).isEqualTo(1)
+                with(this.valueList[0]) {
+                    assertThat(index).isEqualTo(RelayIndex.RELAY_THREE)
+                    assertThat(lightOn).isFalse()
+                }
+            }
+            with(this.scheduleEntriesList[3]) {
+                assertThat(weekday).isEqualTo(Weekday.EVERY_DAY)
+                assertThat(actionTime).isEqualTo(ActionTime.ABSOLUTE_TIME)
+                assertThat(time).isEqualTo("060000")
+                assertThat(valueList.size).isEqualTo(1)
+                with(this.valueList[0]) {
+                    assertThat(index).isEqualTo(RelayIndex.RELAY_THREE)
+                    assertThat(lightOn).isTrue()
+                }
             }
         }
     }

@@ -22,15 +22,15 @@ class CucumberSpringConfiguration {
     @ParameterType("DEVICE_REGISTRATION|DEVICE_REGISTRATION_CONFIRMATION|DEVICE_NOTIFICATION|UNRECOGNIZED")
     fun eventType(type: String) = EventType.valueOf(type)
 
-    @ParameterType("GET_STATUS_REQUEST|SET_LIGHT_REQUEST")
+    @ParameterType("GET_STATUS_REQUEST|SET_LIGHT_REQUEST|SET_SCHEDULE_REQUEST")
     fun requestType(type: String) = RequestType.valueOf(type)
 
-    @ParameterType("GET_STATUS_RESPONSE|SET_LIGHT_RESPONSE")
+    @ParameterType("GET_STATUS_RESPONSE|SET_LIGHT_RESPONSE|SET_SCHEDULE_RESPONSE")
     fun responseType(type: String) = ResponseType.valueOf(type)
 
     @ParameterType("REGISTER_DEVICE|DEVICE_REGISTRATION_COMPLETED|EVENT_NOTIFICATION")
     fun objectMessageEventType(type: String) = ObjectMessageEventType.valueOf(type)
 
-    @ParameterType("GET_STATUS|SET_LIGHT")
+    @ParameterType("GET_STATUS|SET_LIGHT|SET_SCHEDULE")
     fun objectMessageType(type: String) = ObjectMessageType.valueOf(type)
 }

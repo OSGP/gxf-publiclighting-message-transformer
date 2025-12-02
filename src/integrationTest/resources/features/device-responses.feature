@@ -10,4 +10,10 @@ Feature: Device response message processing
     Given a device response bytes message of type SET_LIGHT_RESPONSE
     When the bytes message is sent to the inbound responses queue
     Then a device response object message of type SET_LIGHT should be sent to the outbound responses queue
-    And the device response object message should contain a valid set light response
+    And the device response object message should contain a valid empty response for type SET_LIGHT
+
+  Scenario: Transform set schedule device response from bytes to object message
+    Given a device response bytes message of type SET_SCHEDULE_RESPONSE
+    When the bytes message is sent to the inbound responses queue
+    Then a device response object message of type SET_SCHEDULE should be sent to the outbound responses queue
+    And the device response object message should contain a valid empty response for type SET_SCHEDULE

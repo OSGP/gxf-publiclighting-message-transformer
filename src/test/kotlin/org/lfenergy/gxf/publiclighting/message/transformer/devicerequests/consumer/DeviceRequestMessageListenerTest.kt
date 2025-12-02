@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.DeviceRequestMessage
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.RequestType
+import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType
 import org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.producer.DeviceRequestMessageSender
 import org.springframework.boot.test.system.OutputCaptureExtension
 import org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.DeviceRequestObjectMessageMockFactory as MockFactory
@@ -31,7 +32,7 @@ class DeviceRequestMessageListenerTest {
     @Test
     fun `should handle set light device request message`() {
         // Arrange
-        val message = MockFactory.deviceRequestObjectMessageMock(MockFactory.REQUEST_TYPE_SET_LIGHT)
+        val message = MockFactory.deviceRequestObjectMessageMock(ObjectMessageType.SET_LIGHT)
         every { deviceRequestMessageSender.send(any<DeviceRequestMessage>()) } just Runs
 
         // Act
@@ -53,7 +54,7 @@ class DeviceRequestMessageListenerTest {
     @Test
     fun `should handle get status device request message`() {
         // Arrange
-        val message = MockFactory.deviceRequestObjectMessageMock(MockFactory.REQUEST_TYPE_GET_STATUS)
+        val message = MockFactory.deviceRequestObjectMessageMock(ObjectMessageType.GET_STATUS)
         every { deviceRequestMessageSender.send(any<DeviceRequestMessage>()) } just Runs
 
         // Act
@@ -65,6 +66,26 @@ class DeviceRequestMessageListenerTest {
                 withArg {
                     assertThat(it).isInstanceOf(DeviceRequestMessage::class.java)
                     assertThat(it.header.requestType).isEqualTo(RequestType.GET_STATUS_REQUEST)
+                },
+            )
+        }
+    }
+
+    @Test
+    fun `should handle set schedule device request message`() {
+        // Arrange
+        val message = MockFactory.deviceRequestObjectMessageMock(ObjectMessageType.SET_SCHEDULE)
+        every { deviceRequestMessageSender.send(any<DeviceRequestMessage>()) } just Runs
+
+        // Act
+        deviceRequestMessageListener.onMessage(message)
+
+        // Assert
+        verify {
+            deviceRequestMessageSender.send(
+                withArg {
+                    assertThat(it).isInstanceOf(DeviceRequestMessage::class.java)
+                    assertThat(it.header.requestType).isEqualTo(RequestType.SET_SCHEDULE_REQUEST)
                 },
             )
         }

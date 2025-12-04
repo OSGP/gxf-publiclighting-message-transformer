@@ -50,16 +50,45 @@ class DeviceRequestMessageSenderTest {
     }
 
     @Test
-    fun `should send protobuf bytes message`() {
+    fun `should send protobuf bytes message for get status request`() {
+        verifyBytesMessageIsSentForRequestType(RequestType.GET_STATUS_REQUEST)
+    }
+
+    @Test
+    fun `should send protobuf bytes message for set light request`() {
         // Arrange
-        val message = DeviceRequestMessageFactory.deviceRequestMessage(RequestType.GET_STATUS_REQUEST)
+        val message = DeviceRequestMessageFactory.deviceRequestMessage(RequestType.SET_LIGHT_REQUEST)
 
         // Act
         deviceRequestMessageSender.send(message)
 
         // Assert
         verifyBytesMessageIsSent()
-        verifyBytesMessageContainsProtobufMessage()
+        verifyBytesMessageContainsProtobufMessage(RequestType.SET_LIGHT_REQUEST)
+    }
+
+    @Test
+    fun `should send protobuf bytes message for reboot request`() {
+        verifyBytesMessageIsSentForRequestType(RequestType.REBOOT_REQUEST)
+    }
+
+    @Test
+    fun `should send protobuf bytes message for start self test request`() {
+        verifyBytesMessageIsSentForRequestType(RequestType.START_SELF_TEST_REQUEST)
+    }
+
+    @Test
+    fun `should send protobuf bytes message for stop self test request`() {
+        verifyBytesMessageIsSentForRequestType(RequestType.STOP_SELF_TEST_REQUEST)
+    }
+
+    fun verifyBytesMessageIsSentForRequestType(requestType: RequestType) {
+        val message = DeviceRequestMessageFactory.deviceRequestMessage(requestType)
+
+        deviceRequestMessageSender.send(message)
+
+        verifyBytesMessageIsSent()
+        verifyBytesMessageContainsProtobufMessage(requestType)
     }
 
     private fun verifyBytesMessageIsSent() {
@@ -69,13 +98,13 @@ class DeviceRequestMessageSenderTest {
         assertThat(message).isInstanceOf(BytesMessage::class.java).isEqualTo(bytesMessage)
     }
 
-    private fun verifyBytesMessageContainsProtobufMessage() {
+    private fun verifyBytesMessageContainsProtobufMessage(requestType: RequestType) {
         verify {
             bytesMessage.writeBytes(
                 withArg { bytes ->
                     val deviceRequestMessage = DeviceRequestMessage.parseFrom(bytes)
                     assertThat(deviceRequestMessage.header.deviceIdentification).isEqualTo(DEVICE_IDENTIFICATION)
-                    assertThat(deviceRequestMessage.header.requestType).isEqualTo(RequestType.GET_STATUS_REQUEST)
+                    assertThat(deviceRequestMessage.header.requestType).isEqualTo(requestType)
                 },
             )
         }

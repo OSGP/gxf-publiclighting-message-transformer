@@ -29,8 +29,7 @@ object DeviceResponseMessageMapper {
             this.header.deviceIdentification,
             this.header.organizationIdentification,
             this.header.correlationUid,
-            this.header.responseType.name
-                .removeSuffix("_RESPONSE"),
+            this.header.responseType.toDto(),
             this.header.priority,
             false,
             null,
@@ -64,6 +63,9 @@ object DeviceResponseMessageMapper {
 
         return when (this.header.responseType) {
             ResponseType.GET_STATUS_RESPONSE -> this.getStatusResponse.toDto()
+            ResponseType.REBOOT_RESPONSE -> null
+            ResponseType.START_SELF_TEST_RESPONSE -> null
+            ResponseType.STOP_SELF_TEST_RESPONSE -> null
             ResponseType.SET_LIGHT_RESPONSE -> null
             ResponseType.SET_SCHEDULE_RESPONSE -> null
             else -> throw IllegalArgumentException("Unsupported message type: ${this.header.responseType}")
@@ -119,5 +121,17 @@ object DeviceResponseMessageMapper {
             LightType.RELAY -> LightTypeDto.RELAY
             // Other enum values not used
             else -> throw IllegalArgumentException("Unsupported light type: $this")
+        }
+
+    fun ResponseType.toDto() =
+        when (this) {
+            ResponseType.GET_STATUS_RESPONSE -> "GET_STATUS"
+            ResponseType.REBOOT_RESPONSE -> "SET_REBOOT"
+            ResponseType.START_SELF_TEST_RESPONSE -> "START_SELF_TEST"
+            ResponseType.STOP_SELF_TEST_RESPONSE -> "STOP_SELF_TEST"
+            ResponseType.SET_LIGHT_RESPONSE -> "SET_LIGHT"
+            ResponseType.SET_SCHEDULE_RESPONSE -> "SET_SCHEDULE"
+            ResponseType.UNRECOGNIZED -> "UNRECOGNIZED"
+            else -> throw IllegalArgumentException("Unsupported response type: $this")
         }
 }

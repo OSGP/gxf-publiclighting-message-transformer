@@ -7,11 +7,32 @@ import io.mockk.every
 import io.mockk.mockk
 import jakarta.jms.ObjectMessage
 import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType
+import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.GET_STATUS
+import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.SET_LIGHT
+import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.SET_REBOOT
+import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.SET_SCHEDULE
+import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.START_SELF_TEST
+import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.STOP_SELF_TEST
 import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants
+import java.io.Serializable
 
 object DeviceRequestObjectMessageMockFactory {
-    fun deviceRequestObjectMessageMock(requestType: ObjectMessageType): ObjectMessage {
+    fun deviceRequestObjectMessageMock(requestType: ObjectMessageType) =
+        when (requestType) {
+            GET_STATUS -> setUpDeviceRequestMessage(GET_STATUS, null)
+            SET_LIGHT -> setUpDeviceRequestMessage(SET_LIGHT, InboundRequestMessageFactory.setLightRequestPayload())
+            SET_REBOOT -> setUpDeviceRequestMessage(SET_REBOOT, null)
+            START_SELF_TEST -> setUpDeviceRequestMessage(START_SELF_TEST, null)
+            STOP_SELF_TEST -> setUpDeviceRequestMessage(STOP_SELF_TEST, null)
+            SET_SCHEDULE -> setUpDeviceRequestMessage(SET_SCHEDULE, InboundRequestMessageFactory.setScheduleRequestPayload())
+            else -> throw IllegalArgumentException("Unsupported request type: $requestType")
+        }
+
+    private fun setUpDeviceRequestMessage(
+        objectMessageType: ObjectMessageType,
+        payload: Serializable?,
+    ): ObjectMessage {
         val objectMessage = mockk<ObjectMessage>()
         every { objectMessage.jmsCorrelationID } returns TestConstants.CORRELATION_UID
         every { objectMessage.getStringProperty(ApplicationConstants.JMS_PROPERTY_DEVICE_IDENTIFICATION) } returns
@@ -19,27 +40,9 @@ object DeviceRequestObjectMessageMockFactory {
         every { objectMessage.getStringProperty(ApplicationConstants.JMS_PROPERTY_ORGANIZATION_IDENTIFICATION) } returns
             TestConstants.ORGANIZATION_IDENTIFICATION
         every { objectMessage.getStringProperty(ApplicationConstants.JMS_PROPERTY_NETWORK_ADDRESS) } returns TestConstants.NETWORK_ADDRESS
-        when (requestType) {
-            ObjectMessageType.GET_STATUS -> setUpGetStatusDeviceRequestMessage(objectMessage)
-            ObjectMessageType.SET_LIGHT -> setupSetLightDeviceRequestMessage(objectMessage)
-            ObjectMessageType.SET_SCHEDULE -> setupSetScheduleDeviceRequestMessage(objectMessage)
-            else -> throw IllegalArgumentException("Unsupported request type: $requestType")
-        }
+
+        every { objectMessage.jmsType } returns objectMessageType.name
+        every { objectMessage.`object` } returns payload
         return objectMessage
-    }
-
-    private fun setUpGetStatusDeviceRequestMessage(objectMessage: ObjectMessage) {
-        every { objectMessage.jmsType } returns ObjectMessageType.GET_STATUS.name
-        every { objectMessage.`object` } returns null
-    }
-
-    private fun setupSetLightDeviceRequestMessage(objectMessage: ObjectMessage) {
-        every { objectMessage.jmsType } returns ObjectMessageType.SET_LIGHT.name
-        every { objectMessage.`object` } returns RequestMessageFactory.setLightRequestPayload()
-    }
-
-    private fun setupSetScheduleDeviceRequestMessage(objectMessage: ObjectMessage) {
-        every { objectMessage.jmsType } returns ObjectMessageType.SET_SCHEDULE.name
-        every { objectMessage.`object` } returns RequestMessageFactory.setScheduleRequestPayload()
     }
 }

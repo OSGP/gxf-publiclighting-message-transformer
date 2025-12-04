@@ -7,5 +7,9 @@ enum class ObjectMessageType {
     UNRECOGNIZED,
     GET_STATUS,
     SET_LIGHT,
+    SET_REBOOT,
+    START_SELF_TEST,
+    STOP_SELF_TEST,
+    RESUME_SCHEDULE,
     SET_SCHEDULE,
 }

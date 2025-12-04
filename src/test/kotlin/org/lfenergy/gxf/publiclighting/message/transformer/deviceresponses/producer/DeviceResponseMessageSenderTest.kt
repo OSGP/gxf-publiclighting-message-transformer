@@ -23,6 +23,7 @@ import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationCon
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_ORGANIZATION_IDENTIFICATION
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.DeviceResponseMessageFactory
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.config.DeviceResponsesConfigurationProperties
+import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.mapper.DeviceResponseMessageMapper.toDto
 import org.opensmartgridplatform.dto.valueobjects.DeviceStatusDto
 import org.opensmartgridplatform.shared.infra.jms.ProtocolResponseMessage
 import org.opensmartgridplatform.shared.infra.jms.ResponseMessageResultType
@@ -61,6 +62,8 @@ class DeviceResponseMessageSenderTest {
         }
     }
 
+    // TODO add tests for other response types
+
     @Test
     fun `should send get status protocol response message`() {
         // Arrange
@@ -93,7 +96,7 @@ class DeviceResponseMessageSenderTest {
     }
 
     @Test
-    fun `should send device notification event object message`() {
+    fun `should send set schedule response object message`() {
         // Arrange
         message = DeviceResponseMessageFactory.protobufMessageForResponseOfType(ResponseType.SET_SCHEDULE_RESPONSE)
 
@@ -129,11 +132,7 @@ class DeviceResponseMessageSenderTest {
     }
 
     private fun verifyObjectMessageProperties() {
-        verify {
-            objectMessage.jmsType =
-                message.header.responseType.name
-                    .removeSuffix("_RESPONSE")
-        }
+        verify { objectMessage.jmsType = message.header.responseType.toDto() }
         verify { objectMessage.jmsCorrelationID = message.header.correlationUid }
         verify { objectMessage.setStringProperty(JMS_PROPERTY_DEVICE_IDENTIFICATION, message.header.deviceIdentification) }
         verify { objectMessage.setStringProperty(JMS_PROPERTY_ORGANIZATION_IDENTIFICATION, message.header.organizationIdentification) }

@@ -43,6 +43,45 @@ class DeviceRequestMessageMapperTest {
     }
 
     @Test
+    fun `should map reboot device request object message to protobuf message`() {
+        // Arrange
+        val message = MockFactory.deviceRequestObjectMessageMock(ObjectMessageType.SET_REBOOT)
+
+        // Act
+        val result = message.toProtobufMessage()
+
+        // Assert
+        assertThat(result).isInstanceOf(DeviceRequestMessage::class.java)
+        assertThat(result.header.requestType).isEqualTo(RequestType.REBOOT_REQUEST)
+    }
+
+    @Test
+    fun `should map start self test device request object message to protobuf message`() {
+        // Arrange
+        val message = MockFactory.deviceRequestObjectMessageMock(ObjectMessageType.START_SELF_TEST)
+
+        // Act
+        val result = message.toProtobufMessage()
+
+        // Assert
+        assertThat(result).isInstanceOf(DeviceRequestMessage::class.java)
+        assertThat(result.header.requestType).isEqualTo(RequestType.START_SELF_TEST_REQUEST)
+    }
+
+    @Test
+    fun `should map stop self test device request object message to protobuf message`() {
+        // Arrange
+        val message = MockFactory.deviceRequestObjectMessageMock(ObjectMessageType.STOP_SELF_TEST)
+
+        // Act
+        val result = message.toProtobufMessage()
+
+        // Assert
+        assertThat(result).isInstanceOf(DeviceRequestMessage::class.java)
+        assertThat(result.header.requestType).isEqualTo(RequestType.STOP_SELF_TEST_REQUEST)
+    }
+
+    @Test
     fun `should map set schedule device request object message to protobuf message`() {
         // Arrange
         val message = MockFactory.deviceRequestObjectMessageMock(ObjectMessageType.SET_SCHEDULE)

@@ -42,7 +42,7 @@ class DeviceRequestsSteps(
     @Given("a device request object message of type {objectMessageType}")
     fun givenObjectMessage(objectMessageType: ObjectMessageType) {
         scenarioContext.inboundRequestType = objectMessageType
-        scenarioContext.inboundRequestMessage = RequestMessageFactory.requestMessageForType(objectMessageType)
+        scenarioContext.inboundRequestMessage = InboundRequestMessageFactory.requestMessageForType(objectMessageType)
     }
 
     @When("the object message is sent to the inbound requests queue")
@@ -57,17 +57,28 @@ class DeviceRequestsSteps(
         scenarioContext.outboundRequestMessage = outboundMessage.parseIntoDeviceRequestMessage()
     }
 
-    @Then("the device request bytes message should contain a valid get status request")
-    fun thenBytesMessageShouldContainGetStatusRequest() {
+    @Then("the device request bytes message should contain a valid {requestType} request")
+    fun thenBytesMessageShouldContainRequest(expectedRequestType: RequestType) {
+        when (expectedRequestType) {
+            RequestType.GET_STATUS_REQUEST -> verifyEmptyRequest(RequestType.GET_STATUS_REQUEST)
+            RequestType.SET_LIGHT_REQUEST -> verifySetLightRequest()
+            RequestType.REBOOT_REQUEST -> verifyEmptyRequest(RequestType.REBOOT_REQUEST)
+            RequestType.START_SELF_TEST_REQUEST -> verifyEmptyRequest(RequestType.START_SELF_TEST_REQUEST)
+            RequestType.STOP_SELF_TEST_REQUEST -> verifyEmptyRequest(RequestType.STOP_SELF_TEST_REQUEST)
+            RequestType.SET_SCHEDULE_REQUEST -> verifySetScheduleRequest()
+            else -> throw IllegalArgumentException("Unsupported request type: $expectedRequestType")
+        }
+    }
+
+    private fun verifyEmptyRequest(requestType: RequestType) {
         with(scenarioContext.outboundRequestMessage) {
             assertThat(this).isNotNull().isInstanceOf(DeviceRequestMessage::class.java)
-            verifyHeader(this!!.header, RequestType.GET_STATUS_REQUEST)
+            verifyHeader(this!!.header, requestType)
             verifyNoPayload(this)
         }
     }
 
-    @Then("the device request bytes message should contain a valid set light request")
-    fun thenBytesMessageShouldContainSetLightRequest() {
+    private fun verifySetLightRequest() {
         with(scenarioContext.outboundRequestMessage) {
             assertThat(this).isNotNull().isInstanceOf(DeviceRequestMessage::class.java)
             verifyHeader(this!!.header, RequestType.SET_LIGHT_REQUEST)
@@ -75,8 +86,7 @@ class DeviceRequestsSteps(
         }
     }
 
-    @Then("the device request bytes message should contain a valid set schedule request")
-    fun thenBytesMessageShouldContainSetScheduleRequest() {
+    private fun verifySetScheduleRequest() {
         with(scenarioContext.outboundRequestMessage) {
             assertThat(this).isNotNull().isInstanceOf(DeviceRequestMessage::class.java)
             verifyHeader(this!!.header, RequestType.SET_SCHEDULE_REQUEST)

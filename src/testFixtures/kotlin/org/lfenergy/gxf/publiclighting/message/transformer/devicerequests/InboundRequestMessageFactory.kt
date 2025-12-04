@@ -4,10 +4,16 @@
 package org.lfenergy.gxf.publiclighting.message.transformer.devicerequests
 
 import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType
+import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.ALL_RELAYS
 import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.CORRELATION_UID
 import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.DEVICE_IDENTIFICATION
+import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.ELEVEN_PM
+import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.HALF_HOUR_IN_SECONDS
 import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.NETWORK_ADDRESS
 import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.ORGANIZATION_IDENTIFICATION
+import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.RELAY_THREE
+import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.RELAY_TWO
+import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.SIX_AM
 import org.opensmartgridplatform.dto.valueobjects.ActionTimeTypeDto
 import org.opensmartgridplatform.dto.valueobjects.LightValueDto
 import org.opensmartgridplatform.dto.valueobjects.LightValueMessageDataContainerDto
@@ -17,14 +23,7 @@ import org.opensmartgridplatform.dto.valueobjects.TriggerTypeDto
 import org.opensmartgridplatform.dto.valueobjects.WeekDayTypeDto
 import org.opensmartgridplatform.shared.infra.jms.RequestMessage
 
-object RequestMessageFactory {
-    private const val HALF_HOUR_IN_SECONDS = 30 * 60
-    private const val ALL_RELAYS = 0
-    private const val RELAY_TWO = 2
-    private const val RELAY_THREE = 3
-    private const val ELEVEN_O_CLOCK = "230000"
-    private const val SIX_O_CLOCK = "060000"
-
+object InboundRequestMessageFactory {
     fun requestMessageForType(requestType: ObjectMessageType) =
         RequestMessage(
             CORRELATION_UID,
@@ -97,7 +96,7 @@ object RequestMessageFactory {
             null,
             null,
             ActionTimeTypeDto.ABSOLUTETIME,
-            ELEVEN_O_CLOCK,
+            ELEVEN_PM,
             null,
             mutableListOf(LightValueDto(RELAY_THREE, false, null)),
             null,
@@ -112,7 +111,7 @@ object RequestMessageFactory {
             null,
             null,
             ActionTimeTypeDto.ABSOLUTETIME,
-            SIX_O_CLOCK,
+            SIX_AM,
             null,
             mutableListOf(LightValueDto(RELAY_THREE, true, null)),
             null,

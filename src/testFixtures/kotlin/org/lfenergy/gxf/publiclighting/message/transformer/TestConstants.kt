@@ -14,4 +14,16 @@ object TestConstants {
     const val DOMAIN_VERSION = "1.0"
 
     const val DEFAULT_PRIORITY = 4
+
+    const val HALF_HOUR_IN_SECONDS = 30 * 60
+
+    const val ALL_RELAYS = 0
+    const val RELAY_ONE = 1
+    const val RELAY_TWO = 2
+    const val RELAY_THREE = 3
+    const val RELAY_FOUR = 4
+
+    const val ELEVEN_PM = "230000"
+    const val SIX_AM = "060000"
+
 }

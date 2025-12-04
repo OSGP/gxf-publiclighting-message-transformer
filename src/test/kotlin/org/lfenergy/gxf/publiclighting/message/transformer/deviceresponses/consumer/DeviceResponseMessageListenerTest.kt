@@ -32,20 +32,45 @@ class DeviceResponseMessageListenerTest {
     lateinit var deviceResponseMessageListener: DeviceResponseMessageListener
 
     @Test
-    fun `should receive protobuf response and send dto`() {
-        // Arrange
-        val response = DeviceResponseMessageFactory.protobufMessageForResponseOfType(ResponseType.SET_LIGHT_RESPONSE)
+    fun `should handle set light device response message`() {
+        testResponse(ResponseType.SET_LIGHT_RESPONSE)
+    }
+
+    @Test
+    fun `should handle get status device response message`() {
+        testResponse(ResponseType.GET_STATUS_RESPONSE)
+    }
+
+    @Test
+    fun `should handle reboot device response message`() {
+        testResponse(ResponseType.REBOOT_RESPONSE)
+    }
+
+    @Test
+    fun `should handle start self test device response message`() {
+        testResponse(ResponseType.START_SELF_TEST_RESPONSE)
+    }
+
+    @Test
+    fun `should handle stop self test device response message`() {
+        testResponse(ResponseType.STOP_SELF_TEST_RESPONSE)
+    }
+
+    private fun testResponse(responseType: ResponseType) {
+        val response = DeviceResponseMessageFactory.protobufMessageForResponseOfType(responseType)
         val bytesMessage = setupBytesMessageMock(response)
         every { deviceResponseMessageSender.send(any<DeviceResponseMessage>()) } just Runs
 
-        // Act
         deviceResponseMessageListener.onMessage(bytesMessage)
 
-        // Assert
         verify {
             deviceResponseMessageSender.send(
                 withArg {
                     assertThat(it).isInstanceOf(DeviceResponseMessage::class.java).isEqualTo(response)
+                    when (responseType) {
+                        ResponseType.GET_STATUS_RESPONSE -> assertThat(it.hasGetStatusResponse()).isTrue
+                        else -> {} //do nothing
+                    }
                 },
             )
         }
@@ -59,11 +84,12 @@ class DeviceResponseMessageListenerTest {
             deviceResponseMessage.header.deviceIdentification
         every { bytesMessage.jmsType } returns deviceResponseMessage.header.responseType.name
         every { bytesMessage.bodyLength } returns bytes.size.toLong()
-        every { bytesMessage.readBytes(any<ByteArray>()) } answers {
-            val buffer = arg<ByteArray>(0)
-            System.arraycopy(bytes, 0, buffer, 0, bytes.size)
-            bytes.size
-        }
+        every { bytesMessage.readBytes(any<ByteArray>()) } answers { copyBytesToBuffer(bytes, arg(0)) }
         return bytesMessage
+    }
+
+    private fun copyBytesToBuffer(bytes: ByteArray, buffer: ByteArray): Int {
+        System.arraycopy(bytes, 0, buffer, 0, bytes.size)
+        return bytes.size
     }
 }

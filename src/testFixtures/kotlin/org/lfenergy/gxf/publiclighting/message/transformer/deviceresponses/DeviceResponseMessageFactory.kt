@@ -7,6 +7,7 @@ import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.Devic
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.ResponseType
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.Result
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.deviceResponseMessage
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.getStatusResponse
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.responseHeader
 import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.CORRELATION_UID
 import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.DEVICE_IDENTIFICATION
@@ -16,9 +17,23 @@ object DeviceResponseMessageFactory {
     fun protobufMessageForResponseOfType(responseType: ResponseType): DeviceResponseMessage =
         when (responseType) {
             ResponseType.GET_STATUS_RESPONSE -> getStatusResponseMessage()
-            ResponseType.SET_LIGHT_RESPONSE -> setLightResponseMessage()
-            ResponseType.SET_SCHEDULE_RESPONSE -> setScheduleResponseMessage()
+            ResponseType.REBOOT_RESPONSE -> emptyResponseMessage(ResponseType.REBOOT_RESPONSE)
+            ResponseType.START_SELF_TEST_RESPONSE -> emptyResponseMessage(ResponseType.START_SELF_TEST_RESPONSE)
+            ResponseType.STOP_SELF_TEST_RESPONSE -> emptyResponseMessage(ResponseType.STOP_SELF_TEST_RESPONSE)
+            ResponseType.SET_LIGHT_RESPONSE -> emptyResponseMessage(ResponseType.SET_LIGHT_RESPONSE)
+            ResponseType.SET_SCHEDULE_RESPONSE -> emptyResponseMessage(ResponseType.SET_SCHEDULE_RESPONSE)
             else -> unrecognizedResponseMessage()
+        }
+
+    private fun emptyResponseMessage(inboundResponseType: ResponseType) =
+        deviceResponseMessage {
+            header =
+                responseHeader {
+                    deviceIdentification = DEVICE_IDENTIFICATION
+                    correlationUid = CORRELATION_UID
+                    responseType = inboundResponseType
+                }
+            result = Result.OK
         }
 
     private fun getStatusResponseMessage() =
@@ -30,29 +45,10 @@ object DeviceResponseMessageFactory {
                     responseType = ResponseType.GET_STATUS_RESPONSE
                 }
             result = Result.OK
-            // Add payload fields as needed
-        }
-
-    private fun setLightResponseMessage() =
-        deviceResponseMessage {
-            header =
-                responseHeader {
-                    deviceIdentification = DEVICE_IDENTIFICATION
-                    correlationUid = CORRELATION_UID
-                    responseType = ResponseType.SET_LIGHT_RESPONSE
-                }
-            result = Result.OK
-        }
-
-    private fun setScheduleResponseMessage() =
-        deviceResponseMessage {
-            header =
-                responseHeader {
-                    deviceIdentification = DEVICE_IDENTIFICATION
-                    correlationUid = CORRELATION_UID
-                    responseType = ResponseType.SET_SCHEDULE_RESPONSE
-                }
-            result = Result.OK
+            getStatusResponse = getStatusResponse {
+                currentIp = ""
+                // TODO Add payload fields
+            }
         }
 
     private fun unrecognizedResponseMessage() =

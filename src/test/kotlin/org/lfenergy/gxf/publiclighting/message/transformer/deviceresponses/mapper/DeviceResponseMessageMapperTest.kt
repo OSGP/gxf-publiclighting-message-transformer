@@ -6,6 +6,7 @@ package org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.mapp
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.ResponseType
+import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.DeviceResponseMessageFactory
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.mapper.DeviceResponseMessageMapper.toResponseDto
 import org.opensmartgridplatform.dto.valueobjects.DeviceStatusDto
@@ -28,30 +29,34 @@ class DeviceResponseMessageMapperTest {
     }
 
     @Test
-    fun `should create set light protocol response message dto from protobuf message`() {
-        // Arrange
-        val message = DeviceResponseMessageFactory.protobufMessageForResponseOfType(ResponseType.SET_LIGHT_RESPONSE)
-
-        // Act
-        val result = message.toResponseDto()
-
-        // Assert
-        assertThat(result).isInstanceOf(ProtocolResponseMessage::class.java)
-        assertThat(result.result).isEqualTo(ResponseMessageResultType.OK)
-        assertThat(result.dataObject).isNull()
-    }
+    fun `should create set reboot protocol response message dto from protobuf message`() =
+    verifyEmptyResponseMessageCreated(ResponseType.REBOOT_RESPONSE, ObjectMessageType.SET_REBOOT)
 
     @Test
-    fun `should create set schedule protocol response message dto from protobuf message`() {
-        // Arrange
-        val message = DeviceResponseMessageFactory.protobufMessageForResponseOfType(ResponseType.SET_SCHEDULE_RESPONSE)
+    fun `should create start self test protocol response message dto from protobuf message`() =
+        verifyEmptyResponseMessageCreated(ResponseType.START_SELF_TEST_RESPONSE, ObjectMessageType.START_SELF_TEST)
 
-        // Act
+    @Test
+    fun `should create stop self test protocol response message dto from protobuf message`() =
+        verifyEmptyResponseMessageCreated(ResponseType.STOP_SELF_TEST_RESPONSE, ObjectMessageType.STOP_SELF_TEST)
+
+    @Test
+    fun `should create set light protocol response message dto from protobuf message`() =
+        verifyEmptyResponseMessageCreated(ResponseType.SET_LIGHT_RESPONSE, ObjectMessageType.SET_LIGHT)
+
+    @Test
+    fun `should create set schedule protocol response message dto from protobuf message`() =
+        verifyEmptyResponseMessageCreated(ResponseType.SET_SCHEDULE_RESPONSE, ObjectMessageType.SET_SCHEDULE)
+
+
+    private fun verifyEmptyResponseMessageCreated(inboundResponseType: ResponseType, outboundMessageType: ObjectMessageType) {
+        val message = DeviceResponseMessageFactory.protobufMessageForResponseOfType(inboundResponseType)
+
         val result = message.toResponseDto()
 
-        // Assert
         assertThat(result).isInstanceOf(ProtocolResponseMessage::class.java)
         assertThat(result.result).isEqualTo(ResponseMessageResultType.OK)
+        assertThat(result.messageType).isEqualTo(outboundMessageType.name)
         assertThat(result.dataObject).isNull()
     }
 }

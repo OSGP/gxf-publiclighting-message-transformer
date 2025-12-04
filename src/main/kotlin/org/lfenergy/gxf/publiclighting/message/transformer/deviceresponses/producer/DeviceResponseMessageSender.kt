@@ -10,6 +10,7 @@ import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationCon
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_DOMAIN_VERSION
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_ORGANIZATION_IDENTIFICATION
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.config.DeviceResponsesConfigurationProperties
+import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.mapper.DeviceResponseMessageMapper.toDto
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.mapper.DeviceResponseMessageMapper.toResponseDto
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.jms.core.JmsTemplate
@@ -24,12 +25,12 @@ class DeviceResponseMessageSender(
 
     fun send(protobufMessage: DeviceResponseMessage) {
         val deviceIdentification = protobufMessage.header.deviceIdentification
-        val messageType = protobufMessage.header.responseType
+        val messageType = protobufMessage.header.responseType.toDto()
         logger.info { "Sending device response message for device $deviceIdentification of type $messageType." }
         try {
             jmsTemplate.send(properties.producer.outboundQueue) { session ->
                 val message = session.createObjectMessage()
-                message.jmsType = messageType.name.removeSuffix("_RESPONSE")
+                message.jmsType = messageType
                 message.jmsCorrelationID = protobufMessage.header.correlationUid
                 message.jmsPriority = protobufMessage.header.priority
                 message.setStringProperty(JMS_PROPERTY_DEVICE_IDENTIFICATION, protobufMessage.header.deviceIdentification)

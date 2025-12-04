@@ -52,6 +52,9 @@ object DeviceRequestMessageMapper {
             when (messageType) {
                 RequestType.GET_STATUS_REQUEST -> {} // No payload for get status request
                 RequestType.SET_LIGHT_REQUEST -> setLightRequest = (`object` as LightValueMessageDataContainerDto).toProtobufMessage()
+                RequestType.REBOOT_REQUEST -> {} // No payload for reboot request
+                RequestType.START_SELF_TEST_REQUEST -> {} // No payload for start self test request
+                RequestType.STOP_SELF_TEST_REQUEST -> {} // No payload for stop self test request
                 RequestType.SET_SCHEDULE_REQUEST -> setScheduleRequest = (`object` as ScheduleDto).toProtobufMessage()
                 else -> throw IllegalArgumentException("Unsupported message type: $jmsType")
             }
@@ -62,6 +65,9 @@ object DeviceRequestMessageMapper {
         when (this) {
             "GET_STATUS" -> RequestType.GET_STATUS_REQUEST
             "SET_LIGHT" -> RequestType.SET_LIGHT_REQUEST
+            "SET_REBOOT" -> RequestType.REBOOT_REQUEST
+            "START_SELF_TEST" -> RequestType.START_SELF_TEST_REQUEST
+            "STOP_SELF_TEST" -> RequestType.STOP_SELF_TEST_REQUEST
             "SET_SCHEDULE" -> RequestType.SET_SCHEDULE_REQUEST
             else -> throw IllegalArgumentException("Unsupported message type: $this")
         }

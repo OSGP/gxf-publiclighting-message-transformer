@@ -69,7 +69,7 @@ class DeviceResponseMessageListenerTest {
                     assertThat(it).isInstanceOf(DeviceResponseMessage::class.java).isEqualTo(response)
                     when (responseType) {
                         ResponseType.GET_STATUS_RESPONSE -> assertThat(it.hasGetStatusResponse()).isTrue
-                        else -> {} //do nothing
+                        else -> {} // do nothing
                     }
                 },
             )
@@ -88,7 +88,10 @@ class DeviceResponseMessageListenerTest {
         return bytesMessage
     }
 
-    private fun copyBytesToBuffer(bytes: ByteArray, buffer: ByteArray): Int {
+    private fun copyBytesToBuffer(
+        bytes: ByteArray,
+        buffer: ByteArray,
+    ): Int {
         System.arraycopy(bytes, 0, buffer, 0, bytes.size)
         return bytes.size
     }

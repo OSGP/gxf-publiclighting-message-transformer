@@ -25,5 +25,4 @@ object TestConstants {
 
     const val ELEVEN_PM = "230000"
     const val SIX_AM = "060000"
-
 }

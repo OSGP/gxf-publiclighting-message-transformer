@@ -30,7 +30,7 @@ class DeviceResponseMessageMapperTest {
 
     @Test
     fun `should create set reboot protocol response message dto from protobuf message`() =
-    verifyEmptyResponseMessageCreated(ResponseType.REBOOT_RESPONSE, ObjectMessageType.SET_REBOOT)
+        verifyEmptyResponseMessageCreated(ResponseType.REBOOT_RESPONSE, ObjectMessageType.SET_REBOOT)
 
     @Test
     fun `should create start self test protocol response message dto from protobuf message`() =
@@ -48,8 +48,10 @@ class DeviceResponseMessageMapperTest {
     fun `should create set schedule protocol response message dto from protobuf message`() =
         verifyEmptyResponseMessageCreated(ResponseType.SET_SCHEDULE_RESPONSE, ObjectMessageType.SET_SCHEDULE)
 
-
-    private fun verifyEmptyResponseMessageCreated(inboundResponseType: ResponseType, outboundMessageType: ObjectMessageType) {
+    private fun verifyEmptyResponseMessageCreated(
+        inboundResponseType: ResponseType,
+        outboundMessageType: ObjectMessageType,
+    ) {
         val message = DeviceResponseMessageFactory.protobufMessageForResponseOfType(inboundResponseType)
 
         val result = message.toResponseDto()

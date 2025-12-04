@@ -13,11 +13,13 @@ import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.Respo
 import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_DEVICE_IDENTIFICATION
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_ORGANIZATION_IDENTIFICATION
+import org.opensmartgridplatform.dto.valueobjects.DeviceStatusDto
 import org.opensmartgridplatform.shared.infra.jms.ProtocolResponseMessage
 import org.opensmartgridplatform.shared.infra.jms.ResponseMessageResultType
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.jms.core.JmsTemplate
 import org.springframework.jms.core.MessageCreator
+import java.io.Serializable
 
 class DeviceResponsesSteps(
     private val scenarioContext: DeviceResponsesScenarioContext,
@@ -47,28 +49,25 @@ class DeviceResponsesSteps(
         scenarioContext.outboundResponseMessage = outboundMessage.`object` as ProtocolResponseMessage
     }
 
-    @Then("the device response object message should contain a valid get status response")
-    fun thenObjectMessageShouldContainGetStatusResponse() {
-        assertThat(scenarioContext.outboundResponseMessage)
-            .isNotNull()
-            .isInstanceOf(ProtocolResponseMessage::class.java)
-        with(scenarioContext.outboundResponseMessage!!) {
-            assertThat(this.messageType).isEqualTo(ObjectMessageType.GET_STATUS.name)
-            assertThat(this.result).isNotNull().isEqualTo(ResponseMessageResultType.OK)
-            assertThat(this.dataObject).isNotNull()
-        }
-    }
-
-    @Then("the device response object message should contain a valid empty response for type {objectMessageType}")
-    fun thenObjectMessageShouldContainEmptyResponse(objectMessageType: ObjectMessageType) {
+    @Then("the device response object message should contain a {objectMessageType} response")
+    fun thenObjectMessageShouldContainResponse(objectMessageType: ObjectMessageType) {
         assertThat(scenarioContext.outboundResponseMessage)
             .isNotNull()
             .isInstanceOf(ProtocolResponseMessage::class.java)
         with(scenarioContext.outboundResponseMessage!!) {
             assertThat(this.messageType).isEqualTo(objectMessageType.name)
             assertThat(this.result).isNotNull().isEqualTo(ResponseMessageResultType.OK)
-            assertThat(this.dataObject).isNull()
+
+            when (objectMessageType) {
+                ObjectMessageType.GET_STATUS -> verifyGetStatusResponse(this.dataObject)
+                else -> assertThat(this.dataObject).isNull()
+            }
         }
+    }
+
+    private fun verifyGetStatusResponse(serializedDataObject: Serializable?) {
+        assertThat(serializedDataObject).isNotNull().isInstanceOf(DeviceStatusDto::class.java)
+        // TODO add more assertions
     }
 
     private fun createBytesMessage() =

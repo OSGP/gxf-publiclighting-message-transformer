@@ -74,7 +74,7 @@ object DeviceResponseMessageMapper {
 
     private fun GetStatusResponse.toDto(): DeviceStatusDto =
         DeviceStatusDto(
-            this.lightValuesList.map { it -> LightValueDto(it.index.toInt(), it.lightOn, null) }.toMutableList(),
+            this.lightValuesList.map { LightValueDto(it.index.toInt(), it.lightOn, null) }.toMutableList(),
             this.preferredLinkType.toDto(),
             this.actualLinkType.toDto(),
             this.lightType.toDto(),

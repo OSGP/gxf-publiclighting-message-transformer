@@ -63,8 +63,8 @@ object DeviceRequestMessageMapper {
                     requestType = messageType
                 }
             when (messageType) {
-                RequestType.GET_STATUS_REQUEST -> {} // No payload for get status request
-                RequestType.REBOOT_REQUEST -> {} // No payload for reboot request
+                RequestType.GET_STATUS_REQUEST -> { /* No payload for get status request */ }
+                RequestType.REBOOT_REQUEST -> { /* No payload for reboot request */ }
                 RequestType.RESUME_SCHEDULE_REQUEST ->
                     resumeScheduleRequest =
                         (`object` as ResumeScheduleMessageDataContainerDto).toProtobufMessage()
@@ -73,8 +73,8 @@ object DeviceRequestMessageMapper {
                 RequestType.SET_TRANSITION_REQUEST ->
                     setTransitionRequest =
                         (`object` as TransitionMessageDataContainerDto).toProtobufMessage()
-                RequestType.START_SELF_TEST_REQUEST -> {} // No payload for start self test request
-                RequestType.STOP_SELF_TEST_REQUEST -> {} // No payload for stop self test request
+                RequestType.START_SELF_TEST_REQUEST -> { /* No payload for start self test request */ }
+                RequestType.STOP_SELF_TEST_REQUEST -> { /* No payload for stop self test request */ }
                 else -> throw IllegalArgumentException("Unsupported message type: $jmsType")
             }
         }

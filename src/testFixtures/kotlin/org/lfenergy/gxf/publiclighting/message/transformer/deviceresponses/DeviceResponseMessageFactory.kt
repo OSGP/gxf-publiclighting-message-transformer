@@ -18,10 +18,12 @@ object DeviceResponseMessageFactory {
         when (responseType) {
             ResponseType.GET_STATUS_RESPONSE -> getStatusResponseMessage()
             ResponseType.REBOOT_RESPONSE -> emptyResponseMessage(ResponseType.REBOOT_RESPONSE)
-            ResponseType.START_SELF_TEST_RESPONSE -> emptyResponseMessage(ResponseType.START_SELF_TEST_RESPONSE)
-            ResponseType.STOP_SELF_TEST_RESPONSE -> emptyResponseMessage(ResponseType.STOP_SELF_TEST_RESPONSE)
+            ResponseType.RESUME_SCHEDULE_RESPONSE -> emptyResponseMessage(ResponseType.RESUME_SCHEDULE_RESPONSE)
             ResponseType.SET_LIGHT_RESPONSE -> emptyResponseMessage(ResponseType.SET_LIGHT_RESPONSE)
             ResponseType.SET_SCHEDULE_RESPONSE -> emptyResponseMessage(ResponseType.SET_SCHEDULE_RESPONSE)
+            ResponseType.SET_TRANSITION_RESPONSE -> emptyResponseMessage(ResponseType.SET_TRANSITION_RESPONSE)
+            ResponseType.START_SELF_TEST_RESPONSE -> emptyResponseMessage(ResponseType.START_SELF_TEST_RESPONSE)
+            ResponseType.STOP_SELF_TEST_RESPONSE -> emptyResponseMessage(ResponseType.STOP_SELF_TEST_RESPONSE)
             else -> unrecognizedResponseMessage()
         }
 

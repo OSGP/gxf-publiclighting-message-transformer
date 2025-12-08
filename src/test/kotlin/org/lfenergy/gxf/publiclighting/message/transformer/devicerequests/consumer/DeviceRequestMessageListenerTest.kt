@@ -33,15 +33,31 @@ class DeviceRequestMessageListenerTest {
     fun `should handle get status device request message`() = testEmptyRequest(ObjectMessageType.GET_STATUS, RequestType.GET_STATUS_REQUEST)
 
     @Test
+    fun `should handle resume schedule device request message`() {
+        val message = MockFactory.deviceRequestObjectMessageMock(ObjectMessageType.RESUME_SCHEDULE)
+        every { deviceRequestMessageSender.send(any<DeviceRequestMessage>()) } just Runs
+
+        deviceRequestMessageListener.onMessage(message)
+
+        verify {
+            deviceRequestMessageSender.send(
+                withArg {
+                    assertThat(it).isInstanceOf(DeviceRequestMessage::class.java)
+                    assertThat(it.header.requestType).isEqualTo(RequestType.RESUME_SCHEDULE_REQUEST)
+                    assertThat(it.hasResumeScheduleRequest()).isTrue
+                    assertThat(it.resumeScheduleRequest).isNotNull
+                },
+            )
+        }
+    }
+
+    @Test
     fun `should handle set light device request message`() {
-        // Arrange
         val message = MockFactory.deviceRequestObjectMessageMock(ObjectMessageType.SET_LIGHT)
         every { deviceRequestMessageSender.send(any<DeviceRequestMessage>()) } just Runs
 
-        // Act
         deviceRequestMessageListener.onMessage(message)
 
-        // Assert
         verify {
             deviceRequestMessageSender.send(
                 withArg {
@@ -55,6 +71,47 @@ class DeviceRequestMessageListenerTest {
     }
 
     @Test
+    fun `should handle set reboot device request message`() = testEmptyRequest(ObjectMessageType.SET_REBOOT, RequestType.REBOOT_REQUEST)
+
+    @Test
+    fun `should handle set schedule device request message`() {
+        val message = MockFactory.deviceRequestObjectMessageMock(ObjectMessageType.SET_SCHEDULE)
+        every { deviceRequestMessageSender.send(any<DeviceRequestMessage>()) } just Runs
+
+        deviceRequestMessageListener.onMessage(message)
+
+        verify {
+            deviceRequestMessageSender.send(
+                withArg {
+                    assertThat(it).isInstanceOf(DeviceRequestMessage::class.java)
+                    assertThat(it.header.requestType).isEqualTo(RequestType.SET_SCHEDULE_REQUEST)
+                    assertThat(it.hasSetScheduleRequest()).isTrue
+                    assertThat(it.setScheduleRequest).isNotNull
+                },
+            )
+        }
+    }
+
+    @Test
+    fun `should handle set transition device request message`() {
+        val message = MockFactory.deviceRequestObjectMessageMock(ObjectMessageType.SET_TRANSITION)
+        every { deviceRequestMessageSender.send(any<DeviceRequestMessage>()) } just Runs
+
+        deviceRequestMessageListener.onMessage(message)
+
+        verify {
+            deviceRequestMessageSender.send(
+                withArg {
+                    assertThat(it).isInstanceOf(DeviceRequestMessage::class.java)
+                    assertThat(it.header.requestType).isEqualTo(RequestType.SET_TRANSITION_REQUEST)
+                    assertThat(it.hasSetTransitionRequest()).isTrue
+                    assertThat(it.setTransitionRequest).isNotNull
+                },
+            )
+        }
+    }
+
+    @Test
     fun `should handle start self test device request message`() =
         testEmptyRequest(ObjectMessageType.START_SELF_TEST, RequestType.START_SELF_TEST_REQUEST)
 
@@ -62,46 +119,20 @@ class DeviceRequestMessageListenerTest {
     fun `should handle stop self test device request message`() =
         testEmptyRequest(ObjectMessageType.STOP_SELF_TEST, RequestType.STOP_SELF_TEST_REQUEST)
 
-    @Test
-    fun `should handle set reboot device request message`() = testEmptyRequest(ObjectMessageType.SET_REBOOT, RequestType.REBOOT_REQUEST)
-
-    @Test
-    fun `should handle set schedule device request message`() {
-        // Arrange
-        val message = MockFactory.deviceRequestObjectMessageMock(ObjectMessageType.SET_SCHEDULE)
-        every { deviceRequestMessageSender.send(any<DeviceRequestMessage>()) } just Runs
-
-        // Act
-        deviceRequestMessageListener.onMessage(message)
-
-        // Assert
-        verify {
-            deviceRequestMessageSender.send(
-                withArg {
-                    assertThat(it).isInstanceOf(DeviceRequestMessage::class.java)
-                    assertThat(it.header.requestType).isEqualTo(RequestType.SET_SCHEDULE_REQUEST)
-                },
-            )
-        }
-    }
-
     private fun testEmptyRequest(
-        objectMessageType: ObjectMessageType,
-        requestType: RequestType,
+        inboundRequestType: ObjectMessageType,
+        expectedOutboundRequestType: RequestType,
     ) {
-        // Arrange
-        val message = MockFactory.deviceRequestObjectMessageMock(objectMessageType)
+        val message = MockFactory.deviceRequestObjectMessageMock(inboundRequestType)
         every { deviceRequestMessageSender.send(any<DeviceRequestMessage>()) } just Runs
 
-        // Act
         deviceRequestMessageListener.onMessage(message)
 
-        // Assert
         verify {
             deviceRequestMessageSender.send(
                 withArg {
                     assertThat(it).isInstanceOf(DeviceRequestMessage::class.java)
-                    assertThat(it.header.requestType).isEqualTo(requestType)
+                    assertThat(it.header.requestType).isEqualTo(expectedOutboundRequestType)
                 },
             )
         }

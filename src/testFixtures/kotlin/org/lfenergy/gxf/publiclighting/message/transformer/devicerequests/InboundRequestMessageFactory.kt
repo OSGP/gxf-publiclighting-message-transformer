@@ -17,8 +17,11 @@ import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.SIX_AM
 import org.opensmartgridplatform.dto.valueobjects.ActionTimeTypeDto
 import org.opensmartgridplatform.dto.valueobjects.LightValueDto
 import org.opensmartgridplatform.dto.valueobjects.LightValueMessageDataContainerDto
+import org.opensmartgridplatform.dto.valueobjects.ResumeScheduleMessageDataContainerDto
 import org.opensmartgridplatform.dto.valueobjects.ScheduleDto
 import org.opensmartgridplatform.dto.valueobjects.ScheduleEntryDto
+import org.opensmartgridplatform.dto.valueobjects.TransitionMessageDataContainerDto
+import org.opensmartgridplatform.dto.valueobjects.TransitionTypeDto
 import org.opensmartgridplatform.dto.valueobjects.TriggerTypeDto
 import org.opensmartgridplatform.dto.valueobjects.WeekDayTypeDto
 import org.opensmartgridplatform.shared.infra.jms.RequestMessage
@@ -34,8 +37,10 @@ object InboundRequestMessageFactory {
             null,
             when (requestType) {
                 ObjectMessageType.GET_STATUS -> null
+                ObjectMessageType.RESUME_SCHEDULE -> setResumeScheduleRequestPayload()
                 ObjectMessageType.SET_LIGHT -> setLightRequestPayload()
                 ObjectMessageType.SET_SCHEDULE -> setScheduleRequestPayload()
+                ObjectMessageType.SET_TRANSITION -> setTransitionRequestPayload()
                 else -> null
             },
         )
@@ -48,6 +53,12 @@ object InboundRequestMessageFactory {
             ),
         )
 
+    fun setResumeScheduleRequestPayload() =
+        ResumeScheduleMessageDataContainerDto(
+            null,
+            true,
+        )
+
     fun setScheduleRequestPayload() =
         ScheduleDto(
             null,
@@ -58,6 +69,12 @@ object InboundRequestMessageFactory {
                 eveningBurnerOffAt2300(),
                 morningBurnerOnAt0600(),
             ),
+        )
+
+    fun setTransitionRequestPayload() =
+        TransitionMessageDataContainerDto(
+            TransitionTypeDto.DAY_NIGHT,
+            null,
         )
 
     fun allLightsOnAtSunset() =

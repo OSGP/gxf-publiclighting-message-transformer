@@ -62,53 +62,42 @@ class DeviceResponseMessageSenderTest {
         }
     }
 
-    // TODO add tests for other response types
-
     @Test
     fun `should send get status protocol response message`() {
-        // Arrange
         message = DeviceResponseMessageFactory.protobufMessageForResponseOfType(ResponseType.GET_STATUS_RESPONSE)
 
-        // Act
         deviceResponseMessageSender.send(message)
 
-        // Assert
-        verifyObjectMessageIsSent()
-        verifyObjectMessageProperties()
-        verifyObjectMessageContainsProtocolResponseMessage()
+        verifyObjectMessage()
         verifyProtocolResponseMessageForGetStatusResponse()
-        assertThat(protocolResponseMessage.dataObject).isNotNull().isInstanceOf(DeviceStatusDto::class.java)
     }
 
     @Test
-    fun `should send set light protocol response message`() {
-        // Arrange
-        message = DeviceResponseMessageFactory.protobufMessageForResponseOfType(ResponseType.SET_LIGHT_RESPONSE)
-
-        // Act
-        deviceResponseMessageSender.send(message)
-
-        // Assert
-        verifyObjectMessageIsSent()
-        verifyObjectMessageProperties()
-        verifyObjectMessageContainsProtocolResponseMessage()
-        verifyEmptyProtocolResponseMessageForResponseType(ResponseType.SET_LIGHT_RESPONSE)
-    }
+    fun `should send reboot response protocol message`() = testEmptyProtocolResponseMessageForResponseType(ResponseType.REBOOT_RESPONSE)
 
     @Test
-    fun `should send set schedule response object message`() {
-        // Arrange
-        message = DeviceResponseMessageFactory.protobufMessageForResponseOfType(ResponseType.SET_SCHEDULE_RESPONSE)
+    fun `should send resume schedule response protocol message`() =
+        testEmptyProtocolResponseMessageForResponseType(ResponseType.RESUME_SCHEDULE_RESPONSE)
 
-        // Act
-        deviceResponseMessageSender.send(message)
+    @Test
+    fun `should send set light protocol response message`() =
+        testEmptyProtocolResponseMessageForResponseType(ResponseType.SET_LIGHT_RESPONSE)
 
-        // Assert
-        verifyObjectMessageIsSent()
-        verifyObjectMessageProperties()
-        verifyObjectMessageContainsProtocolResponseMessage()
-        verifyEmptyProtocolResponseMessageForResponseType(ResponseType.SET_SCHEDULE_RESPONSE)
-    }
+    @Test
+    fun `should send set schedule response object message`() =
+        testEmptyProtocolResponseMessageForResponseType(ResponseType.SET_SCHEDULE_RESPONSE)
+
+    @Test
+    fun `should send set transition protocol response message`() =
+        testEmptyProtocolResponseMessageForResponseType(ResponseType.SET_TRANSITION_RESPONSE)
+
+    @Test
+    fun `should send start self test protocol response message`() =
+        testEmptyProtocolResponseMessageForResponseType(ResponseType.START_SELF_TEST_RESPONSE)
+
+    @Test
+    fun `should send stop self test protocol response message`() =
+        testEmptyProtocolResponseMessageForResponseType(ResponseType.STOP_SELF_TEST_RESPONSE)
 
     @Test
     fun `should log unrecognized protobuf event and not send dto`(capturedOutput: CapturedOutput) {
@@ -122,6 +111,21 @@ class DeviceResponseMessageSenderTest {
         assertThat(capturedOutput.out)
             .contains("Failed to send device response message for device")
             .contains("Unsupported message type: UNRECOGNIZED")
+    }
+
+    fun testEmptyProtocolResponseMessageForResponseType(responseType: ResponseType) {
+        message = DeviceResponseMessageFactory.protobufMessageForResponseOfType(responseType)
+
+        deviceResponseMessageSender.send(message)
+
+        verifyObjectMessage()
+        verifyEmptyProtocolResponseMessageForResponseType(responseType)
+    }
+
+    private fun verifyObjectMessage() {
+        verifyObjectMessageIsSent()
+        verifyObjectMessageProperties()
+        verifyObjectMessageContainsProtocolResponseMessage()
     }
 
     private fun verifyObjectMessageIsSent() {
@@ -164,7 +168,7 @@ class DeviceResponseMessageSenderTest {
             assertThat(correlationUid).isEqualTo(message.header.correlationUid)
             assertThat(deviceIdentification).isEqualTo(message.header.deviceIdentification)
             assertThat(organisationIdentification).isEqualTo(message.header.organizationIdentification)
-            assertThat(messageType).isEqualTo(responseType.name.removeSuffix("_RESPONSE"))
+            assertThat(messageType).isEqualTo(responseType.toDto())
             assertThat(result).isEqualTo(ResponseMessageResultType.OK)
             assertThat(dataObject).isNull()
         }

@@ -55,21 +55,28 @@ class DeviceRequestMessageSenderTest {
     }
 
     @Test
-    fun `should send protobuf bytes message for set light request`() {
-        // Arrange
-        val message = DeviceRequestMessageFactory.deviceRequestMessage(RequestType.SET_LIGHT_REQUEST)
-
-        // Act
-        deviceRequestMessageSender.send(message)
-
-        // Assert
-        verifyBytesMessageIsSent()
-        verifyBytesMessageContainsProtobufMessage(RequestType.SET_LIGHT_REQUEST)
+    fun `should send protobuf bytes message for reboot request`() {
+        verifyBytesMessageIsSentForRequestType(RequestType.REBOOT_REQUEST)
     }
 
     @Test
-    fun `should send protobuf bytes message for reboot request`() {
-        verifyBytesMessageIsSentForRequestType(RequestType.REBOOT_REQUEST)
+    fun `should send protobuf bytes message for resume schedule request`() {
+        verifyBytesMessageIsSentForRequestType(RequestType.RESUME_SCHEDULE_REQUEST)
+    }
+
+    @Test
+    fun `should send protobuf bytes message for set light request`() {
+        verifyBytesMessageIsSentForRequestType(RequestType.SET_LIGHT_REQUEST)
+    }
+
+    @Test
+    fun `should send protobuf bytes message for set schedule request`() {
+        verifyBytesMessageIsSentForRequestType(RequestType.SET_SCHEDULE_REQUEST)
+    }
+
+    @Test
+    fun `should send protobuf bytes message for set transition request`() {
+        verifyBytesMessageIsSentForRequestType(RequestType.SET_TRANSITION_REQUEST)
     }
 
     @Test

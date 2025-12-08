@@ -14,6 +14,7 @@ import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.Device
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.RelayIndex
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.RequestHeader
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.RequestType
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.TransitionType
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.TriggerType
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.Weekday
 import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType
@@ -61,26 +62,36 @@ class DeviceRequestsSteps(
     fun thenBytesMessageShouldContainRequest(expectedRequestType: RequestType) {
         when (expectedRequestType) {
             RequestType.GET_STATUS_REQUEST -> verifyEmptyRequest(RequestType.GET_STATUS_REQUEST)
-            RequestType.SET_LIGHT_REQUEST -> verifySetLightRequest()
             RequestType.REBOOT_REQUEST -> verifyEmptyRequest(RequestType.REBOOT_REQUEST)
+            RequestType.RESUME_SCHEDULE_REQUEST -> verifyResumeScheduleRequest()
+            RequestType.SET_LIGHT_REQUEST -> verifySetLightRequest()
+            RequestType.SET_SCHEDULE_REQUEST -> verifySetScheduleRequest()
+            RequestType.SET_TRANSITION_REQUEST -> verifySetTransitionRequest()
             RequestType.START_SELF_TEST_REQUEST -> verifyEmptyRequest(RequestType.START_SELF_TEST_REQUEST)
             RequestType.STOP_SELF_TEST_REQUEST -> verifyEmptyRequest(RequestType.STOP_SELF_TEST_REQUEST)
-            RequestType.SET_SCHEDULE_REQUEST -> verifySetScheduleRequest()
             else -> throw IllegalArgumentException("Unsupported request type: $expectedRequestType")
         }
     }
 
     private fun verifyEmptyRequest(requestType: RequestType) {
         with(scenarioContext.outboundRequestMessage) {
-            assertThat(this).isNotNull().isInstanceOf(DeviceRequestMessage::class.java)
+            assertThat(this).isNotNull.isInstanceOf(DeviceRequestMessage::class.java)
             verifyHeader(this!!.header, requestType)
             verifyNoPayload(this)
         }
     }
 
+    private fun verifyResumeScheduleRequest() {
+        with(scenarioContext.outboundRequestMessage) {
+            assertThat(this).isNotNull.isInstanceOf(DeviceRequestMessage::class.java)
+            verifyHeader(this!!.header, RequestType.RESUME_SCHEDULE_REQUEST)
+            verifyResumeSchedulePayload(this)
+        }
+    }
+
     private fun verifySetLightRequest() {
         with(scenarioContext.outboundRequestMessage) {
-            assertThat(this).isNotNull().isInstanceOf(DeviceRequestMessage::class.java)
+            assertThat(this).isNotNull.isInstanceOf(DeviceRequestMessage::class.java)
             verifyHeader(this!!.header, RequestType.SET_LIGHT_REQUEST)
             verifySetLightPayload(this)
         }
@@ -88,9 +99,17 @@ class DeviceRequestsSteps(
 
     private fun verifySetScheduleRequest() {
         with(scenarioContext.outboundRequestMessage) {
-            assertThat(this).isNotNull().isInstanceOf(DeviceRequestMessage::class.java)
+            assertThat(this).isNotNull.isInstanceOf(DeviceRequestMessage::class.java)
             verifyHeader(this!!.header, RequestType.SET_SCHEDULE_REQUEST)
             verifySetSchedulePayload(this)
+        }
+    }
+
+    private fun verifySetTransitionRequest() {
+        with(scenarioContext.outboundRequestMessage) {
+            assertThat(this).isNotNull.isInstanceOf(DeviceRequestMessage::class.java)
+            verifyHeader(this!!.header, RequestType.SET_TRANSITION_REQUEST)
+            verifySetTransitionPayload(this)
         }
     }
 
@@ -138,22 +157,30 @@ class DeviceRequestsSteps(
     }
 
     private fun verifyNoPayload(message: DeviceRequestMessage) {
-        assertThat(message.hasSetLightRequest()).isFalse()
-        assertThat(message.hasSetScheduleRequest()).isFalse()
+        assertThat(message.hasSetLightRequest()).isFalse
+        assertThat(message.hasSetScheduleRequest()).isFalse
+    }
+
+    private fun verifyResumeSchedulePayload(message: DeviceRequestMessage) {
+        assertThat(message.hasResumeScheduleRequest()).isTrue
+        with(message.getResumeScheduleRequest()) {
+            assertThat(this).isNotNull
+            assertThat(immediate).isTrue
+        }
     }
 
     private fun verifySetLightPayload(message: DeviceRequestMessage) {
         assertThat(message.hasSetLightRequest()).isTrue()
         with(message.getSetLightRequest()) {
-            assertThat(this).isNotNull()
+            assertThat(this).isNotNull
             assertThat(lightValuesCount).isEqualTo(2)
             with(this.getLightValues(0)) {
                 assertThat(index).isEqualTo(RelayIndex.RELAY_TWO)
-                assertThat(lightOn).isTrue()
+                assertThat(lightOn).isTrue
             }
             with(this.getLightValues(1)) {
                 assertThat(index).isEqualTo(RelayIndex.RELAY_THREE)
-                assertThat(lightOn).isTrue()
+                assertThat(lightOn).isTrue
             }
         }
     }
@@ -164,27 +191,27 @@ class DeviceRequestsSteps(
             assertThat(this).isNotNull()
             assertThat(scheduleEntriesList.size).isEqualTo(4)
             with(this.scheduleEntriesList[0]) {
-                assertThat(weekday).isEqualTo(Weekday.EVERY_DAY)
+                assertThat(weekday).isEqualTo(Weekday.ALL_DAYS)
                 assertThat(actionTime).isEqualTo(ActionTime.SUNSET_TIME)
                 assertThat(triggerType).isEqualTo(TriggerType.ASTRONOMICAL)
                 assertThat(valueList.size).isEqualTo(1)
                 with(this.valueList[0]) {
-                    assertThat(index).isEqualTo(RelayIndex.RELAY_ALL)
+                    assertThat(index).isEqualTo(RelayIndex.ALL_RELAYS)
                     assertThat(lightOn).isTrue()
                 }
             }
             with(this.scheduleEntriesList[1]) {
-                assertThat(weekday).isEqualTo(Weekday.EVERY_DAY)
+                assertThat(weekday).isEqualTo(Weekday.ALL_DAYS)
                 assertThat(actionTime).isEqualTo(ActionTime.SUNRISE_TIME)
                 assertThat(triggerType).isEqualTo(TriggerType.ASTRONOMICAL)
                 assertThat(valueList.size).isEqualTo(1)
                 with(this.valueList[0]) {
-                    assertThat(index).isEqualTo(RelayIndex.RELAY_ALL)
+                    assertThat(index).isEqualTo(RelayIndex.ALL_RELAYS)
                     assertThat(lightOn).isFalse()
                 }
             }
             with(this.scheduleEntriesList[2]) {
-                assertThat(weekday).isEqualTo(Weekday.EVERY_DAY)
+                assertThat(weekday).isEqualTo(Weekday.ALL_DAYS)
                 assertThat(actionTime).isEqualTo(ActionTime.ABSOLUTE_TIME)
                 assertThat(time).isEqualTo("230000")
                 assertThat(valueList.size).isEqualTo(1)
@@ -194,7 +221,7 @@ class DeviceRequestsSteps(
                 }
             }
             with(this.scheduleEntriesList[3]) {
-                assertThat(weekday).isEqualTo(Weekday.EVERY_DAY)
+                assertThat(weekday).isEqualTo(Weekday.ALL_DAYS)
                 assertThat(actionTime).isEqualTo(ActionTime.ABSOLUTE_TIME)
                 assertThat(time).isEqualTo("060000")
                 assertThat(valueList.size).isEqualTo(1)
@@ -203,6 +230,14 @@ class DeviceRequestsSteps(
                     assertThat(lightOn).isTrue()
                 }
             }
+        }
+    }
+
+    private fun verifySetTransitionPayload(message: DeviceRequestMessage) {
+        assertThat(message.hasSetTransitionRequest()).isTrue
+        with(message.getSetTransitionRequest()) {
+            assertThat(this).isNotNull
+            assertThat(transitionType).isEqualTo(TransitionType.SUNSET)
         }
     }
 

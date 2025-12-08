@@ -32,11 +32,6 @@ class DeviceResponseMessageListenerTest {
     lateinit var deviceResponseMessageListener: DeviceResponseMessageListener
 
     @Test
-    fun `should handle set light device response message`() {
-        testResponse(ResponseType.SET_LIGHT_RESPONSE)
-    }
-
-    @Test
     fun `should handle get status device response message`() {
         testResponse(ResponseType.GET_STATUS_RESPONSE)
     }
@@ -44,6 +39,26 @@ class DeviceResponseMessageListenerTest {
     @Test
     fun `should handle reboot device response message`() {
         testResponse(ResponseType.REBOOT_RESPONSE)
+    }
+
+    @Test
+    fun `should handle resume schedule device response message`() {
+        testResponse(ResponseType.RESUME_SCHEDULE_RESPONSE)
+    }
+
+    @Test
+    fun `should handle set light device response message`() {
+        testResponse(ResponseType.SET_LIGHT_RESPONSE)
+    }
+
+    @Test
+    fun `should handle set schedule device response message`() {
+        testResponse(ResponseType.SET_SCHEDULE_RESPONSE)
+    }
+
+    @Test
+    fun `should handle set transition device response message`() {
+        testResponse(ResponseType.SET_TRANSITION_RESPONSE)
     }
 
     @Test

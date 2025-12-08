@@ -8,9 +8,11 @@ import io.mockk.mockk
 import jakarta.jms.ObjectMessage
 import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType
 import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.GET_STATUS
+import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.RESUME_SCHEDULE
 import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.SET_LIGHT
 import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.SET_REBOOT
 import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.SET_SCHEDULE
+import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.SET_TRANSITION
 import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.START_SELF_TEST
 import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.STOP_SELF_TEST
 import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants
@@ -21,11 +23,13 @@ object DeviceRequestObjectMessageMockFactory {
     fun deviceRequestObjectMessageMock(requestType: ObjectMessageType) =
         when (requestType) {
             GET_STATUS -> setUpDeviceRequestMessage(GET_STATUS, null)
+            RESUME_SCHEDULE -> setUpDeviceRequestMessage(RESUME_SCHEDULE, InboundRequestMessageFactory.setResumeScheduleRequestPayload())
             SET_LIGHT -> setUpDeviceRequestMessage(SET_LIGHT, InboundRequestMessageFactory.setLightRequestPayload())
             SET_REBOOT -> setUpDeviceRequestMessage(SET_REBOOT, null)
+            SET_SCHEDULE -> setUpDeviceRequestMessage(SET_SCHEDULE, InboundRequestMessageFactory.setScheduleRequestPayload())
+            SET_TRANSITION -> setUpDeviceRequestMessage(SET_TRANSITION, InboundRequestMessageFactory.setTransitionRequestPayload())
             START_SELF_TEST -> setUpDeviceRequestMessage(START_SELF_TEST, null)
             STOP_SELF_TEST -> setUpDeviceRequestMessage(STOP_SELF_TEST, null)
-            SET_SCHEDULE -> setUpDeviceRequestMessage(SET_SCHEDULE, InboundRequestMessageFactory.setScheduleRequestPayload())
             else -> throw IllegalArgumentException("Unsupported request type: $requestType")
         }
 

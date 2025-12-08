@@ -55,11 +55,13 @@ message SetLightRequest {
 }
 
 message SetScheduleRequest {
-  repeated ScheduleEntry schedule_entries = 1; // maximum count of 50 entries
+  int32 astronomical_sunrise_offset = 1; // in minutes
+  int32 astronomical_sunset_offset = 2;  // in minutes
+  repeated ScheduleEntry schedule_entries = 3; // maximum count of 50 entries
 }
 
 message ResumeScheduleRequest {
-  bytes index = 1;
+  RelayIndex index = 1;
   bool immediate = 2;
 }
 
@@ -92,7 +94,7 @@ message ScheduleEntry {
   TriggerType trigger_type = 8;   // Switch on astronomical time or light transition
   uint32 minimum_lights_on = 9;   // Minimal time (in seconds) the lights should burn before deciding to switch the lights on
   uint32 index = 10;              // Index of schedule entry in the schedule list
-//  bool is_enabled = 11;           // Is this schedule entry enabled?}
+//  bool is_enabled = 11;           // Is this schedule entry enabled?
 }
 
 message TriggerWindow {
@@ -101,32 +103,35 @@ message TriggerWindow {
 }
 
 enum TriggerType {
-  LIGHT_TRANSITION = 0;
-  ASTRONOMICAL = 1;
+  TT_NOT_SET = 0;
+  LIGHT_TRANSITION = 1;
+  ASTRONOMICAL = 2;
 }
 
 enum Weekday {
-  MONDAY = 0;
-  TUESDAY = 1;
-  WEDNESDAY = 2;
-  THURSDAY = 3;
-  FRIDAY = 4;
-  SATURDAY = 5;
-  SUNDAY = 6;
-  WEEKDAY = 7;
-  WEEKEND = 8;
-  ABSOLUTE_DAY = 9;
-  EVERY_DAY = 10;
+  WEEKDAY_UNSPECIFIED = 0;
+  MONDAY = 1;
+  TUESDAY = 2;
+  WEDNESDAY = 3;
+  THURSDAY = 4;
+  FRIDAY = 5;
+  SATURDAY = 6;
+  SUNDAY = 7;
+  WEEKDAY = 8;
+  WEEKEND = 9;
+  ABSOLUTE_DAY = 10;
+  ALL_DAYS = 11;
 }
 
 enum ActionTime {
-  ABSOLUTE_TIME = 0;
-  SUNRISE_TIME = 1;
-  SUNSET_TIME = 2;
+  AT_UNSPECIFIED = 0;
+  ABSOLUTE_TIME = 1;
+  SUNRISE_TIME = 2;
+  SUNSET_TIME = 3;
 }
 
 enum RelayIndex{
-  RELAY_ALL = 0;
+  ALL_RELAYS = 0;
   RELAY_ONE = 1;
   RELAY_TWO = 2;
   RELAY_THREE = 3;

@@ -6,10 +6,11 @@ package org.lfenergy.gxf.publiclighting.message.transformer
 enum class ObjectMessageType {
     UNRECOGNIZED,
     GET_STATUS,
+    RESUME_SCHEDULE,
     SET_LIGHT,
     SET_REBOOT,
+    SET_SCHEDULE,
+    SET_TRANSITION,
     START_SELF_TEST,
     STOP_SELF_TEST,
-    RESUME_SCHEDULE,
-    SET_SCHEDULE,
 }

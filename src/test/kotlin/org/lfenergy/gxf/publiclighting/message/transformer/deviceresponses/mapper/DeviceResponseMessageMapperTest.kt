@@ -29,8 +29,24 @@ class DeviceResponseMessageMapperTest {
     }
 
     @Test
+    fun `should create resume schedule protocol response message dto from protobuf message`() =
+        verifyEmptyResponseMessageCreated(ResponseType.RESUME_SCHEDULE_RESPONSE, ObjectMessageType.RESUME_SCHEDULE)
+
+    @Test
+    fun `should create set light protocol response message dto from protobuf message`() =
+        verifyEmptyResponseMessageCreated(ResponseType.SET_LIGHT_RESPONSE, ObjectMessageType.SET_LIGHT)
+
+    @Test
     fun `should create set reboot protocol response message dto from protobuf message`() =
         verifyEmptyResponseMessageCreated(ResponseType.REBOOT_RESPONSE, ObjectMessageType.SET_REBOOT)
+
+    @Test
+    fun `should create set schedule protocol response message dto from protobuf message`() =
+        verifyEmptyResponseMessageCreated(ResponseType.SET_SCHEDULE_RESPONSE, ObjectMessageType.SET_SCHEDULE)
+
+    @Test
+    fun `should create set transition protocol response message dto from protobuf message`() =
+        verifyEmptyResponseMessageCreated(ResponseType.SET_TRANSITION_RESPONSE, ObjectMessageType.SET_TRANSITION)
 
     @Test
     fun `should create start self test protocol response message dto from protobuf message`() =
@@ -39,14 +55,6 @@ class DeviceResponseMessageMapperTest {
     @Test
     fun `should create stop self test protocol response message dto from protobuf message`() =
         verifyEmptyResponseMessageCreated(ResponseType.STOP_SELF_TEST_RESPONSE, ObjectMessageType.STOP_SELF_TEST)
-
-    @Test
-    fun `should create set light protocol response message dto from protobuf message`() =
-        verifyEmptyResponseMessageCreated(ResponseType.SET_LIGHT_RESPONSE, ObjectMessageType.SET_LIGHT)
-
-    @Test
-    fun `should create set schedule protocol response message dto from protobuf message`() =
-        verifyEmptyResponseMessageCreated(ResponseType.SET_SCHEDULE_RESPONSE, ObjectMessageType.SET_SCHEDULE)
 
     private fun verifyEmptyResponseMessageCreated(
         inboundResponseType: ResponseType,

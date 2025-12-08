@@ -10,18 +10,23 @@ import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.Device
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.LightValue
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.RelayIndex
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.RequestType
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.ResumeScheduleRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.ScheduleEntry
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.SetLightRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.SetScheduleRequest
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.SetTransitionRequest
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.TransitionType
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.TriggerType
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.TriggerWindow
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.Weekday
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.deviceRequestMessage
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.lightValue
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.requestHeader
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.resumeScheduleRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.scheduleEntry
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.setLightRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.setScheduleRequest
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.setTransitionRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.triggerWindow
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_DEVICE_IDENTIFICATION
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_NETWORK_ADDRESS
@@ -29,13 +34,21 @@ import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationCon
 import org.opensmartgridplatform.dto.valueobjects.ActionTimeTypeDto
 import org.opensmartgridplatform.dto.valueobjects.LightValueDto
 import org.opensmartgridplatform.dto.valueobjects.LightValueMessageDataContainerDto
+import org.opensmartgridplatform.dto.valueobjects.ResumeScheduleMessageDataContainerDto
 import org.opensmartgridplatform.dto.valueobjects.ScheduleDto
 import org.opensmartgridplatform.dto.valueobjects.ScheduleEntryDto
+import org.opensmartgridplatform.dto.valueobjects.TransitionMessageDataContainerDto
+import org.opensmartgridplatform.dto.valueobjects.TransitionTypeDto
 import org.opensmartgridplatform.dto.valueobjects.TriggerTypeDto
 import org.opensmartgridplatform.dto.valueobjects.WeekDayTypeDto
 import org.opensmartgridplatform.dto.valueobjects.WindowTypeDto
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 object DeviceRequestMessageMapper {
+    val hhmmssFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HHmmss")
+
     fun ObjectMessage.toProtobufMessage(): DeviceRequestMessage {
         val message = this
         val messageType = message.jmsType.toProtobufRequestType()
@@ -51,11 +64,17 @@ object DeviceRequestMessageMapper {
                 }
             when (messageType) {
                 RequestType.GET_STATUS_REQUEST -> {} // No payload for get status request
-                RequestType.SET_LIGHT_REQUEST -> setLightRequest = (`object` as LightValueMessageDataContainerDto).toProtobufMessage()
                 RequestType.REBOOT_REQUEST -> {} // No payload for reboot request
+                RequestType.RESUME_SCHEDULE_REQUEST ->
+                    resumeScheduleRequest =
+                        (`object` as ResumeScheduleMessageDataContainerDto).toProtobufMessage()
+                RequestType.SET_LIGHT_REQUEST -> setLightRequest = (`object` as LightValueMessageDataContainerDto).toProtobufMessage()
+                RequestType.SET_SCHEDULE_REQUEST -> setScheduleRequest = (`object` as ScheduleDto).toProtobufMessage()
+                RequestType.SET_TRANSITION_REQUEST ->
+                    setTransitionRequest =
+                        (`object` as TransitionMessageDataContainerDto).toProtobufMessage()
                 RequestType.START_SELF_TEST_REQUEST -> {} // No payload for start self test request
                 RequestType.STOP_SELF_TEST_REQUEST -> {} // No payload for stop self test request
-                RequestType.SET_SCHEDULE_REQUEST -> setScheduleRequest = (`object` as ScheduleDto).toProtobufMessage()
                 else -> throw IllegalArgumentException("Unsupported message type: $jmsType")
             }
         }
@@ -64,11 +83,13 @@ object DeviceRequestMessageMapper {
     fun String.toProtobufRequestType() =
         when (this) {
             "GET_STATUS" -> RequestType.GET_STATUS_REQUEST
+            "RESUME_SCHEDULE" -> RequestType.RESUME_SCHEDULE_REQUEST
             "SET_LIGHT" -> RequestType.SET_LIGHT_REQUEST
             "SET_REBOOT" -> RequestType.REBOOT_REQUEST
+            "SET_SCHEDULE" -> RequestType.SET_SCHEDULE_REQUEST
+            "SET_TRANSITION" -> RequestType.SET_TRANSITION_REQUEST
             "START_SELF_TEST" -> RequestType.START_SELF_TEST_REQUEST
             "STOP_SELF_TEST" -> RequestType.STOP_SELF_TEST_REQUEST
-            "SET_SCHEDULE" -> RequestType.SET_SCHEDULE_REQUEST
             else -> throw IllegalArgumentException("Unsupported message type: $this")
         }
 
@@ -86,12 +107,22 @@ object DeviceRequestMessageMapper {
         }
     }
 
+    fun ResumeScheduleMessageDataContainerDto.toProtobufMessage(): ResumeScheduleRequest {
+        val dto = this
+        return resumeScheduleRequest {
+            dto.index?.let { index = it.toRelayIndex() }
+            immediate = dto.immediate
+        }
+    }
+
     fun ScheduleDto.toProtobufMessage(): SetScheduleRequest {
         val dto = this
         if (dto.scheduleList == null || dto.scheduleList.isEmpty()) {
             return setScheduleRequest {}
         }
         return setScheduleRequest {
+            dto.astronomicalSunsetOffset?.let { astronomicalSunsetOffset = it.toInt() }
+            dto.astronomicalSunriseOffset?.let { astronomicalSunriseOffset = it.toInt() }
             scheduleEntries.addAll(
                 dto.scheduleList.map { scheduleEntryDto ->
                     scheduleEntryDto!!.toProtobufMessage()
@@ -99,6 +130,22 @@ object DeviceRequestMessageMapper {
             )
         }
     }
+
+    fun TransitionMessageDataContainerDto.toProtobufMessage(): SetTransitionRequest {
+        val dto = this
+        return setTransitionRequest {
+            dto.transitionType?.let { transitionType = it.toTransitionType() }
+            dto.dateTime?.let { time = it.toUtcTimeString() }
+        }
+    }
+
+    fun ZonedDateTime.toUtcTimeString(): String = this.withZoneSameInstant(ZoneOffset.UTC).format(hhmmssFormatter)
+
+    fun TransitionTypeDto.toTransitionType() =
+        when (this) {
+            TransitionTypeDto.DAY_NIGHT -> TransitionType.SUNSET
+            TransitionTypeDto.NIGHT_DAY -> TransitionType.SUNRISE
+        }
 
     fun ScheduleEntryDto.toProtobufMessage(): ScheduleEntry {
         val dto = this
@@ -138,7 +185,7 @@ object DeviceRequestMessageMapper {
             WeekDayTypeDto.SUNDAY -> Weekday.SUNDAY
             WeekDayTypeDto.WEEKDAY -> Weekday.WEEKDAY
             WeekDayTypeDto.WEEKEND -> Weekday.WEEKEND
-            WeekDayTypeDto.ALL -> Weekday.EVERY_DAY
+            WeekDayTypeDto.ALL -> Weekday.ALL_DAYS
             WeekDayTypeDto.ABSOLUTEDAY -> Weekday.ABSOLUTE_DAY
         }
 
@@ -165,7 +212,7 @@ object DeviceRequestMessageMapper {
 
     fun Int.toRelayIndex() =
         when (this) {
-            0 -> RelayIndex.RELAY_ALL
+            0 -> RelayIndex.ALL_RELAYS
             1 -> RelayIndex.RELAY_ONE
             2 -> RelayIndex.RELAY_TWO
             3 -> RelayIndex.RELAY_THREE

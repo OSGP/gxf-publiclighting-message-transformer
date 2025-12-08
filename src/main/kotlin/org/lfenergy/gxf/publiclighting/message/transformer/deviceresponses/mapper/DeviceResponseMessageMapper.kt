@@ -64,17 +64,19 @@ object DeviceResponseMessageMapper {
         return when (this.header.responseType) {
             ResponseType.GET_STATUS_RESPONSE -> this.getStatusResponse.toDto()
             ResponseType.REBOOT_RESPONSE -> null
-            ResponseType.START_SELF_TEST_RESPONSE -> null
-            ResponseType.STOP_SELF_TEST_RESPONSE -> null
+            ResponseType.RESUME_SCHEDULE_RESPONSE -> null
             ResponseType.SET_LIGHT_RESPONSE -> null
             ResponseType.SET_SCHEDULE_RESPONSE -> null
+            ResponseType.SET_TRANSITION_RESPONSE -> null
+            ResponseType.START_SELF_TEST_RESPONSE -> null
+            ResponseType.STOP_SELF_TEST_RESPONSE -> null
             else -> throw IllegalArgumentException("Unsupported message type: ${this.header.responseType}")
         }
     }
 
     private fun GetStatusResponse.toDto(): DeviceStatusDto =
         DeviceStatusDto(
-            this.lightValuesList.map { it -> LightValueDto(it.index.toInt(), it.lightOn, null) }.toMutableList(),
+            this.lightValuesList.map { LightValueDto(it.index.toInt(), it.lightOn, null) }.toMutableList(),
             this.preferredLinkType.toDto(),
             this.actualLinkType.toDto(),
             this.lightType.toDto(),
@@ -127,10 +129,12 @@ object DeviceResponseMessageMapper {
         when (this) {
             ResponseType.GET_STATUS_RESPONSE -> "GET_STATUS"
             ResponseType.REBOOT_RESPONSE -> "SET_REBOOT"
-            ResponseType.START_SELF_TEST_RESPONSE -> "START_SELF_TEST"
-            ResponseType.STOP_SELF_TEST_RESPONSE -> "STOP_SELF_TEST"
+            ResponseType.RESUME_SCHEDULE_RESPONSE -> "RESUME_SCHEDULE"
             ResponseType.SET_LIGHT_RESPONSE -> "SET_LIGHT"
             ResponseType.SET_SCHEDULE_RESPONSE -> "SET_SCHEDULE"
+            ResponseType.SET_TRANSITION_RESPONSE -> "SET_TRANSITION"
+            ResponseType.START_SELF_TEST_RESPONSE -> "START_SELF_TEST"
+            ResponseType.STOP_SELF_TEST_RESPONSE -> "STOP_SELF_TEST"
             ResponseType.UNRECOGNIZED -> "UNRECOGNIZED"
             else -> throw IllegalArgumentException("Unsupported response type: $this")
         }

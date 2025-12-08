@@ -85,12 +85,24 @@ message GetConfigurationResponse {
 }
 
 message GetFirmwareVersionResponse {
-  string firmware_version = 1;
+  repeated FirmwareVersion firmware_versions = 1;
+}
+
+message FirmwareVersion {
+  FirmwareType firmware_type = 1;
+  string version = 2;
 }
 
 message LightValue {
   RelayIndex index = 1;
   bool light_on = 2;
+}
+
+enum FirmwareType {
+  FT_NOT_SET = 0;
+  COMMUNICATION = 1;
+  FUNCTIONAL = 2;
+  SECURITY = 3;
 }
 
 enum RelayIndex{

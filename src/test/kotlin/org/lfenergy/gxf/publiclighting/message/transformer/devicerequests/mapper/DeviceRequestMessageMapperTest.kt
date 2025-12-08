@@ -16,98 +16,85 @@ import org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.Device
 
 class DeviceRequestMessageMapperTest {
     @Test
-    fun `should map get status request object message to protobuf message`() {
-        val message = MockFactory.deviceRequestObjectMessageMock(ObjectMessageType.GET_STATUS)
+    fun `should map get status request object message to protobuf message`() =
+        testDeviceRequestMapping(ObjectMessageType.GET_STATUS, RequestType.GET_STATUS_REQUEST)
 
-        val result = message.toProtobufMessage()
+    @Test
+    fun `should map reboot device request object message to protobuf message`() =
+        testDeviceRequestMapping(ObjectMessageType.SET_REBOOT, RequestType.REBOOT_REQUEST)
 
-        assertThat(result).isInstanceOf(DeviceRequestMessage::class.java)
-        assertThat(result.header.requestType).isEqualTo(RequestType.GET_STATUS_REQUEST)
-        verifyNoPayload(result)
+    @Test
+    fun `should map resume schedule device request object message to protobuf message`() =
+        testDeviceRequestMapping(ObjectMessageType.RESUME_SCHEDULE, RequestType.RESUME_SCHEDULE_REQUEST)
+
+    fun verifyResumeSchedulePayload(message: DeviceRequestMessage) {
+        assertThat(message.hasResumeScheduleRequest()).isTrue
+        assertThat(message.resumeScheduleRequest).isInstanceOf(ResumeScheduleRequest::class.java)
     }
 
     @Test
-    fun `should map reboot device request object message to protobuf message`() {
-        val message = MockFactory.deviceRequestObjectMessageMock(ObjectMessageType.SET_REBOOT)
+    fun `should map set event notification mask device request object message to protobuf message`() =
+        testDeviceRequestMapping(ObjectMessageType.SET_EVENT_NOTIFICATIONS, RequestType.SET_EVENT_NOTIFICATION_MASK_REQUEST)
 
-        val result = message.toProtobufMessage()
-
-        assertThat(result).isInstanceOf(DeviceRequestMessage::class.java)
-        assertThat(result.header.requestType).isEqualTo(RequestType.REBOOT_REQUEST)
-        verifyNoPayload(result)
+    fun verifySetEventNotificationPayload(message: DeviceRequestMessage) {
+        assertThat(message.hasSetEventNotificationMaskRequest()).isTrue
+        assertThat(message.setEventNotificationMaskRequest).isNotNull
     }
 
     @Test
-    fun `should map resume schedule device request object message to protobuf message`() {
-        val message = MockFactory.deviceRequestObjectMessageMock(ObjectMessageType.RESUME_SCHEDULE)
+    fun `should map set light device request object message to protobuf message`() =
+        testDeviceRequestMapping(ObjectMessageType.SET_LIGHT, RequestType.SET_LIGHT_REQUEST)
 
-        val result = message.toProtobufMessage()
-
-        assertThat(result).isInstanceOf(DeviceRequestMessage::class.java)
-        assertThat(result.header.requestType).isEqualTo(RequestType.RESUME_SCHEDULE_REQUEST)
-        assertThat(result.hasResumeScheduleRequest()).isTrue
-        assertThat(result.resumeScheduleRequest).isInstanceOf(ResumeScheduleRequest::class.java)
+    fun verifySetLightPayload(message: DeviceRequestMessage) {
+        assertThat(message.hasSetLightRequest()).isTrue
+        assertThat(message.setLightRequest).isInstanceOf(SetLightRequest::class.java)
     }
 
     @Test
-    fun `should map set light device request object message to protobuf message`() {
-        val message = MockFactory.deviceRequestObjectMessageMock(ObjectMessageType.SET_LIGHT)
+    fun `should map set schedule device request object message to protobuf message`() =
+        testDeviceRequestMapping(ObjectMessageType.SET_SCHEDULE, RequestType.SET_SCHEDULE_REQUEST)
 
-        val result = message.toProtobufMessage()
-
-        assertThat(result).isInstanceOf(DeviceRequestMessage::class.java)
-        assertThat(result.header.requestType).isEqualTo(RequestType.SET_LIGHT_REQUEST)
-        assertThat(result.hasSetLightRequest()).isTrue
-        assertThat(result.setLightRequest).isInstanceOf(SetLightRequest::class.java)
+    fun verifySetSchedulePayload(message: DeviceRequestMessage) {
+        assertThat(message.hasSetScheduleRequest()).isTrue
+        assertThat(message.setScheduleRequest).isInstanceOf(SetScheduleRequest::class.java)
     }
 
     @Test
-    fun `should map set schedule device request object message to protobuf message`() {
-        // Arrange
-        val message = MockFactory.deviceRequestObjectMessageMock(ObjectMessageType.SET_SCHEDULE)
+    fun `should map set transition device request object message to protobuf message`() =
+        testDeviceRequestMapping(ObjectMessageType.SET_TRANSITION, RequestType.SET_TRANSITION_REQUEST)
 
-        // Act
-        val result = message.toProtobufMessage()
-
-        // Assert
-        assertThat(result).isInstanceOf(DeviceRequestMessage::class.java)
-        assertThat(result.header.requestType).isEqualTo(RequestType.SET_SCHEDULE_REQUEST)
-        assertThat(result.hasSetScheduleRequest()).isTrue
-        assertThat(result.setScheduleRequest).isInstanceOf(SetScheduleRequest::class.java)
+    fun verifySetTransitionPayload(message: DeviceRequestMessage) {
+        assertThat(message.hasSetTransitionRequest()).isTrue
+        assertThat(message.setTransitionRequest).isNotNull
     }
 
     @Test
-    fun `should map set transition device request object message to protobuf message`() {
-        val message = MockFactory.deviceRequestObjectMessageMock(ObjectMessageType.SET_TRANSITION)
-
-        val result = message.toProtobufMessage()
-
-        assertThat(result).isInstanceOf(DeviceRequestMessage::class.java)
-        assertThat(result.header.requestType).isEqualTo(RequestType.SET_TRANSITION_REQUEST)
-        assertThat(result.hasSetTransitionRequest()).isTrue
-        assertThat(result.setTransitionRequest).isNotNull
-    }
+    fun `should map start self test device request object message to protobuf message`() =
+        testDeviceRequestMapping(ObjectMessageType.START_SELF_TEST, RequestType.START_SELF_TEST_REQUEST)
 
     @Test
-    fun `should map start self test device request object message to protobuf message`() {
-        val message = MockFactory.deviceRequestObjectMessageMock(ObjectMessageType.START_SELF_TEST)
+    fun `should map stop self test device request object message to protobuf message`() =
+        testDeviceRequestMapping(ObjectMessageType.STOP_SELF_TEST, RequestType.STOP_SELF_TEST_REQUEST)
+
+    private fun testDeviceRequestMapping(
+        inboundMessageType: ObjectMessageType,
+        expectedRequestType: RequestType,
+    ) {
+        val message = MockFactory.deviceRequestObjectMessageMock(inboundMessageType)
 
         val result = message.toProtobufMessage()
 
         assertThat(result).isInstanceOf(DeviceRequestMessage::class.java)
-        assertThat(result.header.requestType).isEqualTo(RequestType.START_SELF_TEST_REQUEST)
-        verifyNoPayload(result)
-    }
+        assertThat(result.header.requestType).isEqualTo(expectedRequestType)
 
-    @Test
-    fun `should map stop self test device request object message to protobuf message`() {
-        val message = MockFactory.deviceRequestObjectMessageMock(ObjectMessageType.STOP_SELF_TEST)
-
-        val result = message.toProtobufMessage()
-
-        assertThat(result).isInstanceOf(DeviceRequestMessage::class.java)
-        assertThat(result.header.requestType).isEqualTo(RequestType.STOP_SELF_TEST_REQUEST)
-        verifyNoPayload(result)
+        when (inboundMessageType) {
+            ObjectMessageType.RESUME_SCHEDULE -> verifyResumeSchedulePayload(result)
+            ObjectMessageType.SET_LIGHT -> verifySetLightPayload(result)
+            ObjectMessageType.SET_SCHEDULE -> verifySetSchedulePayload(result)
+            ObjectMessageType.SET_TRANSITION -> verifySetTransitionPayload(result)
+            ObjectMessageType.SET_EVENT_NOTIFICATIONS -> verifySetEventNotificationPayload(result)
+            else -> verifyNoPayload(result)
+        }
     }
 
     private fun verifyNoPayload(deviceRequestMessage: DeviceRequestMessage) {
@@ -115,5 +102,6 @@ class DeviceRequestMessageMapperTest {
         assertThat(deviceRequestMessage.hasSetScheduleRequest()).isFalse
         assertThat(deviceRequestMessage.hasSetLightRequest()).isFalse
         assertThat(deviceRequestMessage.hasSetTransitionRequest()).isFalse
+        assertThat(deviceRequestMessage.hasSetEventNotificationMaskRequest()).isFalse
     }
 }

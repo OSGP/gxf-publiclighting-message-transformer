@@ -59,10 +59,21 @@ class DeviceResponsesSteps(
             assertThat(this.result).isNotNull().isEqualTo(ResponseMessageResultType.OK)
 
             when (objectMessageType) {
+                ObjectMessageType.GET_FIRMWARE_VERSION -> verifyGetFirmwareVersionResponse(this.dataObject)
                 ObjectMessageType.GET_STATUS -> verifyGetStatusResponse(this.dataObject)
                 else -> assertThat(this.dataObject).isNull()
             }
         }
+    }
+
+    private fun verifyGetFirmwareVersionResponse(serializedDataObject: Serializable?) {
+        assertThat(serializedDataObject).isNotNull().isInstanceOf(List::class.java)
+        val firmwareVersions = serializedDataObject as List<*>
+        assertThat(firmwareVersions).isNotEmpty
+        assertThat(firmwareVersions[0]).isInstanceOf(org.opensmartgridplatform.dto.valueobjects.FirmwareVersionDto::class.java)
+        val firmwareVersion = firmwareVersions[0] as org.opensmartgridplatform.dto.valueobjects.FirmwareVersionDto
+        assertThat(firmwareVersion.firmwareModuleType).isEqualTo(org.opensmartgridplatform.dto.valueobjects.FirmwareModuleType.FUNCTIONAL)
+        assertThat(firmwareVersion.version).isEqualTo("0.9.0")
     }
 
     private fun verifyGetStatusResponse(serializedDataObject: Serializable?) {

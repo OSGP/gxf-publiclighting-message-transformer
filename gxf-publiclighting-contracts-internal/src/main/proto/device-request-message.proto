@@ -71,7 +71,7 @@ message SetTransitionRequest {
 }
 
 message SetEventNotificationMaskRequest {
-  uint32 notification_mask = 1; // Bitmask for max 32 events, using NotificationBit for bit positions
+  repeated NotificationType notification_types = 1;
 }
 
 message SetConfigurationRequest {
@@ -141,4 +141,16 @@ enum RelayIndex{
 enum TransitionType {
   SUNRISE = 0;
   SUNSET = 1;
+}
+
+enum NotificationType {
+  NT_NOT_SET = 0;
+  DIAG_EVENTS = 1;
+  HARDWARE_FAILURE = 2;
+  LIGHT_EVENTS = 4;      // For example LightValue changes.
+  TARIFF_EVENTS = 8;     // For example Tariff changes.
+  MONITOR_EVENTS = 16;   // For example monitor buffer is almost full.
+  FIRMWARE_EVENTS = 32;  // For example firmware activation.
+  COMM_EVENTS = 64;      // For example alternative channel.
+  SECURITY_EVENTS = 128; // For example out of sequence.
 }

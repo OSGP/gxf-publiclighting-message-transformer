@@ -61,9 +61,11 @@ class DeviceRequestsSteps(
     @Then("the device request bytes message should contain a valid {requestType} request")
     fun thenBytesMessageShouldContainRequest(expectedRequestType: RequestType) {
         when (expectedRequestType) {
+            RequestType.GET_FIRMWARE_VERSION_REQUEST -> verifyEmptyRequest(RequestType.GET_FIRMWARE_VERSION_REQUEST)
             RequestType.GET_STATUS_REQUEST -> verifyEmptyRequest(RequestType.GET_STATUS_REQUEST)
             RequestType.REBOOT_REQUEST -> verifyEmptyRequest(RequestType.REBOOT_REQUEST)
             RequestType.RESUME_SCHEDULE_REQUEST -> verifyResumeScheduleRequest()
+            RequestType.SET_EVENT_NOTIFICATION_MASK_REQUEST -> verifySetEventNotificationMaskRequest()
             RequestType.SET_LIGHT_REQUEST -> verifySetLightRequest()
             RequestType.SET_SCHEDULE_REQUEST -> verifySetScheduleRequest()
             RequestType.SET_TRANSITION_REQUEST -> verifySetTransitionRequest()
@@ -86,6 +88,14 @@ class DeviceRequestsSteps(
             assertThat(this).isNotNull.isInstanceOf(DeviceRequestMessage::class.java)
             verifyHeader(this!!.header, RequestType.RESUME_SCHEDULE_REQUEST)
             verifyResumeSchedulePayload(this)
+        }
+    }
+
+    private fun verifySetEventNotificationMaskRequest() {
+        with(scenarioContext.outboundRequestMessage) {
+            assertThat(this).isNotNull.isInstanceOf(DeviceRequestMessage::class.java)
+            verifyHeader(this!!.header, RequestType.SET_EVENT_NOTIFICATION_MASK_REQUEST)
+            verifySetEventNotificationMaskPayload(this)
         }
     }
 
@@ -166,6 +176,14 @@ class DeviceRequestsSteps(
         with(message.getResumeScheduleRequest()) {
             assertThat(this).isNotNull
             assertThat(immediate).isTrue
+        }
+    }
+
+    private fun verifySetEventNotificationMaskPayload(message: DeviceRequestMessage) {
+        assertThat(message.hasSetEventNotificationMaskRequest()).isTrue
+        with(message.getSetEventNotificationMaskRequest()) {
+            assertThat(this).isNotNull
+            assertThat(this.notificationTypesList).isNotEmpty().hasSize(3)
         }
     }
 

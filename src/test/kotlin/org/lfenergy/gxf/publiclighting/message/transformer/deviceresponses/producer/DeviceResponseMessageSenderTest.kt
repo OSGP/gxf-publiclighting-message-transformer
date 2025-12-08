@@ -18,13 +18,14 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.DeviceResponseMessage
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.ResponseType
-import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_DEVICE_IDENTIFICATION
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_ORGANIZATION_IDENTIFICATION
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.DeviceResponseMessageFactory
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.config.DeviceResponsesConfigurationProperties
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.mapper.DeviceResponseMessageMapper.toDto
+import org.opensmartgridplatform.dto.valueobjects.ConfigurationDto
 import org.opensmartgridplatform.dto.valueobjects.DeviceStatusDto
+import org.opensmartgridplatform.dto.valueobjects.FirmwareVersionDto
 import org.opensmartgridplatform.shared.infra.jms.ProtocolResponseMessage
 import org.opensmartgridplatform.shared.infra.jms.ResponseMessageResultType
 import org.springframework.boot.test.system.CapturedOutput
@@ -63,41 +64,41 @@ class DeviceResponseMessageSenderTest {
     }
 
     @Test
-    fun `should send get status protocol response message`() {
-        message = DeviceResponseMessageFactory.protobufMessageForResponseOfType(ResponseType.GET_STATUS_RESPONSE)
-
-        deviceResponseMessageSender.send(message)
-
-        verifyObjectMessage()
-        verifyProtocolResponseMessageForGetStatusResponse()
-    }
+    fun `should send get firmware version protocol response message`() =
+        testProtocolResponseMessageForResponseType(ResponseType.GET_FIRMWARE_VERSION_RESPONSE)
 
     @Test
-    fun `should send reboot response protocol message`() = testEmptyProtocolResponseMessageForResponseType(ResponseType.REBOOT_RESPONSE)
+    fun `should send get status protocol response message`() = testProtocolResponseMessageForResponseType(ResponseType.GET_STATUS_RESPONSE)
+
+    @Test
+    fun `should send reboot response protocol message`() = testProtocolResponseMessageForResponseType(ResponseType.REBOOT_RESPONSE)
 
     @Test
     fun `should send resume schedule response protocol message`() =
-        testEmptyProtocolResponseMessageForResponseType(ResponseType.RESUME_SCHEDULE_RESPONSE)
+        testProtocolResponseMessageForResponseType(ResponseType.RESUME_SCHEDULE_RESPONSE)
 
     @Test
-    fun `should send set light protocol response message`() =
-        testEmptyProtocolResponseMessageForResponseType(ResponseType.SET_LIGHT_RESPONSE)
+    fun `should send set event notification mask protocol response message`() =
+        testProtocolResponseMessageForResponseType(ResponseType.SET_EVENT_NOTIFICATION_MASK_RESPONSE)
+
+    @Test
+    fun `should send set light protocol response message`() = testProtocolResponseMessageForResponseType(ResponseType.SET_LIGHT_RESPONSE)
 
     @Test
     fun `should send set schedule response object message`() =
-        testEmptyProtocolResponseMessageForResponseType(ResponseType.SET_SCHEDULE_RESPONSE)
+        testProtocolResponseMessageForResponseType(ResponseType.SET_SCHEDULE_RESPONSE)
 
     @Test
     fun `should send set transition protocol response message`() =
-        testEmptyProtocolResponseMessageForResponseType(ResponseType.SET_TRANSITION_RESPONSE)
+        testProtocolResponseMessageForResponseType(ResponseType.SET_TRANSITION_RESPONSE)
 
     @Test
     fun `should send start self test protocol response message`() =
-        testEmptyProtocolResponseMessageForResponseType(ResponseType.START_SELF_TEST_RESPONSE)
+        testProtocolResponseMessageForResponseType(ResponseType.START_SELF_TEST_RESPONSE)
 
     @Test
     fun `should send stop self test protocol response message`() =
-        testEmptyProtocolResponseMessageForResponseType(ResponseType.STOP_SELF_TEST_RESPONSE)
+        testProtocolResponseMessageForResponseType(ResponseType.STOP_SELF_TEST_RESPONSE)
 
     @Test
     fun `should log unrecognized protobuf event and not send dto`(capturedOutput: CapturedOutput) {
@@ -113,13 +114,13 @@ class DeviceResponseMessageSenderTest {
             .contains("Unsupported message type: UNRECOGNIZED")
     }
 
-    fun testEmptyProtocolResponseMessageForResponseType(responseType: ResponseType) {
+    private fun testProtocolResponseMessageForResponseType(responseType: ResponseType) {
         message = DeviceResponseMessageFactory.protobufMessageForResponseOfType(responseType)
 
         deviceResponseMessageSender.send(message)
 
         verifyObjectMessage()
-        verifyEmptyProtocolResponseMessageForResponseType(responseType)
+        verifyProtocolResponseMessage(responseType)
     }
 
     private fun verifyObjectMessage() {
@@ -149,29 +150,28 @@ class DeviceResponseMessageSenderTest {
         this.protocolResponseMessage = responseMessage!!
     }
 
-    private fun verifyProtocolResponseMessageForGetStatusResponse() {
-        with(protocolResponseMessage) {
-            assertThat(correlationUid).isEqualTo(message.header.correlationUid)
-            assertThat(deviceIdentification).isEqualTo(message.header.deviceIdentification)
-            assertThat(organisationIdentification).isEqualTo(message.header.organizationIdentification)
-            assertThat(messageType).isEqualTo(ObjectMessageType.GET_STATUS.name)
-            assertThat(result).isEqualTo(ResponseMessageResultType.OK)
-            assertThat(dataObject).isNotNull().isInstanceOf(DeviceStatusDto::class.java)
-//            with(dataObject as DeviceStatusDto) {
-//                assertThat().isEqualTo()
-//            }
-        }
-    }
-
-    private fun verifyEmptyProtocolResponseMessageForResponseType(responseType: ResponseType) {
+    private fun verifyProtocolResponseMessage(responseType: ResponseType) {
         with(protocolResponseMessage) {
             assertThat(correlationUid).isEqualTo(message.header.correlationUid)
             assertThat(deviceIdentification).isEqualTo(message.header.deviceIdentification)
             assertThat(organisationIdentification).isEqualTo(message.header.organizationIdentification)
             assertThat(messageType).isEqualTo(responseType.toDto())
             assertThat(result).isEqualTo(ResponseMessageResultType.OK)
-            assertThat(dataObject).isNull()
+
+            when (responseType) {
+                ResponseType.GET_FIRMWARE_VERSION_RESPONSE -> verifyFirmwareVersionResponse(dataObject)
+                ResponseType.GET_STATUS_RESPONSE -> assertThat(dataObject).isNotNull.isInstanceOf(DeviceStatusDto::class.java)
+                ResponseType.GET_CONFIGURATION_RESPONSE -> assertThat(dataObject).isNotNull.isInstanceOf(ConfigurationDto::class.java)
+                else -> assertThat(dataObject).isNull()
+            }
         }
+    }
+
+    private fun verifyFirmwareVersionResponse(dataObject: Serializable?) {
+        assertThat(dataObject).isNotNull().isInstanceOf(List::class.java)
+        val firmwareVersions = dataObject as List<*>
+        assertThat(firmwareVersions).isNotEmpty.hasSize(1)
+        assertThat(firmwareVersions[0]).isInstanceOf(FirmwareVersionDto::class.java)
     }
 
     companion object {

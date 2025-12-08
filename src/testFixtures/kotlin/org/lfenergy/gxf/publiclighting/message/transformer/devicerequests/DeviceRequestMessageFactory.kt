@@ -4,6 +4,7 @@
 package org.lfenergy.gxf.publiclighting.message.transformer.devicerequests
 
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.ActionTime
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.NotificationType
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.RelayIndex
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.RequestType
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.TransitionType
@@ -14,6 +15,7 @@ import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.lightV
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.requestHeader
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.resumeScheduleRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.scheduleEntry
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.setEventNotificationMaskRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.setLightRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.setScheduleRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.setTransitionRequest
@@ -24,51 +26,16 @@ import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.SIX_AM
 
 object DeviceRequestMessageFactory {
     fun deviceRequestMessage(requestType: RequestType) =
-        when (requestType) {
-            RequestType.GET_STATUS_REQUEST -> emptyDeviceRequestMessage(RequestType.GET_STATUS_REQUEST)
-            RequestType.REBOOT_REQUEST -> emptyDeviceRequestMessage(RequestType.REBOOT_REQUEST)
-            RequestType.RESUME_SCHEDULE_REQUEST -> resumeScheduleDeviceRequestMessage()
-            RequestType.SET_LIGHT_REQUEST -> setLightDeviceRequestMessage()
-            RequestType.SET_SCHEDULE_REQUEST -> setScheduleDeviceRequestMessage()
-            RequestType.SET_TRANSITION_REQUEST -> setTransitionDeviceRequestMessage()
-            RequestType.START_SELF_TEST_REQUEST -> emptyDeviceRequestMessage(RequestType.START_SELF_TEST_REQUEST)
-            RequestType.STOP_SELF_TEST_REQUEST -> emptyDeviceRequestMessage(RequestType.STOP_SELF_TEST_REQUEST)
-            else -> throw IllegalArgumentException("Unsupported request type: $requestType")
-        }
-
-    private fun emptyDeviceRequestMessage(requestType: RequestType) =
         deviceRequestMessage {
             header = requestHeader(requestType)
-        }
-
-    private fun resumeScheduleDeviceRequestMessage() =
-        deviceRequestMessage {
-            header = requestHeader(RequestType.RESUME_SCHEDULE_REQUEST)
-            resumeScheduleRequest =
-                resumeScheduleRequest {
-                    immediate = true
-                }
-        }
-
-    private fun setLightDeviceRequestMessage() =
-        deviceRequestMessage {
-            header = requestHeader(RequestType.SET_LIGHT_REQUEST)
-            setLightRequest = setLightRequest()
-        }
-
-    private fun setScheduleDeviceRequestMessage() =
-        deviceRequestMessage {
-            header = requestHeader(RequestType.SET_SCHEDULE_REQUEST)
-            setScheduleRequest = setScheduleRequest()
-        }
-
-    private fun setTransitionDeviceRequestMessage() =
-        deviceRequestMessage {
-            header = requestHeader(RequestType.SET_TRANSITION_REQUEST)
-            setTransitionRequest =
-                setTransitionRequest {
-                    transitionType = TransitionType.SUNSET
-                }
+            when (requestType) {
+                RequestType.RESUME_SCHEDULE_REQUEST -> resumeScheduleRequest()
+                RequestType.SET_EVENT_NOTIFICATION_MASK_REQUEST -> setEventNotificationMaskRequest()
+                RequestType.SET_LIGHT_REQUEST -> setLightRequest()
+                RequestType.SET_SCHEDULE_REQUEST -> setScheduleRequest()
+                RequestType.SET_TRANSITION_REQUEST -> setTransitionRequest()
+                else -> {} // no payload
+            }
         }
 
     private fun requestHeader(type: RequestType) =
@@ -80,6 +47,27 @@ object DeviceRequestMessageFactory {
             domain = TestConstants.DOMAIN
             domainVersion = TestConstants.DOMAIN_VERSION
             requestType = type
+        }
+
+    private fun resumeScheduleRequest() =
+        resumeScheduleRequest {
+            immediate = true
+        }
+
+    private fun setEventNotificationMaskRequest() =
+        setEventNotificationMaskRequest {
+            notificationTypes.addAll(
+                listOf(
+                    NotificationType.DIAG_EVENTS,
+                    NotificationType.LIGHT_EVENTS,
+                    NotificationType.SECURITY_EVENTS,
+                ),
+            )
+        }
+
+    private fun setTransitionRequest() =
+        setTransitionRequest {
+            transitionType = TransitionType.SUNSET
         }
 
     private fun setLightRequest() =

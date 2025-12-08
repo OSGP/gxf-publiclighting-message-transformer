@@ -9,54 +9,56 @@ import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.Respo
 import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.DeviceResponseMessageFactory
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.mapper.DeviceResponseMessageMapper.toResponseDto
+import org.opensmartgridplatform.dto.valueobjects.ConfigurationDto
 import org.opensmartgridplatform.dto.valueobjects.DeviceStatusDto
 import org.opensmartgridplatform.shared.infra.jms.ProtocolResponseMessage
 import org.opensmartgridplatform.shared.infra.jms.ResponseMessageResultType
 
 class DeviceResponseMessageMapperTest {
     @Test
-    fun `should create get status protocol response message dto from protobuf message`() {
-        // Arrange
-        val message = DeviceResponseMessageFactory.protobufMessageForResponseOfType(ResponseType.GET_STATUS_RESPONSE)
+    fun `should create get firmware version protocol response message dto from protobuf message`() =
+        verifyResponseMessageCreated(ResponseType.GET_FIRMWARE_VERSION_RESPONSE, ObjectMessageType.GET_FIRMWARE_VERSION)
 
-        // Act
-        val result = message.toResponseDto()
-
-        // Assert
-        assertThat(result).isInstanceOf(ProtocolResponseMessage::class.java)
-        assertThat(result.result).isEqualTo(ResponseMessageResultType.OK)
-        assertThat(result.dataObject).isNotNull().isInstanceOf(DeviceStatusDto::class.java)
-    }
+    @Test
+    fun `should create get status protocol response message dto from protobuf message`() =
+        verifyResponseMessageCreated(ResponseType.GET_STATUS_RESPONSE, ObjectMessageType.GET_STATUS)
 
     @Test
     fun `should create resume schedule protocol response message dto from protobuf message`() =
-        verifyEmptyResponseMessageCreated(ResponseType.RESUME_SCHEDULE_RESPONSE, ObjectMessageType.RESUME_SCHEDULE)
+        verifyResponseMessageCreated(ResponseType.RESUME_SCHEDULE_RESPONSE, ObjectMessageType.RESUME_SCHEDULE)
+
+    @Test
+    fun `should create set event notification mask protocol response message dto from protobuf message`() =
+        verifyResponseMessageCreated(
+            ResponseType.SET_EVENT_NOTIFICATION_MASK_RESPONSE,
+            ObjectMessageType.SET_EVENT_NOTIFICATIONS,
+        )
 
     @Test
     fun `should create set light protocol response message dto from protobuf message`() =
-        verifyEmptyResponseMessageCreated(ResponseType.SET_LIGHT_RESPONSE, ObjectMessageType.SET_LIGHT)
+        verifyResponseMessageCreated(ResponseType.SET_LIGHT_RESPONSE, ObjectMessageType.SET_LIGHT)
 
     @Test
     fun `should create set reboot protocol response message dto from protobuf message`() =
-        verifyEmptyResponseMessageCreated(ResponseType.REBOOT_RESPONSE, ObjectMessageType.SET_REBOOT)
+        verifyResponseMessageCreated(ResponseType.REBOOT_RESPONSE, ObjectMessageType.SET_REBOOT)
 
     @Test
     fun `should create set schedule protocol response message dto from protobuf message`() =
-        verifyEmptyResponseMessageCreated(ResponseType.SET_SCHEDULE_RESPONSE, ObjectMessageType.SET_SCHEDULE)
+        verifyResponseMessageCreated(ResponseType.SET_SCHEDULE_RESPONSE, ObjectMessageType.SET_SCHEDULE)
 
     @Test
     fun `should create set transition protocol response message dto from protobuf message`() =
-        verifyEmptyResponseMessageCreated(ResponseType.SET_TRANSITION_RESPONSE, ObjectMessageType.SET_TRANSITION)
+        verifyResponseMessageCreated(ResponseType.SET_TRANSITION_RESPONSE, ObjectMessageType.SET_TRANSITION)
 
     @Test
     fun `should create start self test protocol response message dto from protobuf message`() =
-        verifyEmptyResponseMessageCreated(ResponseType.START_SELF_TEST_RESPONSE, ObjectMessageType.START_SELF_TEST)
+        verifyResponseMessageCreated(ResponseType.START_SELF_TEST_RESPONSE, ObjectMessageType.START_SELF_TEST)
 
     @Test
     fun `should create stop self test protocol response message dto from protobuf message`() =
-        verifyEmptyResponseMessageCreated(ResponseType.STOP_SELF_TEST_RESPONSE, ObjectMessageType.STOP_SELF_TEST)
+        verifyResponseMessageCreated(ResponseType.STOP_SELF_TEST_RESPONSE, ObjectMessageType.STOP_SELF_TEST)
 
-    private fun verifyEmptyResponseMessageCreated(
+    private fun verifyResponseMessageCreated(
         inboundResponseType: ResponseType,
         outboundMessageType: ObjectMessageType,
     ) {
@@ -67,6 +69,12 @@ class DeviceResponseMessageMapperTest {
         assertThat(result).isInstanceOf(ProtocolResponseMessage::class.java)
         assertThat(result.result).isEqualTo(ResponseMessageResultType.OK)
         assertThat(result.messageType).isEqualTo(outboundMessageType.name)
-        assertThat(result.dataObject).isNull()
+
+        when (inboundResponseType) {
+            ResponseType.GET_FIRMWARE_VERSION_RESPONSE -> assertThat(result.dataObject).isNotNull.isInstanceOf(List::class.java)
+            ResponseType.GET_STATUS_RESPONSE -> assertThat(result.dataObject).isNotNull.isInstanceOf(DeviceStatusDto::class.java)
+            ResponseType.GET_CONFIGURATION_RESPONSE -> assertThat(result.dataObject).isNotNull.isInstanceOf(ConfigurationDto::class.java)
+            else -> assertThat(result.dataObject).isNull()
+        }
     }
 }

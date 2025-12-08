@@ -3,6 +3,8 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.mapper
 
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.FirmwareType
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.GetFirmwareVersionResponse
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.GetStatusResponse
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.LightType
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.LinkType
@@ -10,6 +12,8 @@ import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.Relay
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.ResponseType
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.Result
 import org.opensmartgridplatform.dto.valueobjects.DeviceStatusDto
+import org.opensmartgridplatform.dto.valueobjects.FirmwareModuleType
+import org.opensmartgridplatform.dto.valueobjects.FirmwareVersionDto
 import org.opensmartgridplatform.dto.valueobjects.LightTypeDto
 import org.opensmartgridplatform.dto.valueobjects.LightValueDto
 import org.opensmartgridplatform.dto.valueobjects.LinkTypeDto
@@ -62,9 +66,11 @@ object DeviceResponseMessageMapper {
         }
 
         return when (this.header.responseType) {
+            ResponseType.GET_FIRMWARE_VERSION_RESPONSE -> this.getFirmwareVersionResponse.toDto()
             ResponseType.GET_STATUS_RESPONSE -> this.getStatusResponse.toDto()
             ResponseType.REBOOT_RESPONSE -> null
             ResponseType.RESUME_SCHEDULE_RESPONSE -> null
+            ResponseType.SET_EVENT_NOTIFICATION_MASK_RESPONSE -> null
             ResponseType.SET_LIGHT_RESPONSE -> null
             ResponseType.SET_SCHEDULE_RESPONSE -> null
             ResponseType.SET_TRANSITION_RESPONSE -> null
@@ -73,6 +79,22 @@ object DeviceResponseMessageMapper {
             else -> throw IllegalArgumentException("Unsupported message type: ${this.header.responseType}")
         }
     }
+
+    private fun GetFirmwareVersionResponse.toDto(): Serializable =
+        this.firmwareVersionsList.map {
+            FirmwareVersionDto(
+                it.firmwareType.toDto(),
+                it.version,
+            )
+        } as Serializable
+
+    private fun FirmwareType.toDto(): FirmwareModuleType =
+        when (this) {
+            FirmwareType.COMMUNICATION -> FirmwareModuleType.COMMUNICATION
+            FirmwareType.FUNCTIONAL -> FirmwareModuleType.FUNCTIONAL
+            FirmwareType.SECURITY -> FirmwareModuleType.SECURITY
+            else -> throw IllegalArgumentException("Unsupported firmware type: $this")
+        }
 
     private fun GetStatusResponse.toDto(): DeviceStatusDto =
         DeviceStatusDto(
@@ -127,9 +149,11 @@ object DeviceResponseMessageMapper {
 
     fun ResponseType.toDto() =
         when (this) {
+            ResponseType.GET_FIRMWARE_VERSION_RESPONSE -> "GET_FIRMWARE_VERSION"
             ResponseType.GET_STATUS_RESPONSE -> "GET_STATUS"
             ResponseType.REBOOT_RESPONSE -> "SET_REBOOT"
             ResponseType.RESUME_SCHEDULE_RESPONSE -> "RESUME_SCHEDULE"
+            ResponseType.SET_EVENT_NOTIFICATION_MASK_RESPONSE -> "SET_EVENT_NOTIFICATIONS"
             ResponseType.SET_LIGHT_RESPONSE -> "SET_LIGHT"
             ResponseType.SET_SCHEDULE_RESPONSE -> "SET_SCHEDULE"
             ResponseType.SET_TRANSITION_RESPONSE -> "SET_TRANSITION"

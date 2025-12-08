@@ -30,6 +30,10 @@ class DeviceRequestMessageListenerTest {
     lateinit var deviceRequestMessageListener: DeviceRequestMessageListener
 
     @Test
+    fun `should handle get firmware version device request message`() =
+        testEmptyRequest(ObjectMessageType.GET_FIRMWARE_VERSION, RequestType.GET_FIRMWARE_VERSION_REQUEST)
+
+    @Test
     fun `should handle get status device request message`() = testEmptyRequest(ObjectMessageType.GET_STATUS, RequestType.GET_STATUS_REQUEST)
 
     @Test
@@ -46,6 +50,25 @@ class DeviceRequestMessageListenerTest {
                     assertThat(it.header.requestType).isEqualTo(RequestType.RESUME_SCHEDULE_REQUEST)
                     assertThat(it.hasResumeScheduleRequest()).isTrue
                     assertThat(it.resumeScheduleRequest).isNotNull
+                },
+            )
+        }
+    }
+
+    @Test
+    fun `should handle set event notification mask device request message`() {
+        val message = MockFactory.deviceRequestObjectMessageMock(ObjectMessageType.SET_EVENT_NOTIFICATIONS)
+        every { deviceRequestMessageSender.send(any<DeviceRequestMessage>()) } just Runs
+
+        deviceRequestMessageListener.onMessage(message)
+
+        verify {
+            deviceRequestMessageSender.send(
+                withArg {
+                    assertThat(it).isInstanceOf(DeviceRequestMessage::class.java)
+                    assertThat(it.header.requestType).isEqualTo(RequestType.SET_EVENT_NOTIFICATION_MASK_REQUEST)
+                    assertThat(it.hasSetEventNotificationMaskRequest()).isTrue
+                    assertThat(it.setEventNotificationMaskRequest).isNotNull
                 },
             )
         }

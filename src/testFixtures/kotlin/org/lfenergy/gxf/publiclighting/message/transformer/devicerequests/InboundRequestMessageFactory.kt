@@ -15,6 +15,8 @@ import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.RELAY_T
 import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.RELAY_TWO
 import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.SIX_AM
 import org.opensmartgridplatform.dto.valueobjects.ActionTimeTypeDto
+import org.opensmartgridplatform.dto.valueobjects.EventNotificationMessageDataContainerDto
+import org.opensmartgridplatform.dto.valueobjects.EventNotificationTypeDto
 import org.opensmartgridplatform.dto.valueobjects.LightValueDto
 import org.opensmartgridplatform.dto.valueobjects.LightValueMessageDataContainerDto
 import org.opensmartgridplatform.dto.valueobjects.ResumeScheduleMessageDataContainerDto
@@ -36,13 +38,22 @@ object InboundRequestMessageFactory {
             null,
             null,
             when (requestType) {
-                ObjectMessageType.GET_STATUS -> null
                 ObjectMessageType.RESUME_SCHEDULE -> setResumeScheduleRequestPayload()
+                ObjectMessageType.SET_EVENT_NOTIFICATIONS -> setEventNotificationsRequestPayload()
                 ObjectMessageType.SET_LIGHT -> setLightRequestPayload()
                 ObjectMessageType.SET_SCHEDULE -> setScheduleRequestPayload()
                 ObjectMessageType.SET_TRANSITION -> setTransitionRequestPayload()
-                else -> null
+                else -> null // no payload for other types
             },
+        )
+
+    fun setEventNotificationsRequestPayload() =
+        EventNotificationMessageDataContainerDto(
+            listOf(
+                EventNotificationTypeDto.DIAG_EVENTS,
+                EventNotificationTypeDto.LIGHT_EVENTS,
+                EventNotificationTypeDto.SECURITY_EVENTS,
+            ),
         )
 
     fun setLightRequestPayload() =

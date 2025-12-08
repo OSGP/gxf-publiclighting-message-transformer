@@ -32,6 +32,11 @@ class DeviceResponseMessageListenerTest {
     lateinit var deviceResponseMessageListener: DeviceResponseMessageListener
 
     @Test
+    fun `should handle get firmware version device response message`() {
+        testResponse(ResponseType.GET_FIRMWARE_VERSION_RESPONSE)
+    }
+
+    @Test
     fun `should handle get status device response message`() {
         testResponse(ResponseType.GET_STATUS_RESPONSE)
     }
@@ -44,6 +49,11 @@ class DeviceResponseMessageListenerTest {
     @Test
     fun `should handle resume schedule device response message`() {
         testResponse(ResponseType.RESUME_SCHEDULE_RESPONSE)
+    }
+
+    @Test
+    fun `should handle set event notification mask device response message`() {
+        testResponse(ResponseType.SET_EVENT_NOTIFICATION_MASK_RESPONSE)
     }
 
     @Test
@@ -83,7 +93,9 @@ class DeviceResponseMessageListenerTest {
                 withArg {
                     assertThat(it).isInstanceOf(DeviceResponseMessage::class.java).isEqualTo(response)
                     when (responseType) {
+                        ResponseType.GET_FIRMWARE_VERSION_RESPONSE -> assertThat(it.hasGetFirmwareVersionResponse()).isTrue
                         ResponseType.GET_STATUS_RESPONSE -> assertThat(it.hasGetStatusResponse()).isTrue
+                        ResponseType.GET_CONFIGURATION_RESPONSE -> assertThat(it.hasGetConfigurationResponse()).isTrue
                         else -> {} // do nothing
                     }
                 },

@@ -50,6 +50,11 @@ class DeviceRequestMessageSenderTest {
     }
 
     @Test
+    fun `should send protobuf bytes message for get firmware version request`() {
+        verifyBytesMessageIsSentForRequestType(RequestType.GET_FIRMWARE_VERSION_REQUEST)
+    }
+
+    @Test
     fun `should send protobuf bytes message for get status request`() {
         verifyBytesMessageIsSentForRequestType(RequestType.GET_STATUS_REQUEST)
     }
@@ -62,6 +67,11 @@ class DeviceRequestMessageSenderTest {
     @Test
     fun `should send protobuf bytes message for resume schedule request`() {
         verifyBytesMessageIsSentForRequestType(RequestType.RESUME_SCHEDULE_REQUEST)
+    }
+
+    @Test
+    fun `should send protobuf bytes message for set event notifications request`() {
+        verifyBytesMessageIsSentForRequestType(RequestType.SET_EVENT_NOTIFICATION_MASK_REQUEST)
     }
 
     @Test

@@ -8,10 +8,12 @@ import org.joda.time.DateTime
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.ActionTime
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.DeviceRequestMessage
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.LightValue
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.NotificationType
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.RelayIndex
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.RequestType
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.ResumeScheduleRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.ScheduleEntry
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.SetEventNotificationMaskRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.SetLightRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.SetScheduleRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.SetTransitionRequest
@@ -24,6 +26,7 @@ import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.lightV
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.requestHeader
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.resumeScheduleRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.scheduleEntry
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.setEventNotificationMaskRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.setLightRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.setScheduleRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.setTransitionRequest
@@ -32,6 +35,8 @@ import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationCon
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_NETWORK_ADDRESS
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_ORGANIZATION_IDENTIFICATION
 import org.opensmartgridplatform.dto.valueobjects.ActionTimeTypeDto
+import org.opensmartgridplatform.dto.valueobjects.EventNotificationMessageDataContainerDto
+import org.opensmartgridplatform.dto.valueobjects.EventNotificationTypeDto
 import org.opensmartgridplatform.dto.valueobjects.LightValueDto
 import org.opensmartgridplatform.dto.valueobjects.LightValueMessageDataContainerDto
 import org.opensmartgridplatform.dto.valueobjects.ResumeScheduleMessageDataContainerDto
@@ -47,7 +52,8 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 object DeviceRequestMessageMapper {
-    val hhmmssFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HHmmss")
+    val TIME_FORMAT = "HHmmss"
+    val hhmmssFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(TIME_FORMAT)
 
     fun ObjectMessage.toProtobufMessage(): DeviceRequestMessage {
         val message = this
@@ -63,18 +69,28 @@ object DeviceRequestMessageMapper {
                     requestType = messageType
                 }
             when (messageType) {
-                RequestType.GET_STATUS_REQUEST -> { /* No payload for get status request */ }
-                RequestType.REBOOT_REQUEST -> { /* No payload for reboot request */ }
+                RequestType.GET_FIRMWARE_VERSION_REQUEST,
+                RequestType.GET_STATUS_REQUEST,
+                RequestType.REBOOT_REQUEST,
+                RequestType.START_SELF_TEST_REQUEST,
+                RequestType.STOP_SELF_TEST_REQUEST,
+                -> {
+                } // No payload for these requests
+                RequestType.SET_EVENT_NOTIFICATION_MASK_REQUEST ->
+                    setEventNotificationMaskRequest =
+                        (message.`object` as EventNotificationMessageDataContainerDto).toProtobufMessage()
                 RequestType.RESUME_SCHEDULE_REQUEST ->
-                    resumeScheduleRequest =
-                        (`object` as ResumeScheduleMessageDataContainerDto).toProtobufMessage()
-                RequestType.SET_LIGHT_REQUEST -> setLightRequest = (`object` as LightValueMessageDataContainerDto).toProtobufMessage()
-                RequestType.SET_SCHEDULE_REQUEST -> setScheduleRequest = (`object` as ScheduleDto).toProtobufMessage()
+                    resumeScheduleRequest = (`object` as ResumeScheduleMessageDataContainerDto).toProtobufMessage()
+
+                RequestType.SET_LIGHT_REQUEST ->
+                    setLightRequest = (`object` as LightValueMessageDataContainerDto).toProtobufMessage()
+
+                RequestType.SET_SCHEDULE_REQUEST ->
+                    setScheduleRequest = (`object` as ScheduleDto).toProtobufMessage()
+
                 RequestType.SET_TRANSITION_REQUEST ->
-                    setTransitionRequest =
-                        (`object` as TransitionMessageDataContainerDto).toProtobufMessage()
-                RequestType.START_SELF_TEST_REQUEST -> { /* No payload for start self test request */ }
-                RequestType.STOP_SELF_TEST_REQUEST -> { /* No payload for stop self test request */ }
+                    setTransitionRequest = (`object` as TransitionMessageDataContainerDto).toProtobufMessage()
+
                 else -> throw IllegalArgumentException("Unsupported message type: $jmsType")
             }
         }
@@ -82,8 +98,10 @@ object DeviceRequestMessageMapper {
 
     fun String.toProtobufRequestType() =
         when (this) {
+            "GET_FIRMWARE_VERSION" -> RequestType.GET_FIRMWARE_VERSION_REQUEST
             "GET_STATUS" -> RequestType.GET_STATUS_REQUEST
             "RESUME_SCHEDULE" -> RequestType.RESUME_SCHEDULE_REQUEST
+            "SET_EVENT_NOTIFICATIONS" -> RequestType.SET_EVENT_NOTIFICATION_MASK_REQUEST
             "SET_LIGHT" -> RequestType.SET_LIGHT_REQUEST
             "SET_REBOOT" -> RequestType.REBOOT_REQUEST
             "SET_SCHEDULE" -> RequestType.SET_SCHEDULE_REQUEST
@@ -92,6 +110,15 @@ object DeviceRequestMessageMapper {
             "STOP_SELF_TEST" -> RequestType.STOP_SELF_TEST_REQUEST
             else -> throw IllegalArgumentException("Unsupported message type: $this")
         }
+
+    fun EventNotificationMessageDataContainerDto.toProtobufMessage(): SetEventNotificationMaskRequest {
+        val dto = this
+        return setEventNotificationMaskRequest {
+            notificationTypes.addAll(dto.eventNotifications.map { it.toProtobuf() })
+        }
+    }
+
+    fun EventNotificationTypeDto.toProtobuf() = NotificationType.valueOf(this.name)
 
     fun LightValueMessageDataContainerDto.toProtobufMessage(): SetLightRequest {
         val dto = this
@@ -172,7 +199,7 @@ object DeviceRequestMessageMapper {
         }
     }
 
-    fun DateTime.toProtobuf(): String = this.toString("HHmmss")
+    fun DateTime.toProtobuf(): String = this.toString(TIME_FORMAT)
 
     fun WeekDayTypeDto.toProtobuf() =
         when (this) {

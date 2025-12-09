@@ -3,7 +3,8 @@ assertJ = "3.27.6"
 cucumber = "7.32.0"
 dependencyManagement = "1.1.7"
 gradleWrapperUpgrade = "0.12"
-jodaTime = "2.14.0" # Needed for compatibiility with OSGP DTOs
+# JodaTime needed for compatibiility with OSGP DTOs
+jodaTime = "2.14.0"
 junitJupiterApi = "5.14.1"
 junitPlatform = "1.14.1"
 kotlin = "2.2.20"
@@ -17,7 +18,7 @@ sonarqube = "6.3.1.5724"
 spotless = "8.0.0"
 springBoot = "3.5.6"
 springModulith = "1.4.3"
-testcontainers = "1.21.3"
+testcontainers = "2.0.2"
 
 [libraries]
 # Annotation processors
@@ -61,8 +62,8 @@ junitJupiterApi = { group = "org.junit.jupiter", name = "junit-jupiter-api", ver
 junitPlatformSuite = { group = "org.junit.platform", name = "junit-platform-suite", version.ref = "junitPlatform" }
 junitPlatformConsole = { group = "org.junit.platform", name = "junit-platform-console", version.ref = "junitPlatform" }
 testContainers = { group = "org.testcontainers", name = "testcontainers", version.ref = "testcontainers" }
-testContainersJUnit = { group = "org.testcontainers", name = "junit-jupiter", version.ref = "testcontainers" }
-testContainersArtemis = { group = "org.testcontainers", name = "activemq", version.ref = "testcontainers" }
+testContainersJUnit = { group = "org.testcontainers", name = "testcontainers-junit-jupiter", version.ref = "testcontainers" }
+testContainersArtemis = { group = "org.testcontainers", name = "testcontainers-activemq", version.ref = "testcontainers" }
 
 [plugins]
 dependencyManagement = { id = "io.spring.dependency-management", version.ref = "dependencyManagement" }

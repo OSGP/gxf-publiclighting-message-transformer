@@ -7,6 +7,7 @@ edition = "2024";
 package org.lfenergy.gxf.publiclighting.contracts.internal.device_requests;
 
 import "google/protobuf/timestamp.proto";
+import "configuration.proto";
 
 message DeviceRequestMessage {
   RequestHeader header = 1;
@@ -55,9 +56,12 @@ message SetLightRequest {
 }
 
 message SetScheduleRequest {
-  int32 astronomical_sunrise_offset = 1; // in minutes
-  int32 astronomical_sunset_offset = 2;  // in minutes
-  repeated ScheduleEntry schedule_entries = 3; // maximum count of 50 entries
+  // Offset with respect to astronomical sunrise in minutes
+  int32 astronomical_sunrise_offset = 1;
+  // Offset with respect to astronomical sunset in minutes
+  int32 astronomical_sunset_offset = 2;
+  // List of schedule entries, maximum count of 50 entries
+  repeated ScheduleEntry schedule_entries = 3;
 }
 
 message ResumeScheduleRequest {
@@ -67,7 +71,8 @@ message ResumeScheduleRequest {
 
 message SetTransitionRequest {
   TransitionType transition_type = 1;
-  string time = 2;  // Format: hhmmss UTC
+  // Transition time in hhmmss UTC
+  string time = 2;
 }
 
 message SetEventNotificationMaskRequest {
@@ -75,7 +80,7 @@ message SetEventNotificationMaskRequest {
 }
 
 message SetConfigurationRequest {
-  // TODO - define configuration structure here
+  org.lfenergy.gxf.publiclighting.contracts.internal.configuration.Configuration configuration = 1;
 }
 
 message LightValue {
@@ -85,16 +90,26 @@ message LightValue {
 
 message ScheduleEntry {
   Weekday weekday = 1;
-  string start_day = 2;           // Format YYYYMMDD UTC
-  string end_day = 3;             // Format YYYYMMDD UTC
+  // Start day in YYYYMMDD UTC format
+  string start_day = 2;
+  // End day in YYYYMMDD UTC format
+  string end_day = 3;
   ActionTime action_time = 4;
-  string time = 5;                // Format hhmmss local time, only set when action_time = ABSOLUTETIME
-  TriggerWindow window = 6;       // Window to wait for light sensor trigger
-  repeated LightValue value = 7;  // Maximum count of 6 light values
-  TriggerType trigger_type = 8;   // Switch on astronomical time or light transition
-  uint32 minimum_lights_on = 9;   // Minimal time (in seconds) the lights should burn before deciding to switch the lights on
-  uint32 index = 10;              // Index of schedule entry in the schedule list
-//  bool is_enabled = 11;           // Is this schedule entry enabled?
+  // Local time in hhmmss format, only set when action_time = ABSOLUTE_TIME
+  string time = 5;
+  // Window around astronomical sunset or sunrise in which switching based on a light sensor trigger is allowed
+  TriggerWindow window = 6;
+  // Maximum count of 6 light values
+  repeated LightValue value = 7;
+  // Switch on astronomical sunset or sunrise or light transition
+  TriggerType trigger_type = 8;
+  // Minimal time (in seconds) the lights should burn before deciding to switch the lights on,
+  // only set when action_time = ABSOLUTE_TIME
+  uint32 minimum_lights_on = 9;
+  // Index of schedule entry in the schedule list
+  uint32 index = 10;
+  // Is this schedule entry enabled?
+  bool is_enabled = 11;
 }
 
 message TriggerWindow {

@@ -7,6 +7,7 @@ edition = "2024";
 package org.lfenergy.gxf.publiclighting.contracts.internal.device_responses;
 
 import "google/protobuf/timestamp.proto";
+import "configuration.proto";
 
 message DeviceResponseMessage {
   ResponseHeader header = 1;
@@ -81,7 +82,7 @@ message GetStatusResponse {
 }
 
 message GetConfigurationResponse {
-  // TODO - define configuration response structure here
+  org.lfenergy.gxf.publiclighting.contracts.internal.configuration.Configuration configuration = 1;
 }
 
 message GetFirmwareVersionResponse {

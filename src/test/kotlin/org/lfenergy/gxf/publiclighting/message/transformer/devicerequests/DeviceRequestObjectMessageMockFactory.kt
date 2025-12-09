@@ -7,6 +7,7 @@ import io.mockk.every
 import io.mockk.mockk
 import jakarta.jms.ObjectMessage
 import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType
+import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.GET_CONFIGURATION
 import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.GET_FIRMWARE_VERSION
 import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.GET_STATUS
 import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.RESUME_SCHEDULE
@@ -24,6 +25,7 @@ import java.io.Serializable
 object DeviceRequestObjectMessageMockFactory {
     fun deviceRequestObjectMessageMock(requestType: ObjectMessageType) =
         when (requestType) {
+            GET_CONFIGURATION -> setUpDeviceRequestMessage(ObjectMessageType.GET_CONFIGURATION, null)
             GET_FIRMWARE_VERSION -> setUpDeviceRequestMessage(ObjectMessageType.GET_FIRMWARE_VERSION, null)
             GET_STATUS -> setUpDeviceRequestMessage(GET_STATUS, null)
             RESUME_SCHEDULE -> setUpDeviceRequestMessage(RESUME_SCHEDULE, InboundRequestMessageFactory.setResumeScheduleRequestPayload())

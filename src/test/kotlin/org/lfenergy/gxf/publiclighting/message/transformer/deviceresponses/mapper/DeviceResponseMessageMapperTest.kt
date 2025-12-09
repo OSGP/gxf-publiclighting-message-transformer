@@ -28,6 +28,10 @@ class DeviceResponseMessageMapperTest {
         verifyResponseMessageCreated(ResponseType.RESUME_SCHEDULE_RESPONSE, ObjectMessageType.RESUME_SCHEDULE)
 
     @Test
+    fun `should create set configuration protocol response message dto from protobuf message`() =
+        verifyResponseMessageCreated(ResponseType.SET_CONFIGURATION_RESPONSE, ObjectMessageType.SET_CONFIGURATION)
+
+    @Test
     fun `should create set event notification mask protocol response message dto from protobuf message`() =
         verifyResponseMessageCreated(
             ResponseType.SET_EVENT_NOTIFICATION_MASK_RESPONSE,

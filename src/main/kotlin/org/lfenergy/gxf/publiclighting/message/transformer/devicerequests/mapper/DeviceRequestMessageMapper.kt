@@ -69,6 +69,7 @@ object DeviceRequestMessageMapper {
                     requestType = messageType
                 }
             when (messageType) {
+                RequestType.GET_CONFIGURATION_REQUEST,
                 RequestType.GET_FIRMWARE_VERSION_REQUEST,
                 RequestType.GET_STATUS_REQUEST,
                 RequestType.REBOOT_REQUEST,
@@ -98,9 +99,11 @@ object DeviceRequestMessageMapper {
 
     fun String.toProtobufRequestType() =
         when (this) {
+            "GET_CONFIGURATION" -> RequestType.GET_CONFIGURATION_REQUEST
             "GET_FIRMWARE_VERSION" -> RequestType.GET_FIRMWARE_VERSION_REQUEST
             "GET_STATUS" -> RequestType.GET_STATUS_REQUEST
             "RESUME_SCHEDULE" -> RequestType.RESUME_SCHEDULE_REQUEST
+            "SET_CONFIGURATION" -> RequestType.SET_CONFIGURATION_REQUEST
             "SET_EVENT_NOTIFICATIONS" -> RequestType.SET_EVENT_NOTIFICATION_MASK_REQUEST
             "SET_LIGHT" -> RequestType.SET_LIGHT_REQUEST
             "SET_REBOOT" -> RequestType.REBOOT_REQUEST

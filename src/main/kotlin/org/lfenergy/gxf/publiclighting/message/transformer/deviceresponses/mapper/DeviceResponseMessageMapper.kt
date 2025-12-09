@@ -4,6 +4,7 @@
 package org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.mapper
 
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.FirmwareType
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.GetConfigurationResponse
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.GetFirmwareVersionResponse
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.GetStatusResponse
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.LightType
@@ -11,6 +12,7 @@ import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.LinkT
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.RelayIndex
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.ResponseType
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.Result
+import org.opensmartgridplatform.dto.valueobjects.ConfigurationDto
 import org.opensmartgridplatform.dto.valueobjects.DeviceStatusDto
 import org.opensmartgridplatform.dto.valueobjects.FirmwareModuleType
 import org.opensmartgridplatform.dto.valueobjects.FirmwareVersionDto
@@ -66,19 +68,24 @@ object DeviceResponseMessageMapper {
         }
 
         return when (this.header.responseType) {
+            ResponseType.GET_CONFIGURATION_RESPONSE -> this.getConfigurationResponse.toDto()
             ResponseType.GET_FIRMWARE_VERSION_RESPONSE -> this.getFirmwareVersionResponse.toDto()
             ResponseType.GET_STATUS_RESPONSE -> this.getStatusResponse.toDto()
-            ResponseType.REBOOT_RESPONSE -> null
-            ResponseType.RESUME_SCHEDULE_RESPONSE -> null
-            ResponseType.SET_EVENT_NOTIFICATION_MASK_RESPONSE -> null
-            ResponseType.SET_LIGHT_RESPONSE -> null
-            ResponseType.SET_SCHEDULE_RESPONSE -> null
-            ResponseType.SET_TRANSITION_RESPONSE -> null
-            ResponseType.START_SELF_TEST_RESPONSE -> null
-            ResponseType.STOP_SELF_TEST_RESPONSE -> null
+            ResponseType.REBOOT_RESPONSE,
+            ResponseType.RESUME_SCHEDULE_RESPONSE,
+            ResponseType.SET_CONFIGURATION_RESPONSE,
+            ResponseType.SET_EVENT_NOTIFICATION_MASK_RESPONSE,
+            ResponseType.SET_LIGHT_RESPONSE,
+            ResponseType.SET_SCHEDULE_RESPONSE,
+            ResponseType.SET_TRANSITION_RESPONSE,
+            ResponseType.START_SELF_TEST_RESPONSE,
+            ResponseType.STOP_SELF_TEST_RESPONSE,
+            -> null
             else -> throw IllegalArgumentException("Unsupported message type: ${this.header.responseType}")
         }
     }
+
+    private fun GetConfigurationResponse.toDto(): Serializable = ConfigurationDto()
 
     private fun GetFirmwareVersionResponse.toDto(): Serializable =
         this.firmwareVersionsList.map {
@@ -149,10 +156,12 @@ object DeviceResponseMessageMapper {
 
     fun ResponseType.toDto() =
         when (this) {
+            ResponseType.GET_CONFIGURATION_RESPONSE -> "GET_CONFIGURATION"
             ResponseType.GET_FIRMWARE_VERSION_RESPONSE -> "GET_FIRMWARE_VERSION"
             ResponseType.GET_STATUS_RESPONSE -> "GET_STATUS"
             ResponseType.REBOOT_RESPONSE -> "SET_REBOOT"
             ResponseType.RESUME_SCHEDULE_RESPONSE -> "RESUME_SCHEDULE"
+            ResponseType.SET_CONFIGURATION_RESPONSE -> "SET_CONFIGURATION"
             ResponseType.SET_EVENT_NOTIFICATION_MASK_RESPONSE -> "SET_EVENT_NOTIFICATIONS"
             ResponseType.SET_LIGHT_RESPONSE -> "SET_LIGHT"
             ResponseType.SET_SCHEDULE_RESPONSE -> "SET_SCHEDULE"
@@ -160,6 +169,5 @@ object DeviceResponseMessageMapper {
             ResponseType.START_SELF_TEST_RESPONSE -> "START_SELF_TEST"
             ResponseType.STOP_SELF_TEST_RESPONSE -> "STOP_SELF_TEST"
             ResponseType.UNRECOGNIZED -> "UNRECOGNIZED"
-            else -> throw IllegalArgumentException("Unsupported response type: $this")
         }
 }

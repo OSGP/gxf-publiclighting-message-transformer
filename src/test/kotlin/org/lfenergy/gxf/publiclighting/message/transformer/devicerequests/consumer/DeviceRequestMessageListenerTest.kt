@@ -30,6 +30,10 @@ class DeviceRequestMessageListenerTest {
     lateinit var deviceRequestMessageListener: DeviceRequestMessageListener
 
     @Test
+    fun `should handle get configuration device request message`() =
+        testEmptyRequest(ObjectMessageType.GET_CONFIGURATION, RequestType.GET_CONFIGURATION_REQUEST)
+
+    @Test
     fun `should handle get firmware version device request message`() =
         testEmptyRequest(ObjectMessageType.GET_FIRMWARE_VERSION, RequestType.GET_FIRMWARE_VERSION_REQUEST)
 

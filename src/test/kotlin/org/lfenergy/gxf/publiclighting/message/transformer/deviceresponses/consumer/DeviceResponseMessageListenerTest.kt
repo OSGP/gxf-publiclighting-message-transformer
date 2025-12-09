@@ -52,6 +52,11 @@ class DeviceResponseMessageListenerTest {
     }
 
     @Test
+    fun `should handle set configuration device response message`() {
+        testResponse(ResponseType.SET_CONFIGURATION_RESPONSE)
+    }
+
+    @Test
     fun `should handle set event notification mask device response message`() {
         testResponse(ResponseType.SET_EVENT_NOTIFICATION_MASK_RESPONSE)
     }

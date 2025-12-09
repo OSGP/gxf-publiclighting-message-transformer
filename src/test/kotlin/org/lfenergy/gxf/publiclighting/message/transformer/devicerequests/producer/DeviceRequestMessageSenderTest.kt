@@ -50,6 +50,11 @@ class DeviceRequestMessageSenderTest {
     }
 
     @Test
+    fun `should send protobuf bytes message for get configuration request`() {
+        verifyBytesMessageIsSentForRequestType(RequestType.GET_CONFIGURATION_REQUEST)
+    }
+
+    @Test
     fun `should send protobuf bytes message for get firmware version request`() {
         verifyBytesMessageIsSentForRequestType(RequestType.GET_FIRMWARE_VERSION_REQUEST)
     }

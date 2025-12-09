@@ -5,9 +5,11 @@ package org.lfenergy.gxf.publiclighting.message.transformer
 
 enum class ObjectMessageType {
     UNRECOGNIZED,
+    GET_CONFIGURATION,
     GET_FIRMWARE_VERSION,
     GET_STATUS,
     RESUME_SCHEDULE,
+    SET_CONFIGURATION,
     SET_EVENT_NOTIFICATIONS,
     SET_LIGHT,
     SET_REBOOT,

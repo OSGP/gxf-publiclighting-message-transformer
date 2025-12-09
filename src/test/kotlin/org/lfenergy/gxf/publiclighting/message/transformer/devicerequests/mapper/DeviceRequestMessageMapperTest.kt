@@ -16,6 +16,14 @@ import org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.Device
 
 class DeviceRequestMessageMapperTest {
     @Test
+    fun `should map get configuration request object message to protobuf message`() =
+        testDeviceRequestMapping(ObjectMessageType.GET_CONFIGURATION, RequestType.GET_CONFIGURATION_REQUEST)
+
+    @Test
+    fun `should map get firmware version request object message to protobuf message`() =
+        testDeviceRequestMapping(ObjectMessageType.GET_FIRMWARE_VERSION, RequestType.GET_FIRMWARE_VERSION_REQUEST)
+
+    @Test
     fun `should map get status request object message to protobuf message`() =
         testDeviceRequestMapping(ObjectMessageType.GET_STATUS, RequestType.GET_STATUS_REQUEST)
 

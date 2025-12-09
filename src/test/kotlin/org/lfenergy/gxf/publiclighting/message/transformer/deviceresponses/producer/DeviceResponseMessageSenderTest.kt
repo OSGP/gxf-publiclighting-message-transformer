@@ -78,6 +78,10 @@ class DeviceResponseMessageSenderTest {
         testProtocolResponseMessageForResponseType(ResponseType.RESUME_SCHEDULE_RESPONSE)
 
     @Test
+    fun `should send set configuration protocol response message`() =
+        testProtocolResponseMessageForResponseType(ResponseType.SET_CONFIGURATION_RESPONSE)
+
+    @Test
     fun `should send set event notification mask protocol response message`() =
         testProtocolResponseMessageForResponseType(ResponseType.SET_EVENT_NOTIFICATION_MASK_RESPONSE)
 

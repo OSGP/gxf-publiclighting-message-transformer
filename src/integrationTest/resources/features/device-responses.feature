@@ -17,5 +17,5 @@ Feature: Device response message processing
       | STOP_SELF_TEST_RESPONSE              | STOP_SELF_TEST          |
       | SET_EVENT_NOTIFICATION_MASK_RESPONSE | SET_EVENT_NOTIFICATIONS |
 #      | GET_CONFIGURATION_RESPONSE           | GET_CONFIGURATION           |
-#      | SET_CONFIGURATION_RESPONSE           | SET_CONFIGURATION           |
+      | SET_CONFIGURATION_RESPONSE           | SET_CONFIGURATION       |
       | GET_FIRMWARE_VERSION_RESPONSE        | GET_FIRMWARE_VERSION    |

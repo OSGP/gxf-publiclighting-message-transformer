@@ -61,17 +61,12 @@ class DeviceRequestsSteps(
     @Then("the device request bytes message should contain a valid {requestType} request")
     fun thenBytesMessageShouldContainRequest(expectedRequestType: RequestType) {
         when (expectedRequestType) {
-            RequestType.GET_FIRMWARE_VERSION_REQUEST -> verifyEmptyRequest(RequestType.GET_FIRMWARE_VERSION_REQUEST)
-            RequestType.GET_STATUS_REQUEST -> verifyEmptyRequest(RequestType.GET_STATUS_REQUEST)
-            RequestType.REBOOT_REQUEST -> verifyEmptyRequest(RequestType.REBOOT_REQUEST)
             RequestType.RESUME_SCHEDULE_REQUEST -> verifyResumeScheduleRequest()
             RequestType.SET_EVENT_NOTIFICATION_MASK_REQUEST -> verifySetEventNotificationMaskRequest()
             RequestType.SET_LIGHT_REQUEST -> verifySetLightRequest()
             RequestType.SET_SCHEDULE_REQUEST -> verifySetScheduleRequest()
             RequestType.SET_TRANSITION_REQUEST -> verifySetTransitionRequest()
-            RequestType.START_SELF_TEST_REQUEST -> verifyEmptyRequest(RequestType.START_SELF_TEST_REQUEST)
-            RequestType.STOP_SELF_TEST_REQUEST -> verifyEmptyRequest(RequestType.STOP_SELF_TEST_REQUEST)
-            else -> throw IllegalArgumentException("Unsupported request type: $expectedRequestType")
+            else -> verifyEmptyRequest(expectedRequestType)
         }
     }
 

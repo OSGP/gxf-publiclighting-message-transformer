@@ -21,26 +21,26 @@ message Configuration {
   // Time synchronization frequency (seconds)
   uint32 time_sync_frequency = 9 [default = 86400];
   // Switching delay (seconds) (array of 4 values, default 0, 0, 0, 0)
-  uint32 switching_delay = 10;
+  repeated uint32 switching_delay = 10;
 }
 
 message AstronomicalOffsetsConfiguration {
   // The calculated sunrise time modified by this value
   // Time is moved earlier (if offset is negative) or later (if offset is positive). In seconds
-  sint32 astronomical_sunrise_offset = 1 [default = 0];
+  sint32 sunrise_offset = 1 [default = 0];
   // The calculated sunset time modified by this value
   // Time is moved earlier (if offset is negative) or later (if offset is positive). In seconds
-  sint32 astronomical_sunset_offset = 2 [default = 0];
+  sint32 sunset_offset = 2 [default = 0];
 }
 
 message CommunicationConfiguration {
   LinkType preferred_link_type = 1;
   // Communication Timeouts (seconds)
-  uint32 communication_timeout = 2 [default = 20];
+  uint32 connection_timeout = 2 [default = 20];
   // Communication number of retries
-  uint32 communication_number_of_retries = 3 [default = 3];
+  uint32 number_of_retries = 3 [default = 3];
   // Time between communication attempts (seconds)
-  uint32 communication_delay_between_connection_attempts = 4 [default = 60];
+  uint32 delay_between_connection_attempts = 4 [default = 60];
 }
 
 message DaylightSavingsTimeConfiguration{

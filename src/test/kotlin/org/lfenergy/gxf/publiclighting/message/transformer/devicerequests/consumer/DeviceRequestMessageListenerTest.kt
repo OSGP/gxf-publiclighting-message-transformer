@@ -60,6 +60,25 @@ class DeviceRequestMessageListenerTest {
     }
 
     @Test
+    fun `should handle set configuration device request message`() {
+        val message = MockFactory.deviceRequestObjectMessageMock(ObjectMessageType.SET_CONFIGURATION)
+        every { deviceRequestMessageSender.send(any<DeviceRequestMessage>()) } just Runs
+
+        deviceRequestMessageListener.onMessage(message)
+
+        verify {
+            deviceRequestMessageSender.send(
+                withArg {
+                    assertThat(it).isInstanceOf(DeviceRequestMessage::class.java)
+                    assertThat(it.header.requestType).isEqualTo(RequestType.SET_CONFIGURATION_REQUEST)
+                    assertThat(it.hasSetConfigurationRequest()).isTrue
+                    assertThat(it.setConfigurationRequest).isNotNull
+                },
+            )
+        }
+    }
+
+    @Test
     fun `should handle set event notification mask device request message`() {
         val message = MockFactory.deviceRequestObjectMessageMock(ObjectMessageType.SET_EVENT_NOTIFICATIONS)
         every { deviceRequestMessageSender.send(any<DeviceRequestMessage>()) } just Runs

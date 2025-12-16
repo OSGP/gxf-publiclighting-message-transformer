@@ -3,6 +3,17 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.lfenergy.gxf.publiclighting.message.transformer.devicerequests
 
+import org.lfenergy.gxf.publiclighting.contracts.internal.configuration.RelayType
+import org.lfenergy.gxf.publiclighting.contracts.internal.configuration.astronomicalOffsetsConfiguration
+import org.lfenergy.gxf.publiclighting.contracts.internal.configuration.communicationConfiguration
+import org.lfenergy.gxf.publiclighting.contracts.internal.configuration.daylightSavingsTimeConfiguration
+import org.lfenergy.gxf.publiclighting.contracts.internal.configuration.deviceAddressConfiguration
+import org.lfenergy.gxf.publiclighting.contracts.internal.configuration.platformAddressConfiguration
+import org.lfenergy.gxf.publiclighting.contracts.internal.configuration.relayConfiguration
+import org.lfenergy.gxf.publiclighting.contracts.internal.configuration.relayLinkMatrix
+import org.lfenergy.gxf.publiclighting.contracts.internal.configuration.relayLinking
+import org.lfenergy.gxf.publiclighting.contracts.internal.configuration.relayMap
+import org.lfenergy.gxf.publiclighting.contracts.internal.configuration.relayMapping
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.ActionTime
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.NotificationType
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.RelayIndex
@@ -15,20 +26,29 @@ import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.lightV
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.requestHeader
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.resumeScheduleRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.scheduleEntry
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.setConfigurationRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.setEventNotificationMaskRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.setLightRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.setScheduleRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.setTransitionRequest
 import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants
+import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.ConfigurationConstants.AstronomicalOffsetConfiguration
+import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.ConfigurationConstants.CommunicationConfiguration
+import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.ConfigurationConstants.DaylightSavingsTimeConfiguration
+import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.ConfigurationConstants.DeviceAddressConfiguration
+import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.ConfigurationConstants.PlatformAddressConfiguration
+import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.ConfigurationConstants.RelayConfiguration
 import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.ELEVEN_PM
 import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.HALF_HOUR_IN_SECONDS
 import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.SIX_AM
+import org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.mapper.DeviceRequestMessageMapper.toByteString
 
-object DeviceRequestMessageFactory {
+object OutboundRequestMessageFactory {
     fun deviceRequestMessage(requestType: RequestType) =
         deviceRequestMessage {
             header = requestHeader(requestType)
             when (requestType) {
+                RequestType.SET_CONFIGURATION_REQUEST -> setConfigurationRequest()
                 RequestType.RESUME_SCHEDULE_REQUEST -> resumeScheduleRequest()
                 RequestType.SET_EVENT_NOTIFICATION_MASK_REQUEST -> setEventNotificationMaskRequest()
                 RequestType.SET_LIGHT_REQUEST -> setLightRequest()
@@ -48,6 +68,76 @@ object DeviceRequestMessageFactory {
             domainVersion = TestConstants.DOMAIN_VERSION
             requestType = type
         }
+
+    private fun setConfigurationRequest() {
+        setConfigurationRequest {
+            astronomicalOffsetsConfiguration {
+                sunriseOffset = AstronomicalOffsetConfiguration.SUNRISE_OFFSET_IN_SECONDS
+                sunsetOffset = AstronomicalOffsetConfiguration.SUNSET_OFFSET_IN_SECONDS
+            }
+            communicationConfiguration {
+                preferredLinkType = CommunicationConfiguration.LINK_TYPE
+                connectionTimeout = CommunicationConfiguration.CONNECTION_TIMEOUT_IN_SECONDS
+                delayBetweenConnectionAttempts = CommunicationConfiguration.DELAY_BETWEEN_CONNECTION_ATTEMPTS_IN_SECONDS
+                numberOfRetries = CommunicationConfiguration.NUMBER_OF_RETRIES
+            }
+            daylightSavingsTimeConfiguration {
+                automaticSummerTimingEnabled = DaylightSavingsTimeConfiguration.AUTO_ENABLED
+                summerTimeDetails = DaylightSavingsTimeConfiguration.BEGIN_OF_DAYLIGHT_SAVINGS_TIME
+                winterTimeDetails = DaylightSavingsTimeConfiguration.END_OF_DAYLIGHT_SAVINGS_TIME
+            }
+            deviceAddressConfiguration {
+                ipAddress = DeviceAddressConfiguration.IP_ADDRESS_BYTES
+                netMask = DeviceAddressConfiguration.NET_MASK_BYTES
+                gateway = DeviceAddressConfiguration.GATEWAY_BYTES
+                dhcpEnabled = DeviceAddressConfiguration.DHCP_ENABLED
+            }
+            platformAddressConfiguration {
+                ipAddress = PlatformAddressConfiguration.IP_ADDRESS_BYTES
+                portNumber = PlatformAddressConfiguration.PORT
+            }
+            relayConfiguration {
+                relayRefreshingEnabled = RelayConfiguration.RELAY_REFRESHING_ENABLED
+                relayMapping {
+                    relayMap.addAll(
+                        listOf(
+                            relayMap {
+                                index = 2.toByteString()
+                                address = 1.toByteString()
+                                relayType = RelayType.LIGHT
+                            },
+                            relayMap {
+                                index = 3.toByteString()
+                                address = 2.toByteString()
+                                relayType = RelayType.LIGHT
+                            },
+                            relayMap {
+                                index = 4.toByteString()
+                                address = 3.toByteString()
+                                relayType = RelayType.LIGHT
+                            },
+                        ),
+                    )
+                }
+                relayLinking {
+                    relayLinkMatrix.addAll(
+                        listOf(
+                            relayLinkMatrix {
+                                masterRelayIndex = 3.toByteString()
+                                masterRelayOn = true
+                                indicesOfControlledRelaysOn = 4.toByteString()
+                            },
+                            relayLinkMatrix {
+                                masterRelayIndex = 3.toByteString()
+                                masterRelayOn = false
+                                indicesOfControlledRelaysOff = 4.toByteString()
+                            },
+                        ),
+                    )
+                }
+            }
+        }
+    }
 
     private fun resumeScheduleRequest() =
         resumeScheduleRequest {

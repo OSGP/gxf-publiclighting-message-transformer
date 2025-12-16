@@ -11,6 +11,7 @@ import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.GET
 import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.GET_FIRMWARE_VERSION
 import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.GET_STATUS
 import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.RESUME_SCHEDULE
+import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.SET_CONFIGURATION
 import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.SET_EVENT_NOTIFICATIONS
 import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.SET_LIGHT
 import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.SET_REBOOT
@@ -25,10 +26,11 @@ import java.io.Serializable
 object DeviceRequestObjectMessageMockFactory {
     fun deviceRequestObjectMessageMock(requestType: ObjectMessageType) =
         when (requestType) {
-            GET_CONFIGURATION -> setUpDeviceRequestMessage(ObjectMessageType.GET_CONFIGURATION, null)
-            GET_FIRMWARE_VERSION -> setUpDeviceRequestMessage(ObjectMessageType.GET_FIRMWARE_VERSION, null)
+            GET_CONFIGURATION -> setUpDeviceRequestMessage(GET_CONFIGURATION, null)
+            GET_FIRMWARE_VERSION -> setUpDeviceRequestMessage(GET_FIRMWARE_VERSION, null)
             GET_STATUS -> setUpDeviceRequestMessage(GET_STATUS, null)
             RESUME_SCHEDULE -> setUpDeviceRequestMessage(RESUME_SCHEDULE, InboundRequestMessageFactory.setResumeScheduleRequestPayload())
+            SET_CONFIGURATION -> setUpDeviceRequestMessage(SET_CONFIGURATION, InboundRequestMessageFactory.setConfigurationRequestPayload())
             SET_EVENT_NOTIFICATIONS ->
                 setUpDeviceRequestMessage(
                     SET_EVENT_NOTIFICATIONS,

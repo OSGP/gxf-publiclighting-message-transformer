@@ -6,6 +6,12 @@ package org.lfenergy.gxf.publiclighting.message.transformer.devicerequests
 import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType
 import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.ALL_RELAYS
 import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.CORRELATION_UID
+import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.ConfigurationConstants
+import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.ConfigurationConstants.AstronomicalOffsetConfiguration
+import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.ConfigurationConstants.CommunicationConfiguration
+import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.ConfigurationConstants.DaylightSavingsTimeConfiguration
+import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.ConfigurationConstants.DeviceAddressConfiguration
+import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.ConfigurationConstants.PlatformAddressConfiguration
 import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.DEVICE_IDENTIFICATION
 import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.ELEVEN_PM
 import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.HALF_HOUR_IN_SECONDS
@@ -15,10 +21,16 @@ import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.RELAY_T
 import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.RELAY_TWO
 import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.SIX_AM
 import org.opensmartgridplatform.dto.valueobjects.ActionTimeTypeDto
+import org.opensmartgridplatform.dto.valueobjects.ConfigurationDto
+import org.opensmartgridplatform.dto.valueobjects.DeviceFixedIpDto
 import org.opensmartgridplatform.dto.valueobjects.EventNotificationMessageDataContainerDto
 import org.opensmartgridplatform.dto.valueobjects.EventNotificationTypeDto
 import org.opensmartgridplatform.dto.valueobjects.LightValueDto
 import org.opensmartgridplatform.dto.valueobjects.LightValueMessageDataContainerDto
+import org.opensmartgridplatform.dto.valueobjects.RelayConfigurationDto
+import org.opensmartgridplatform.dto.valueobjects.RelayMapDto
+import org.opensmartgridplatform.dto.valueobjects.RelayMatrixDto
+import org.opensmartgridplatform.dto.valueobjects.RelayTypeDto
 import org.opensmartgridplatform.dto.valueobjects.ResumeScheduleMessageDataContainerDto
 import org.opensmartgridplatform.dto.valueobjects.ScheduleDto
 import org.opensmartgridplatform.dto.valueobjects.ScheduleEntryDto
@@ -38,6 +50,7 @@ object InboundRequestMessageFactory {
             null,
             null,
             when (requestType) {
+                ObjectMessageType.SET_CONFIGURATION -> setConfigurationRequestPayload()
                 ObjectMessageType.RESUME_SCHEDULE -> setResumeScheduleRequestPayload()
                 ObjectMessageType.SET_EVENT_NOTIFICATIONS -> setEventNotificationsRequestPayload()
                 ObjectMessageType.SET_LIGHT -> setLightRequestPayload()
@@ -45,6 +58,54 @@ object InboundRequestMessageFactory {
                 ObjectMessageType.SET_TRANSITION -> setTransitionRequestPayload()
                 else -> null // no payload for other types
             },
+        )
+
+    fun setConfigurationRequestPayload() =
+        ConfigurationDto(
+            astroGateSunRiseOffset = AstronomicalOffsetConfiguration.SUNRISE_OFFSET_IN_SECONDS,
+            astroGateSunSetOffset = AstronomicalOffsetConfiguration.SUNSET_OFFSET_IN_SECONDS,
+            automaticSummerTimingEnabled = DaylightSavingsTimeConfiguration.AUTO_ENABLED,
+            communicationNumberOfRetries = CommunicationConfiguration.NUMBER_OF_RETRIES,
+            communicationPauseTimeBetweenConnectionTrials = CommunicationConfiguration.DELAY_BETWEEN_CONNECTION_ATTEMPTS_IN_SECONDS,
+            communicationTimeout = CommunicationConfiguration.CONNECTION_TIMEOUT_IN_SECONDS,
+            deviceFixedIp =
+                DeviceFixedIpDto(
+                    DeviceAddressConfiguration.IP_ADDRESS,
+                    DeviceAddressConfiguration.NET_MASK,
+                    DeviceAddressConfiguration.GATEWAY,
+                ),
+            dhcpEnabled = DeviceAddressConfiguration.DHCP_ENABLED,
+            lightType = ConfigurationConstants.LIGHT_TYPE_DTO_RELAY,
+            osgpIpAddress = PlatformAddressConfiguration.IP_ADDRESS,
+            osgpPortNumber = PlatformAddressConfiguration.PORT,
+            preferredLinkType = CommunicationConfiguration.LINK_TYPE_DTO,
+            relayConfiguration =
+                RelayConfigurationDto(
+                    mutableListOf(
+                        RelayMapDto(2, 1, RelayTypeDto.LIGHT),
+                        RelayMapDto(3, 2, RelayTypeDto.LIGHT),
+                        RelayMapDto(4, 3, RelayTypeDto.LIGHT),
+                    ),
+                ),
+            relayLinking =
+                mutableListOf(
+                    RelayMatrixDto(3, true, mutableListOf(4)),
+                    RelayMatrixDto(3, false, mutableListOf(4)),
+                ),
+            relayRefreshing = ConfigurationConstants.RelayConfiguration.RELAY_REFRESHING_ENABLED,
+            summerTimeDetails = DaylightSavingsTimeConfiguration.BEGIN_OF_DAYLIGHT_SAVINGS_TIME_DTO,
+            switchingDelays = ConfigurationConstants.switchingDelays,
+            timeSyncFrequency = 600,
+            testButtonEnabled = ConfigurationConstants.TEST_BUTTON_ENABLED,
+            winterTimeDetails = DaylightSavingsTimeConfiguration.END_OF_DAYLIGHT_SAVINGS_TIME_DTO,
+            // TODO - Check unused fields
+            commonNameString = null,
+            daliConfiguration = null,
+            ntpEnabled = null, // true,
+            ntpHost = null, // "ntp-server",
+            ntpSyncInterval = null, // 300,
+            tlsEnabled = null, // true,
+            tlsPortNumber = null, // 22125,
         )
 
     fun setEventNotificationsRequestPayload() =

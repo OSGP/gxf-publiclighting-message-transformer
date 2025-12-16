@@ -20,7 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.DeviceRequestMessage
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.RequestType
 import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.DEVICE_IDENTIFICATION
-import org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.DeviceRequestMessageFactory
+import org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.OutboundRequestMessageFactory
 import org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.config.DeviceRequestsConfigurationProperties
 import org.springframework.jms.core.JmsTemplate
 import org.springframework.jms.core.MessageCreator
@@ -70,6 +70,11 @@ class DeviceRequestMessageSenderTest {
     }
 
     @Test
+    fun `should send protobuf bytes message for set configuration request`() {
+        verifyBytesMessageIsSentForRequestType(RequestType.SET_CONFIGURATION_REQUEST)
+    }
+
+    @Test
     fun `should send protobuf bytes message for resume schedule request`() {
         verifyBytesMessageIsSentForRequestType(RequestType.RESUME_SCHEDULE_REQUEST)
     }
@@ -105,7 +110,7 @@ class DeviceRequestMessageSenderTest {
     }
 
     fun verifyBytesMessageIsSentForRequestType(requestType: RequestType) {
-        val message = DeviceRequestMessageFactory.deviceRequestMessage(requestType)
+        val message = OutboundRequestMessageFactory.deviceRequestMessage(requestType)
 
         deviceRequestMessageSender.send(message)
 

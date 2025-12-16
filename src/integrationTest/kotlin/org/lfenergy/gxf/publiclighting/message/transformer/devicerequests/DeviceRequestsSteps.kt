@@ -61,6 +61,7 @@ class DeviceRequestsSteps(
     @Then("the device request bytes message should contain a valid {requestType} request")
     fun thenBytesMessageShouldContainRequest(expectedRequestType: RequestType) {
         when (expectedRequestType) {
+            RequestType.SET_CONFIGURATION_REQUEST -> verifySetConfigurationRequest()
             RequestType.RESUME_SCHEDULE_REQUEST -> verifyResumeScheduleRequest()
             RequestType.SET_EVENT_NOTIFICATION_MASK_REQUEST -> verifySetEventNotificationMaskRequest()
             RequestType.SET_LIGHT_REQUEST -> verifySetLightRequest()
@@ -75,6 +76,14 @@ class DeviceRequestsSteps(
             assertThat(this).isNotNull.isInstanceOf(DeviceRequestMessage::class.java)
             verifyHeader(this!!.header, requestType)
             verifyNoPayload(this)
+        }
+    }
+
+    private fun verifySetConfigurationRequest() {
+        with(scenarioContext.outboundRequestMessage) {
+            assertThat(this).isNotNull.isInstanceOf(DeviceRequestMessage::class.java)
+            verifyHeader(this!!.header, RequestType.SET_CONFIGURATION_REQUEST)
+            verifySetConfigurationPayload(this)
         }
     }
 
@@ -166,9 +175,23 @@ class DeviceRequestsSteps(
         assertThat(message.hasSetScheduleRequest()).isFalse
     }
 
+    private fun verifySetConfigurationPayload(message: DeviceRequestMessage) {
+        assertThat(message.hasSetConfigurationRequest()).isTrue
+        assertThat(message.setConfigurationRequest).isNotNull
+        with(message.setConfigurationRequest.configuration) {
+            assertThat(this).isNotNull
+            assertThat(this.astronomicalOffsetsConfiguration).isNotNull
+            assertThat(this.relayConfiguration).isNotNull
+            assertThat(this.daylightSavingsTimeConfiguration).isNotNull
+            assertThat(this.communicationConfiguration).isNotNull
+            assertThat(this.deviceAddressConfiguration).isNotNull
+            assertThat(this.platformAddressConfiguration).isNotNull
+        }
+    }
+
     private fun verifyResumeSchedulePayload(message: DeviceRequestMessage) {
         assertThat(message.hasResumeScheduleRequest()).isTrue
-        with(message.getResumeScheduleRequest()) {
+        with(message.resumeScheduleRequest) {
             assertThat(this).isNotNull
             assertThat(immediate).isTrue
         }
@@ -176,7 +199,7 @@ class DeviceRequestsSteps(
 
     private fun verifySetEventNotificationMaskPayload(message: DeviceRequestMessage) {
         assertThat(message.hasSetEventNotificationMaskRequest()).isTrue
-        with(message.getSetEventNotificationMaskRequest()) {
+        with(message.setEventNotificationMaskRequest) {
             assertThat(this).isNotNull
             assertThat(this.notificationTypesList).isNotEmpty().hasSize(3)
         }

@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.mapper
 
+import com.google.protobuf.ByteString
 import jakarta.jms.ObjectMessage
 import org.joda.time.DateTime
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.ActionTime
@@ -26,6 +27,7 @@ import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.lightV
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.requestHeader
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.resumeScheduleRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.scheduleEntry
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.setConfigurationRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.setEventNotificationMaskRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.setLightRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.setScheduleRequest
@@ -34,7 +36,9 @@ import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.trigge
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_DEVICE_IDENTIFICATION
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_NETWORK_ADDRESS
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_ORGANIZATION_IDENTIFICATION
+import org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.mapper.ConfigurationMapper.toProtobufMessage
 import org.opensmartgridplatform.dto.valueobjects.ActionTimeTypeDto
+import org.opensmartgridplatform.dto.valueobjects.ConfigurationDto
 import org.opensmartgridplatform.dto.valueobjects.EventNotificationMessageDataContainerDto
 import org.opensmartgridplatform.dto.valueobjects.EventNotificationTypeDto
 import org.opensmartgridplatform.dto.valueobjects.LightValueDto
@@ -52,7 +56,7 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 object DeviceRequestMessageMapper {
-    val TIME_FORMAT = "HHmmss"
+    const val TIME_FORMAT = "HHmmss"
     val hhmmssFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(TIME_FORMAT)
 
     fun ObjectMessage.toProtobufMessage(): DeviceRequestMessage {
@@ -77,9 +81,14 @@ object DeviceRequestMessageMapper {
                 RequestType.STOP_SELF_TEST_REQUEST,
                 -> {
                 } // No payload for these requests
+                RequestType.SET_CONFIGURATION_REQUEST -> {
+                    setConfigurationRequest = (message.`object` as ConfigurationDto).toProtobufMessage()
+                }
+
                 RequestType.SET_EVENT_NOTIFICATION_MASK_REQUEST ->
                     setEventNotificationMaskRequest =
                         (message.`object` as EventNotificationMessageDataContainerDto).toProtobufMessage()
+
                 RequestType.RESUME_SCHEDULE_REQUEST ->
                     resumeScheduleRequest = (`object` as ResumeScheduleMessageDataContainerDto).toProtobufMessage()
 
@@ -96,6 +105,21 @@ object DeviceRequestMessageMapper {
             }
         }
     }
+
+    /**
+     * Converts an Int (1..4) to a ByteString containing a single byte.
+     * Throws if the value is not in 1..4.
+     */
+    fun Int.toByteString(): ByteString {
+        require(this in 1..4) { "Value must be between 1 and 4, but was $this" }
+        return ByteString.copyFrom(byteArrayOf(this.toByte()))
+    }
+
+    fun ZonedDateTime.toProtobufDaylightSavingsDetail() =
+        String.format("%02d", this.monthValue) +
+            (this.dayOfWeek.value - 1) +
+            String.format("%02d", this.hour) +
+            String.format("%02d", this.minute)
 
     fun String.toProtobufRequestType() =
         when (this) {
@@ -147,7 +171,7 @@ object DeviceRequestMessageMapper {
 
     fun ScheduleDto.toProtobufMessage(): SetScheduleRequest {
         val dto = this
-        if (dto.scheduleList == null || dto.scheduleList.isEmpty()) {
+        if (dto.scheduleList.isNullOrEmpty()) {
             return setScheduleRequest {}
         }
         return setScheduleRequest {

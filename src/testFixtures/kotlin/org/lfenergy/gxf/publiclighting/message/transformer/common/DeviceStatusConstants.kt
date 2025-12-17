@@ -7,14 +7,45 @@ import com.google.protobuf.ByteString
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.LightType
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.LightValue
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.LinkType
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.RelayIndex
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.lightValue
+import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants.RELAY_FOUR
+import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants.RELAY_ONE
+import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants.RELAY_THREE
+import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants.RELAY_TWO
 import org.opensmartgridplatform.dto.valueobjects.LightTypeDto
 import org.opensmartgridplatform.dto.valueobjects.LightValueDto
 import org.opensmartgridplatform.dto.valueobjects.LinkTypeDto
 
 object DeviceStatusConstants {
-    // TODO - add light value dtos to list
-    val LIGHT_VALUES = listOf<LightValue>()
-    val LIGHT_VALUES_DTO = mutableListOf<LightValueDto?>()
+    val LIGHT_VALUES =
+        listOf<LightValue>(
+            lightValue {
+                index = RelayIndex.RELAY_ONE
+                lightOn = false
+            },
+            lightValue {
+
+                index = RelayIndex.RELAY_TWO
+                lightOn = true
+            },
+            lightValue {
+                index = RelayIndex.RELAY_THREE
+                lightOn = true
+            },
+            lightValue {
+                index = RelayIndex.RELAY_FOUR
+                lightOn = true
+            },
+        )
+
+    val LIGHT_VALUES_DTO =
+        mutableListOf<LightValueDto?>(
+            LightValueDto(RELAY_ONE, false, null),
+            LightValueDto(RELAY_TWO, true, null),
+            LightValueDto(RELAY_THREE, true, null),
+            LightValueDto(RELAY_FOUR, true, null),
+        )
 
     val PREFERRED_LINK_TYPE = LinkType.ETHERNET
     val PREFERRED_LINK_TYPE_DTO = LinkTypeDto.ETHERNET

@@ -98,14 +98,6 @@ object InboundRequestMessageFactory {
             timeSyncFrequency = 600,
             testButtonEnabled = ConfigurationConstants.TEST_BUTTON_ENABLED,
             winterTimeDetails = DaylightSavingsTimeConfiguration.END_OF_DAYLIGHT_SAVINGS_TIME_DTO,
-            // TODO - Check unused fields
-            commonNameString = null,
-            daliConfiguration = null,
-            ntpEnabled = null, // true,
-            ntpHost = null, // "ntp-server",
-            ntpSyncInterval = null, // 300,
-            tlsEnabled = null, // true,
-            tlsPortNumber = null, // 22125,
         )
 
     fun setEventNotificationsRequestPayload() =

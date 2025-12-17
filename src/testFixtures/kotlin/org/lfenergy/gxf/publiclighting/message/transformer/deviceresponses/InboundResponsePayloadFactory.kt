@@ -69,7 +69,6 @@ object InboundResponsePayloadFactory {
                 }
         }
 
-    // TODO - Return get status response instead of null
     fun statusPayload() =
         getStatusResponse {
             lightValues.addAll(DeviceStatusConstants.LIGHT_VALUES)

@@ -45,11 +45,7 @@ object InboundResponseMessageFactory {
         deviceResponseMessage {
             header = responseHeader(ResponseType.GET_STATUS_RESPONSE)
             result = Result.OK
-            getStatusResponse =
-                getStatusResponse {
-                    currentIp = ""
-                    // TODO Add payload fields
-                }
+            getStatusResponse = InboundResponsePayloadFactory.statusPayload()
         }
 
     private fun unrecognizedResponseMessage() =

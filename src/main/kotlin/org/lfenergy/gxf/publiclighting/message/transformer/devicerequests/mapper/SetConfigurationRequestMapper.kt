@@ -23,15 +23,15 @@ import org.lfenergy.gxf.publiclighting.contracts.internal.configuration.relayMap
 import org.lfenergy.gxf.publiclighting.contracts.internal.configuration.relayMapping
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.SetConfigurationRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.setConfigurationRequest
-import org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.mapper.DeviceRequestMessageMapper.toByteString
-import org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.mapper.DeviceRequestMessageMapper.toProtobufDaylightSavingsDetail
+import org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.mapper.CommonMappingFunctions.toByteString
 import org.opensmartgridplatform.dto.valueobjects.ConfigurationDto
 import org.opensmartgridplatform.dto.valueobjects.LightTypeDto
 import org.opensmartgridplatform.dto.valueobjects.LinkTypeDto
 import org.opensmartgridplatform.dto.valueobjects.RelayMapDto
 import org.opensmartgridplatform.dto.valueobjects.RelayMatrixDto
+import java.time.ZonedDateTime
 
-object ConfigurationMapper {
+object SetConfigurationRequestMapper {
     fun ConfigurationDto.toProtobufMessage(): SetConfigurationRequest {
         val dto = this
         return setConfigurationRequest {
@@ -170,6 +170,12 @@ object ConfigurationMapper {
                 },
             )
         }
+
+    private fun ZonedDateTime.toProtobufDaylightSavingsDetail() =
+        String.format("%02d", this.monthValue) +
+            (this.dayOfWeek.value - 1) +
+            String.format("%02d", this.hour) +
+            String.format("%02d", this.minute)
 
     private fun LinkTypeDto.toProtobuf() =
         when (this) {

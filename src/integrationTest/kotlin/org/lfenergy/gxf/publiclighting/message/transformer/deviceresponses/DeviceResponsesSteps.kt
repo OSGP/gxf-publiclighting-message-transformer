@@ -12,7 +12,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.ResponseType
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_DEVICE_IDENTIFICATION
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_ORGANIZATION_IDENTIFICATION
+import org.lfenergy.gxf.publiclighting.message.transformer.common.DeviceStatusConstants
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType
+import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants
 import org.opensmartgridplatform.dto.valueobjects.ConfigurationDto
 import org.opensmartgridplatform.dto.valueobjects.DeviceStatusDto
 import org.opensmartgridplatform.shared.infra.jms.ProtocolResponseMessage
@@ -88,13 +90,15 @@ class DeviceResponsesSteps(
         assertThat(firmwareVersions).isNotEmpty
         assertThat(firmwareVersions[0]).isInstanceOf(org.opensmartgridplatform.dto.valueobjects.FirmwareVersionDto::class.java)
         val firmwareVersion = firmwareVersions[0] as org.opensmartgridplatform.dto.valueobjects.FirmwareVersionDto
-        assertThat(firmwareVersion.firmwareModuleType).isEqualTo(org.opensmartgridplatform.dto.valueobjects.FirmwareModuleType.FUNCTIONAL)
-        assertThat(firmwareVersion.version).isEqualTo("0.9.0")
+        assertThat(firmwareVersion.firmwareModuleType).isEqualTo(TestConstants.FIRMWARE_TYPE_DTO)
+        assertThat(firmwareVersion.version).isEqualTo(TestConstants.FIRMWARE_VERSION)
     }
 
     private fun verifyGetStatusResponse(serializedDataObject: Serializable?) {
         assertThat(serializedDataObject).isNotNull.isInstanceOf(DeviceStatusDto::class.java)
-        // TODO add more assertions
+        val deviceStatus = serializedDataObject as DeviceStatusDto
+        assertThat(deviceStatus.lightValues).isNotNull.isNotEmpty
+        assertThat(deviceStatus.preferredLinkType).isEqualTo(DeviceStatusConstants.PREFERRED_LINK_TYPE_DTO)
     }
 
     private fun createBytesMessage() =

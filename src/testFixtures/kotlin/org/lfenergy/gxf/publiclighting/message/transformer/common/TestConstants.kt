@@ -3,11 +3,8 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.lfenergy.gxf.publiclighting.message.transformer.common
 
-import org.lfenergy.gxf.publiclighting.contracts.internal.configuration.LinkType
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.FirmwareType
 import org.opensmartgridplatform.dto.valueobjects.FirmwareModuleType
-import org.opensmartgridplatform.dto.valueobjects.LightTypeDto
-import org.opensmartgridplatform.dto.valueobjects.LinkTypeDto
 
 object TestConstants {
     const val DEVICE_IDENTIFICATION = "device1"
@@ -37,13 +34,4 @@ object TestConstants {
 
     const val ELEVEN_PM = "230000"
     const val SIX_AM = "060000"
-
-//    const val CONNECTION_TIMEOUT = 120
-
-    object StatusConstants {
-        val LINK_TYPE = LinkType.ETHERNET
-        val LINK_TYPE_DTO = LinkTypeDto.ETHERNET
-
-        val LIGHT_TYPE_DTO = LightTypeDto.RELAY
-    }
 }

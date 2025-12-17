@@ -41,7 +41,7 @@ import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants
 import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants.ELEVEN_PM
 import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants.HALF_HOUR_IN_SECONDS
 import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants.SIX_AM
-import org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.mapper.DeviceRequestMessageMapper.toByteString
+import org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.mapper.CommonMappingFunctions.toByteString
 
 object OutboundRequestMessageFactory {
     fun deviceRequestMessage(requestType: RequestType) =

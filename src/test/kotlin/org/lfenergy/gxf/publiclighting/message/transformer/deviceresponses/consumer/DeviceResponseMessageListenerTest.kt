@@ -18,7 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.DeviceResponseMessage
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.ResponseType
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_DEVICE_IDENTIFICATION
-import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.DeviceResponseMessageFactory
+import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.InboundResponseMessageFactory
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.producer.DeviceResponseMessageSender
 import org.springframework.boot.test.system.OutputCaptureExtension
 
@@ -30,6 +30,11 @@ class DeviceResponseMessageListenerTest {
 
     @InjectMockKs
     lateinit var deviceResponseMessageListener: DeviceResponseMessageListener
+
+    @Test
+    fun `should handle get configuration device response message`() {
+        testResponse(ResponseType.GET_CONFIGURATION_RESPONSE)
+    }
 
     @Test
     fun `should handle get firmware version device response message`() {
@@ -87,7 +92,7 @@ class DeviceResponseMessageListenerTest {
     }
 
     private fun testResponse(responseType: ResponseType) {
-        val response = DeviceResponseMessageFactory.protobufMessageForResponseOfType(responseType)
+        val response = InboundResponseMessageFactory.protobufMessageForResponseOfType(responseType)
         val bytesMessage = setupBytesMessageMock(response)
         every { deviceResponseMessageSender.send(any<DeviceResponseMessage>()) } just Runs
 

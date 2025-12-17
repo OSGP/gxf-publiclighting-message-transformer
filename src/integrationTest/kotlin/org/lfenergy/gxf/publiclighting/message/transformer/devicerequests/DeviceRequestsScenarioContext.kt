@@ -5,7 +5,7 @@ package org.lfenergy.gxf.publiclighting.message.transformer.devicerequests
 
 import io.cucumber.spring.ScenarioScope
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.DeviceRequestMessage
-import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType
 import org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.config.DeviceRequestsConfigurationProperties
 import org.opensmartgridplatform.shared.infra.jms.RequestMessage
 import org.springframework.stereotype.Component

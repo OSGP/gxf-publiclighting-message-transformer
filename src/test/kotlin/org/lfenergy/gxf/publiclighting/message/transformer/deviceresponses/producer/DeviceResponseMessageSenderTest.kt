@@ -20,7 +20,7 @@ import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.Devic
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.ResponseType
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_DEVICE_IDENTIFICATION
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_ORGANIZATION_IDENTIFICATION
-import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.DeviceResponseMessageFactory
+import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.InboundResponseMessageFactory
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.config.DeviceResponsesConfigurationProperties
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.mapper.DeviceResponseMessageMapper.toDto
 import org.opensmartgridplatform.dto.valueobjects.ConfigurationDto
@@ -62,6 +62,10 @@ class DeviceResponseMessageSenderTest {
             creator.createMessage(session)
         }
     }
+
+    @Test
+    fun `should send get configuration protocol response message`() =
+        testProtocolResponseMessageForResponseType(ResponseType.GET_CONFIGURATION_RESPONSE)
 
     @Test
     fun `should send get firmware version protocol response message`() =
@@ -107,7 +111,7 @@ class DeviceResponseMessageSenderTest {
     @Test
     fun `should log unrecognized protobuf event and not send dto`(capturedOutput: CapturedOutput) {
         // Arrange
-        message = DeviceResponseMessageFactory.protobufMessageForResponseOfType(ResponseType.UNRECOGNIZED)
+        message = InboundResponseMessageFactory.protobufMessageForResponseOfType(ResponseType.UNRECOGNIZED)
 
         // Act
         deviceResponseMessageSender.send(message)
@@ -119,7 +123,7 @@ class DeviceResponseMessageSenderTest {
     }
 
     private fun testProtocolResponseMessageForResponseType(responseType: ResponseType) {
-        message = DeviceResponseMessageFactory.protobufMessageForResponseOfType(responseType)
+        message = InboundResponseMessageFactory.protobufMessageForResponseOfType(responseType)
 
         deviceResponseMessageSender.send(message)
 

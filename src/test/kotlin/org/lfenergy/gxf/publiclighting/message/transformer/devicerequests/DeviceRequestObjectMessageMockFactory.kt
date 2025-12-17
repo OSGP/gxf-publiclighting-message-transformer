@@ -6,21 +6,21 @@ package org.lfenergy.gxf.publiclighting.message.transformer.devicerequests
 import io.mockk.every
 import io.mockk.mockk
 import jakarta.jms.ObjectMessage
-import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType
-import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.GET_CONFIGURATION
-import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.GET_FIRMWARE_VERSION
-import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.GET_STATUS
-import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.RESUME_SCHEDULE
-import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.SET_CONFIGURATION
-import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.SET_EVENT_NOTIFICATIONS
-import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.SET_LIGHT
-import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.SET_REBOOT
-import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.SET_SCHEDULE
-import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.SET_TRANSITION
-import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.START_SELF_TEST
-import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType.STOP_SELF_TEST
-import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType.GET_CONFIGURATION
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType.GET_FIRMWARE_VERSION
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType.GET_STATUS
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType.RESUME_SCHEDULE
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType.SET_CONFIGURATION
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType.SET_EVENT_NOTIFICATIONS
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType.SET_LIGHT
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType.SET_REBOOT
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType.SET_SCHEDULE
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType.SET_TRANSITION
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType.START_SELF_TEST
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType.STOP_SELF_TEST
+import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants
 import java.io.Serializable
 
 object DeviceRequestObjectMessageMockFactory {

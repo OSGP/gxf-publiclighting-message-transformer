@@ -7,12 +7,12 @@ import java.io.Serializable
 import java.time.ZonedDateTime
 
 data class ConfigurationDto(
-    val lightType: org.opensmartgridplatform.dto.valueobjects.LightTypeDto? = null,
-    val daliConfiguration: org.opensmartgridplatform.dto.valueobjects.DaliConfigurationDto? = null,
-    val relayConfiguration: org.opensmartgridplatform.dto.valueobjects.RelayConfigurationDto? = null,
-    val preferredLinkType: org.opensmartgridplatform.dto.valueobjects.LinkTypeDto? = null,
+    val lightType: LightTypeDto? = null,
+    val daliConfiguration: DaliConfigurationDto? = null,
+    val relayConfiguration: RelayConfigurationDto? = null,
+    val preferredLinkType: LinkTypeDto? = null,
     val timeSyncFrequency: Int? = null,
-    val deviceFixedIp: org.opensmartgridplatform.dto.valueobjects.DeviceFixedIpDto? = null,
+    val deviceFixedIp: DeviceFixedIpDto? = null,
     val dhcpEnabled: Boolean? = null,
     val tlsEnabled: Boolean? = null,
     val tlsPortNumber: Int? = null,

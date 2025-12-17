@@ -10,10 +10,10 @@ import jakarta.annotation.PostConstruct
 import jakarta.jms.ObjectMessage
 import org.assertj.core.api.Assertions.assertThat
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_events.EventType
-import org.lfenergy.gxf.publiclighting.message.transformer.DeviceEventMessageFactory
-import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageEventType
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_DEVICE_IDENTIFICATION
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_ORGANIZATION_IDENTIFICATION
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageEventType
+import org.lfenergy.gxf.publiclighting.message.transformer.deviceevents.DeviceEventMessageFactory
 import org.opensmartgridplatform.dto.valueobjects.DeviceRegistrationDataDto
 import org.opensmartgridplatform.dto.valueobjects.EventNotificationDto
 import org.opensmartgridplatform.shared.infra.jms.RequestMessage

@@ -7,7 +7,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.catchThrowable
 import org.junit.jupiter.api.Test
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_events.EventType
-import org.lfenergy.gxf.publiclighting.message.transformer.DeviceEventMessageFactory
+import org.lfenergy.gxf.publiclighting.message.transformer.deviceevents.DeviceEventMessageFactory
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceevents.mapper.DeviceEventMessageMapper.toRequestMessage
 import org.opensmartgridplatform.dto.valueobjects.DeviceRegistrationDataDto
 import org.opensmartgridplatform.dto.valueobjects.EventNotificationDto

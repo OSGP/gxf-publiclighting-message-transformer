@@ -10,9 +10,10 @@ import jakarta.annotation.PostConstruct
 import jakarta.jms.ObjectMessage
 import org.assertj.core.api.Assertions.assertThat
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.ResponseType
-import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_DEVICE_IDENTIFICATION
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_ORGANIZATION_IDENTIFICATION
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType
+import org.opensmartgridplatform.dto.valueobjects.ConfigurationDto
 import org.opensmartgridplatform.dto.valueobjects.DeviceStatusDto
 import org.opensmartgridplatform.shared.infra.jms.ProtocolResponseMessage
 import org.opensmartgridplatform.shared.infra.jms.ResponseMessageResultType
@@ -34,7 +35,7 @@ class DeviceResponsesSteps(
     @Given("a device response bytes message of type {responseType}")
     fun givenBytesMessage(responseType: ResponseType) {
         scenarioContext.inboundResponseType = responseType
-        scenarioContext.inboundResponseMessage = DeviceResponseMessageFactory.protobufMessageForResponseOfType(responseType)
+        scenarioContext.inboundResponseMessage = InboundResponseMessageFactory.protobufMessageForResponseOfType(responseType)
     }
 
     @When("the bytes message is sent to the inbound responses queue")
@@ -56,9 +57,10 @@ class DeviceResponsesSteps(
             .isInstanceOf(ProtocolResponseMessage::class.java)
         with(scenarioContext.outboundResponseMessage!!) {
             assertThat(this.messageType).isEqualTo(objectMessageType.name)
-            assertThat(this.result).isNotNull().isEqualTo(ResponseMessageResultType.OK)
+            assertThat(this.result).isNotNull.isEqualTo(ResponseMessageResultType.OK)
 
             when (objectMessageType) {
+                ObjectMessageType.GET_CONFIGURATION -> verifyGetConfigurationResponse(this.dataObject)
                 ObjectMessageType.GET_FIRMWARE_VERSION -> verifyGetFirmwareVersionResponse(this.dataObject)
                 ObjectMessageType.GET_STATUS -> verifyGetStatusResponse(this.dataObject)
                 else -> assertThat(this.dataObject).isNull()
@@ -66,8 +68,22 @@ class DeviceResponsesSteps(
         }
     }
 
+    private fun verifyGetConfigurationResponse(serializedDataObject: Serializable?) {
+        assertThat(serializedDataObject).isNotNull.isInstanceOf(ConfigurationDto::class.java)
+        val configuration = serializedDataObject as ConfigurationDto
+        assertThat(configuration.relayConfiguration).isNotNull
+        assertThat(configuration.deviceFixedIp).isNotNull
+        assertThat(configuration.preferredLinkType).isNotNull
+        assertThat(configuration.lightType).isNotNull
+        assertThat(configuration.daliConfiguration).isNull()
+        assertThat(configuration.timeSyncFrequency).isNotNull
+        assertThat(configuration.testButtonEnabled).isNotNull
+        assertThat(configuration.summerTimeDetails).isNotNull
+        assertThat(configuration.winterTimeDetails).isNotNull
+    }
+
     private fun verifyGetFirmwareVersionResponse(serializedDataObject: Serializable?) {
-        assertThat(serializedDataObject).isNotNull().isInstanceOf(List::class.java)
+        assertThat(serializedDataObject).isNotNull.isInstanceOf(List::class.java)
         val firmwareVersions = serializedDataObject as List<*>
         assertThat(firmwareVersions).isNotEmpty
         assertThat(firmwareVersions[0]).isInstanceOf(org.opensmartgridplatform.dto.valueobjects.FirmwareVersionDto::class.java)
@@ -77,7 +93,7 @@ class DeviceResponsesSteps(
     }
 
     private fun verifyGetStatusResponse(serializedDataObject: Serializable?) {
-        assertThat(serializedDataObject).isNotNull().isInstanceOf(DeviceStatusDto::class.java)
+        assertThat(serializedDataObject).isNotNull.isInstanceOf(DeviceStatusDto::class.java)
         // TODO add more assertions
     }
 

@@ -31,16 +31,16 @@ import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.setEve
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.setLightRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.setScheduleRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.setTransitionRequest
-import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants
-import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.ConfigurationConstants.AstronomicalOffsetConfiguration
-import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.ConfigurationConstants.CommunicationConfiguration
-import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.ConfigurationConstants.DaylightSavingsTimeConfiguration
-import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.ConfigurationConstants.DeviceAddressConfiguration
-import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.ConfigurationConstants.PlatformAddressConfiguration
-import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.ConfigurationConstants.RelayConfiguration
-import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.ELEVEN_PM
-import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.HALF_HOUR_IN_SECONDS
-import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.SIX_AM
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ConfigurationConstants.AstronomicalOffsetConfiguration
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ConfigurationConstants.CommunicationConfiguration
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ConfigurationConstants.DaylightSavingsTimeConfiguration
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ConfigurationConstants.DeviceAddressConfiguration
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ConfigurationConstants.PlatformAddressConfiguration
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ConfigurationConstants.RelayConfiguration
+import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants
+import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants.ELEVEN_PM
+import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants.HALF_HOUR_IN_SECONDS
+import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants.SIX_AM
 import org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.mapper.DeviceRequestMessageMapper.toByteString
 
 object OutboundRequestMessageFactory {

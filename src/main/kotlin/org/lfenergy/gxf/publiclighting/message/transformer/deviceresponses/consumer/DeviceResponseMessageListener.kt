@@ -39,7 +39,7 @@ class DeviceResponseMessageListener(
         }
     }
 
-    fun BytesMessage.parse(): DeviceResponseMessage {
+    private fun BytesMessage.parse(): DeviceResponseMessage {
         val length = this.bodyLength.toInt()
         val bytes = ByteArray(length)
         this.readBytes(bytes)

@@ -17,8 +17,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_events.DeviceEventMessage
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_events.EventType
-import org.lfenergy.gxf.publiclighting.message.transformer.DeviceEventMessageFactory
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_DEVICE_IDENTIFICATION
+import org.lfenergy.gxf.publiclighting.message.transformer.deviceevents.DeviceEventMessageFactory
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceevents.producer.DeviceEventMessageSender
 
 @ExtendWith(MockKExtension::class)

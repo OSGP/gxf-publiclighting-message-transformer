@@ -17,8 +17,8 @@ import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.Reques
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.ResumeScheduleRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.SetLightRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.SetScheduleRequest
-import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType
-import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.ConfigurationConstants
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ConfigurationConstants
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType
 import org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.mapper.DeviceRequestMessageMapper.toProtobufMessage
 import org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.DeviceRequestObjectMessageMockFactory as MockFactory
 

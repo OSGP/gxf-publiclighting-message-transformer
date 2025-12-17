@@ -6,8 +6,8 @@ package org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.mapp
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.ResponseType
-import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType
-import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.DeviceResponseMessageFactory
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType
+import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.InboundResponseMessageFactory
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.mapper.DeviceResponseMessageMapper.toResponseDto
 import org.opensmartgridplatform.dto.valueobjects.ConfigurationDto
 import org.opensmartgridplatform.dto.valueobjects.DeviceStatusDto
@@ -15,6 +15,10 @@ import org.opensmartgridplatform.shared.infra.jms.ProtocolResponseMessage
 import org.opensmartgridplatform.shared.infra.jms.ResponseMessageResultType
 
 class DeviceResponseMessageMapperTest {
+    @Test
+    fun `should create get configuration protocol response message dto from protobuf message`() =
+        verifyResponseMessageCreated(ResponseType.GET_CONFIGURATION_RESPONSE, ObjectMessageType.GET_CONFIGURATION)
+
     @Test
     fun `should create get firmware version protocol response message dto from protobuf message`() =
         verifyResponseMessageCreated(ResponseType.GET_FIRMWARE_VERSION_RESPONSE, ObjectMessageType.GET_FIRMWARE_VERSION)
@@ -66,7 +70,7 @@ class DeviceResponseMessageMapperTest {
         inboundResponseType: ResponseType,
         outboundMessageType: ObjectMessageType,
     ) {
-        val message = DeviceResponseMessageFactory.protobufMessageForResponseOfType(inboundResponseType)
+        val message = InboundResponseMessageFactory.protobufMessageForResponseOfType(inboundResponseType)
 
         val result = message.toResponseDto()
 

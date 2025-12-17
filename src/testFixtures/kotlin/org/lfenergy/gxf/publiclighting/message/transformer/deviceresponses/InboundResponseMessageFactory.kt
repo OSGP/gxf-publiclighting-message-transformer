@@ -4,22 +4,18 @@
 package org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses
 
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.DeviceResponseMessage
-import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.FirmwareType
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.ResponseType
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.Result
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.deviceResponseMessage
-import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.firmwareVersion
-import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.getFirmwareVersionResponse
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.getStatusResponse
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.responseHeader
-import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.CORRELATION_UID
-import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.DEVICE_IDENTIFICATION
-import org.lfenergy.gxf.publiclighting.message.transformer.TestConstants.UNRECOGNIZED_VALUE
+import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants
 
-object DeviceResponseMessageFactory {
+object InboundResponseMessageFactory {
     fun protobufMessageForResponseOfType(responseType: ResponseType): DeviceResponseMessage =
         when (responseType) {
             ResponseType.UNRECOGNIZED -> unrecognizedResponseMessage()
+            ResponseType.GET_CONFIGURATION_RESPONSE -> getConfigurationResponseMessage()
             ResponseType.GET_FIRMWARE_VERSION_RESPONSE -> getFirmwareVersionResponseMessage()
             ResponseType.GET_STATUS_RESPONSE -> getStatusResponseMessage()
             else -> emptyResponseMessage(responseType)
@@ -31,19 +27,18 @@ object DeviceResponseMessageFactory {
             result = Result.OK
         }
 
+    private fun getConfigurationResponseMessage() =
+        deviceResponseMessage {
+            header = responseHeader(ResponseType.GET_CONFIGURATION_RESPONSE)
+            result = Result.OK
+            getConfigurationResponse = InboundResponsePayloadFactory.configurationPayload()
+        }
+
     private fun getFirmwareVersionResponseMessage() =
         deviceResponseMessage {
             header = responseHeader(ResponseType.GET_FIRMWARE_VERSION_RESPONSE)
             result = Result.OK
-            getFirmwareVersionResponse =
-                getFirmwareVersionResponse {
-                    firmwareVersions.add(
-                        firmwareVersion {
-                            firmwareType = FirmwareType.FUNCTIONAL
-                            version = "0.9.0"
-                        },
-                    )
-                }
+            getFirmwareVersionResponse = InboundResponsePayloadFactory.firmwareVersionsPayload()
         }
 
     private fun getStatusResponseMessage() =
@@ -61,18 +56,18 @@ object DeviceResponseMessageFactory {
         deviceResponseMessage {
             header =
                 responseHeader {
-                    deviceIdentification = DEVICE_IDENTIFICATION
-                    correlationUid = CORRELATION_UID
-                    responseTypeValue = UNRECOGNIZED_VALUE
+                    deviceIdentification = TestConstants.DEVICE_IDENTIFICATION
+                    correlationUid = TestConstants.CORRELATION_UID
+                    responseTypeValue = TestConstants.UNRECOGNIZED_VALUE
                 }
         }
 
     private fun responseHeader(inboundResponseType: ResponseType) =
         responseHeader {
-            deviceIdentification = DEVICE_IDENTIFICATION
-            correlationUid = CORRELATION_UID
+            deviceIdentification = TestConstants.DEVICE_IDENTIFICATION
+            correlationUid = TestConstants.CORRELATION_UID
             responseType = inboundResponseType
-            domain = "PUBLIC_LIGHTING"
-            domainVersion = "1.0"
+            domain = TestConstants.DOMAIN
+            domainVersion = TestConstants.DOMAIN_VERSION
         }
 }

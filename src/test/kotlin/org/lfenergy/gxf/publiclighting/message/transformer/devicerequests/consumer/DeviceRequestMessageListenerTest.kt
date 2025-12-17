@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.DeviceRequestMessage
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.RequestType
-import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType
 import org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.producer.DeviceRequestMessageSender
 import org.springframework.boot.test.system.OutputCaptureExtension
 import org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.DeviceRequestObjectMessageMockFactory as MockFactory

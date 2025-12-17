@@ -8,8 +8,8 @@ import io.cucumber.spring.CucumberContextConfiguration
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_events.EventType
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.RequestType
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.ResponseType
-import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageEventType
-import org.lfenergy.gxf.publiclighting.message.transformer.ObjectMessageType
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageEventType
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.testcontainers.context.ImportTestcontainers
 import org.springframework.test.annotation.DirtiesContext

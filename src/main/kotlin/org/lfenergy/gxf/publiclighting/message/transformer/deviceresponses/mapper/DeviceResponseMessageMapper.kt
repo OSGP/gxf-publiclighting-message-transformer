@@ -3,22 +3,11 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.mapper
 
-import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.FirmwareType
-import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.GetConfigurationResponse
-import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.GetFirmwareVersionResponse
-import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.GetStatusResponse
-import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.LightType
-import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.LinkType
-import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.RelayIndex
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.ResponseType
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.Result
-import org.opensmartgridplatform.dto.valueobjects.ConfigurationDto
-import org.opensmartgridplatform.dto.valueobjects.DeviceStatusDto
-import org.opensmartgridplatform.dto.valueobjects.FirmwareModuleType
-import org.opensmartgridplatform.dto.valueobjects.FirmwareVersionDto
-import org.opensmartgridplatform.dto.valueobjects.LightTypeDto
-import org.opensmartgridplatform.dto.valueobjects.LightValueDto
-import org.opensmartgridplatform.dto.valueobjects.LinkTypeDto
+import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.mapper.GetConfigurationResponseMapper.toDto
+import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.mapper.GetFirmwareVersionResponseMapper.toDto
+import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.mapper.GetStatusResponseMapper.toDto
 import org.opensmartgridplatform.shared.exceptionhandling.ComponentType
 import org.opensmartgridplatform.shared.exceptionhandling.OsgpException
 import org.opensmartgridplatform.shared.infra.jms.ProtocolResponseMessage
@@ -84,75 +73,6 @@ object DeviceResponseMessageMapper {
             else -> throw IllegalArgumentException("Unsupported message type: ${this.header.responseType}")
         }
     }
-
-    private fun GetConfigurationResponse.toDto(): Serializable = ConfigurationDto()
-
-    private fun GetFirmwareVersionResponse.toDto(): Serializable =
-        this.firmwareVersionsList.map {
-            FirmwareVersionDto(
-                it.firmwareType.toDto(),
-                it.version,
-            )
-        } as Serializable
-
-    private fun FirmwareType.toDto(): FirmwareModuleType =
-        when (this) {
-            FirmwareType.COMMUNICATION -> FirmwareModuleType.COMMUNICATION
-            FirmwareType.FUNCTIONAL -> FirmwareModuleType.FUNCTIONAL
-            FirmwareType.SECURITY -> FirmwareModuleType.SECURITY
-            else -> throw IllegalArgumentException("Unsupported firmware type: $this")
-        }
-
-    private fun GetStatusResponse.toDto(): DeviceStatusDto =
-        DeviceStatusDto(
-            this.lightValuesList.map { LightValueDto(it.index.toInt(), it.lightOn, null) }.toMutableList(),
-            this.preferredLinkType.toDto(),
-            this.actualLinkType.toDto(),
-            this.lightType.toDto(),
-            this.eventNotificationMask,
-            this.numberOfOutputs,
-            this.dcOutputVoltageMaximum,
-            this.dcOutputVoltageCurrent,
-            this.maximumOutputPowerOnDcOutput,
-            this.serialNumber.toStringUtf8(),
-            this.macAddress.toStringUtf8(),
-            this.hardwareId,
-            this.internalFlashMemSize,
-            this.externalFlashMemSize,
-            this.lastInternalTestResultCode,
-            this.startupCounter,
-            this.bootLoaderVersion,
-            this.firmwareVersion,
-            this.currentConfigurationBackUsed.toStringUtf8(),
-            this.name,
-            this.currentTime,
-            this.currentIp,
-        )
-
-    private fun RelayIndex.toInt() =
-        when (this) {
-            RelayIndex.RELAY_ALL -> 0
-            RelayIndex.RELAY_ONE -> 1
-            RelayIndex.RELAY_TWO -> 2
-            RelayIndex.RELAY_THREE -> 3
-            RelayIndex.RELAY_FOUR -> 4
-            else -> throw IllegalArgumentException("Unsupported relay index: $this")
-        }
-
-    private fun LinkType.toDto() =
-        when (this) {
-            LinkType.ETHERNET -> LinkTypeDto.ETHERNET
-            LinkType.CDMA -> LinkTypeDto.CDMA
-            LinkType.GPRS -> LinkTypeDto.GPRS
-            else -> throw IllegalArgumentException("Unsupported link type: $this")
-        }
-
-    private fun LightType.toDto() =
-        when (this) {
-            LightType.RELAY -> LightTypeDto.RELAY
-            // Other enum values not used
-            else -> throw IllegalArgumentException("Unsupported light type: $this")
-        }
 
     fun ResponseType.toDto() =
         when (this) {

@@ -132,6 +132,18 @@ class DeviceRequestMessageSenderTest {
                     val deviceRequestMessage = DeviceRequestMessage.parseFrom(bytes)
                     assertThat(deviceRequestMessage.header.deviceIdentification).isEqualTo(DEVICE_IDENTIFICATION)
                     assertThat(deviceRequestMessage.header.requestType).isEqualTo(requestType)
+                    when (requestType) {
+                        RequestType.RESUME_SCHEDULE_REQUEST -> assertThat(deviceRequestMessage.hasResumeScheduleRequest()).isTrue
+                        RequestType.SET_CONFIGURATION_REQUEST -> assertThat(deviceRequestMessage.hasSetConfigurationRequest()).isTrue
+                        RequestType.SET_LIGHT_REQUEST -> assertThat(deviceRequestMessage.hasSetLightRequest()).isTrue
+                        RequestType.SET_EVENT_NOTIFICATION_MASK_REQUEST ->
+                            assertThat(
+                                deviceRequestMessage.hasSetEventNotificationMaskRequest(),
+                            ).isTrue
+                        RequestType.SET_SCHEDULE_REQUEST -> assertThat(deviceRequestMessage.hasSetScheduleRequest()).isTrue
+                        RequestType.SET_TRANSITION_REQUEST -> assertThat(deviceRequestMessage.hasSetTransitionRequest()).isTrue
+                        else -> { /* no payload */ }
+                    }
                 },
             )
         }

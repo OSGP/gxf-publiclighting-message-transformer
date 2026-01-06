@@ -59,11 +59,11 @@ device-message-logs:
 device-requests:
   enabled: true
   consumer:
-    inbound-queue: gxf.publiclighting.device-events.inbound-objectmessage
+    inbound-queue: gxf.publiclighting.device-requests.inbound-objectmessage
     min-concurrency: 2
     max-concurrency: 10
   producer:
-    outbound-queue: gxf.publiclighting.device-events.outbound-protobuf
+    outbound-queue: gxf.publiclighting.device-requests.outbound-protobuf
     quality-of-service:
       explicit-qos-enabled: true
       delivery-persistent: true

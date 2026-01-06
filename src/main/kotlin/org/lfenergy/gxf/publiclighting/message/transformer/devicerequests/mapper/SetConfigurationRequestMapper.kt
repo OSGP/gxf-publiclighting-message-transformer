@@ -118,7 +118,7 @@ object SetConfigurationRequestMapper {
     private fun ConfigurationDto.toPlatformAddressConfiguration() =
         platformAddressConfiguration {
             osgpIpAddress?.let { ipAddress = osgpIpAddress.toIpByteString() }
-            osgpPortNumber?. let { portNumber = osgpPortNumber }
+            osgpPortNumber?.let { portNumber = osgpPortNumber }
         }
 
     private fun ConfigurationDto.toRelayConfiguration(): RelayConfiguration {

@@ -6,6 +6,7 @@ package org.lfenergy.gxf.publiclighting.message.transformer.devicerequests
 import org.lfenergy.gxf.publiclighting.contracts.internal.configuration.RelayType
 import org.lfenergy.gxf.publiclighting.contracts.internal.configuration.astronomicalOffsetsConfiguration
 import org.lfenergy.gxf.publiclighting.contracts.internal.configuration.communicationConfiguration
+import org.lfenergy.gxf.publiclighting.contracts.internal.configuration.configuration
 import org.lfenergy.gxf.publiclighting.contracts.internal.configuration.daylightSavingsTimeConfiguration
 import org.lfenergy.gxf.publiclighting.contracts.internal.configuration.deviceAddressConfiguration
 import org.lfenergy.gxf.publiclighting.contracts.internal.configuration.platformAddressConfiguration
@@ -48,12 +49,12 @@ object OutboundRequestMessageFactory {
         deviceRequestMessage {
             header = requestHeader(requestType)
             when (requestType) {
-                RequestType.SET_CONFIGURATION_REQUEST -> setConfigurationRequest()
-                RequestType.RESUME_SCHEDULE_REQUEST -> resumeScheduleRequest()
-                RequestType.SET_EVENT_NOTIFICATION_MASK_REQUEST -> setEventNotificationMaskRequest()
-                RequestType.SET_LIGHT_REQUEST -> setLightRequest()
-                RequestType.SET_SCHEDULE_REQUEST -> setScheduleRequest()
-                RequestType.SET_TRANSITION_REQUEST -> setTransitionRequest()
+                RequestType.SET_CONFIGURATION_REQUEST -> setConfigurationRequest = setConfigurationRequest()
+                RequestType.RESUME_SCHEDULE_REQUEST -> resumeScheduleRequest = resumeScheduleRequest()
+                RequestType.SET_EVENT_NOTIFICATION_MASK_REQUEST -> setEventNotificationMaskRequest = setEventNotificationMaskRequest()
+                RequestType.SET_LIGHT_REQUEST -> setLightRequest = setLightRequest()
+                RequestType.SET_SCHEDULE_REQUEST -> setScheduleRequest = setScheduleRequest()
+                RequestType.SET_TRANSITION_REQUEST -> setTransitionRequest = setTransitionRequest()
                 else -> {} // no payload
             }
         }
@@ -69,75 +70,86 @@ object OutboundRequestMessageFactory {
             requestType = type
         }
 
-    private fun setConfigurationRequest() {
+    private fun setConfigurationRequest() =
         setConfigurationRequest {
-            astronomicalOffsetsConfiguration {
-                sunriseOffset = AstronomicalOffsetConfiguration.SUNRISE_OFFSET_IN_SECONDS
-                sunsetOffset = AstronomicalOffsetConfiguration.SUNSET_OFFSET_IN_SECONDS
-            }
-            communicationConfiguration {
-                preferredLinkType = CommunicationConfiguration.LINK_TYPE
-                connectionTimeout = CommunicationConfiguration.CONNECTION_TIMEOUT_IN_SECONDS
-                delayBetweenConnectionAttempts = CommunicationConfiguration.DELAY_BETWEEN_CONNECTION_ATTEMPTS_IN_SECONDS
-                numberOfRetries = CommunicationConfiguration.NUMBER_OF_RETRIES
-            }
-            daylightSavingsTimeConfiguration {
-                automaticSummerTimingEnabled = DaylightSavingsTimeConfiguration.AUTO_ENABLED
-                summerTimeDetails = DaylightSavingsTimeConfiguration.BEGIN_OF_DAYLIGHT_SAVINGS_TIME
-                winterTimeDetails = DaylightSavingsTimeConfiguration.END_OF_DAYLIGHT_SAVINGS_TIME
-            }
-            deviceAddressConfiguration {
-                ipAddress = DeviceAddressConfiguration.IP_ADDRESS_BYTES
-                netMask = DeviceAddressConfiguration.NET_MASK_BYTES
-                gateway = DeviceAddressConfiguration.GATEWAY_BYTES
-                dhcpEnabled = DeviceAddressConfiguration.DHCP_ENABLED
-            }
-            platformAddressConfiguration {
-                ipAddress = PlatformAddressConfiguration.IP_ADDRESS_BYTES
-                portNumber = PlatformAddressConfiguration.PORT
-            }
-            relayConfiguration {
-                relayRefreshingEnabled = RelayConfiguration.RELAY_REFRESHING_ENABLED
-                relayMapping {
-                    relayMap.addAll(
-                        listOf(
-                            relayMap {
-                                index = 2.toByteString()
-                                address = 1.toByteString()
-                                relayType = RelayType.LIGHT
-                            },
-                            relayMap {
-                                index = 3.toByteString()
-                                address = 2.toByteString()
-                                relayType = RelayType.LIGHT
-                            },
-                            relayMap {
-                                index = 4.toByteString()
-                                address = 3.toByteString()
-                                relayType = RelayType.LIGHT
-                            },
-                        ),
-                    )
+            configuration =
+                configuration {
+                    astronomicalOffsetsConfiguration =
+                        astronomicalOffsetsConfiguration {
+                            sunriseOffset = AstronomicalOffsetConfiguration.SUNRISE_OFFSET_IN_SECONDS
+                            sunsetOffset = AstronomicalOffsetConfiguration.SUNSET_OFFSET_IN_SECONDS
+                        }
+                    communicationConfiguration =
+                        communicationConfiguration {
+                            preferredLinkType = CommunicationConfiguration.LINK_TYPE
+                            connectionTimeout = CommunicationConfiguration.CONNECTION_TIMEOUT_IN_SECONDS
+                            delayBetweenConnectionAttempts =
+                                CommunicationConfiguration.DELAY_BETWEEN_CONNECTION_ATTEMPTS_IN_SECONDS
+                            numberOfRetries = CommunicationConfiguration.NUMBER_OF_RETRIES
+                        }
+                    daylightSavingsTimeConfiguration =
+                        daylightSavingsTimeConfiguration {
+                            automaticSummerTimingEnabled = DaylightSavingsTimeConfiguration.AUTO_ENABLED
+                            summerTimeDetails = DaylightSavingsTimeConfiguration.BEGIN_OF_DAYLIGHT_SAVINGS_TIME
+                            winterTimeDetails = DaylightSavingsTimeConfiguration.END_OF_DAYLIGHT_SAVINGS_TIME
+                        }
+                    deviceAddressConfiguration =
+                        deviceAddressConfiguration {
+                            ipAddress = DeviceAddressConfiguration.IP_ADDRESS_BYTES
+                            netMask = DeviceAddressConfiguration.NET_MASK_BYTES
+                            gateway = DeviceAddressConfiguration.GATEWAY_BYTES
+                            dhcpEnabled = DeviceAddressConfiguration.DHCP_ENABLED
+                        }
+                    platformAddressConfiguration =
+                        platformAddressConfiguration {
+                            ipAddress = PlatformAddressConfiguration.IP_ADDRESS_BYTES
+                            portNumber = PlatformAddressConfiguration.PORT
+                        }
+                    relayConfiguration =
+                        relayConfiguration {
+                            relayRefreshingEnabled = RelayConfiguration.RELAY_REFRESHING_ENABLED
+                            relayMapping =
+                                relayMapping {
+                                    relayMap.addAll(
+                                        listOf(
+                                            relayMap {
+                                                index = 2.toByteString()
+                                                address = 1.toByteString()
+                                                relayType = RelayType.LIGHT
+                                            },
+                                            relayMap {
+                                                index = 3.toByteString()
+                                                address = 2.toByteString()
+                                                relayType = RelayType.LIGHT
+                                            },
+                                            relayMap {
+                                                index = 4.toByteString()
+                                                address = 3.toByteString()
+                                                relayType = RelayType.LIGHT
+                                            },
+                                        ),
+                                    )
+                                }
+                            relayLinking =
+                                relayLinking {
+                                    relayLinkMatrix.addAll(
+                                        listOf(
+                                            relayLinkMatrix {
+                                                masterRelayIndex = 3.toByteString()
+                                                masterRelayOn = true
+                                                indicesOfControlledRelaysOn = 4.toByteString()
+                                            },
+                                            relayLinkMatrix {
+                                                masterRelayIndex = 3.toByteString()
+                                                masterRelayOn = false
+                                                indicesOfControlledRelaysOff = 4.toByteString()
+                                            },
+                                        ),
+                                    )
+                                }
+                        }
                 }
-                relayLinking {
-                    relayLinkMatrix.addAll(
-                        listOf(
-                            relayLinkMatrix {
-                                masterRelayIndex = 3.toByteString()
-                                masterRelayOn = true
-                                indicesOfControlledRelaysOn = 4.toByteString()
-                            },
-                            relayLinkMatrix {
-                                masterRelayIndex = 3.toByteString()
-                                masterRelayOn = false
-                                indicesOfControlledRelaysOff = 4.toByteString()
-                            },
-                        ),
-                    )
-                }
-            }
         }
-    }
 
     private fun resumeScheduleRequest() =
         resumeScheduleRequest {

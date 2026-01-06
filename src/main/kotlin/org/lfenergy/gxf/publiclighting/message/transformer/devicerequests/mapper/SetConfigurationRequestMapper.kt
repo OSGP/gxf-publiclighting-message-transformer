@@ -37,51 +37,58 @@ object SetConfigurationRequestMapper {
         return setConfigurationRequest {
             configuration =
                 configuration {
-                    if (dto.hasAstronomicalOffsetConfiguration()) {
-                        astronomicalOffsetsConfiguration = dto.toAstronomicalOffsetsConfiguration()
-                    }
-                    if (dto.hasCommunicationConfiguration()) {
-                        communicationConfiguration = dto.toCommunicationConfiguration()
-                    }
-                    if (dto.hasDaylightSavingsConfiguration()) {
-                        daylightSavingsTimeConfiguration = dto.toDaylightSavingsTimeConfiguration()
-                    }
-                    if (dto.hasDeviceAddressConfiguration()) {
-                        deviceAddressConfiguration = dto.toDeviceAddressConfiguration()
-                    }
-                    if (dto.hasPlatformAddressConfiguration()) {
-                        platformAddressConfiguration = dto.toPlatformAddressConfiguration()
-                    }
-                    if (dto.hasRelayConfiguration()) {
-                        relayConfiguration = dto.toRelayConfiguration()
-                    }
-                    dto.lightType?.let { lightType = dto.lightType.toProtobuf() }
-                    dto.testButtonEnabled?.let { testButtonEnabled = dto.testButtonEnabled }
-                    dto.timeSyncFrequency?.let { timeSyncFrequency = dto.timeSyncFrequency }
-                    dto.switchingDelays?.let { switchingDelay.addAll(dto.switchingDelays.filterNotNull()) }
+                    toAstronomicalOffsetsConfigurationOrNull()?.let { astronomicalOffsetsConfiguration = it }
+                    toCommunicationConfigurationOrNull()?.let { communicationConfiguration = it }
+                    toDaylightSavingsTimeConfigurationOrNull()?.let { daylightSavingsTimeConfiguration = it }
+                    toDeviceAddressConfigurationOrNull()?.let { deviceAddressConfiguration = it }
+                    toPlatformAddressConfigurationOrNull()?.let { platformAddressConfiguration = it }
+                    toRelayConfigurationOrNull()?.let { relayConfiguration = it }
+                    dto.lightType?.let { lightType = it.toProtobuf() }
+                    dto.testButtonEnabled?.let { testButtonEnabled = it }
+                    dto.timeSyncFrequency?.let { timeSyncFrequency = it }
+                    dto.switchingDelays?.let { switchingDelay.addAll(it.filterNotNull()) }
                 }
         }
     }
 
-    private fun LightTypeDto.toProtobuf() =
-        when (this) {
-            LightTypeDto.RELAY -> LightType.RELAY
-            else -> LightType.LIGHT_TYPE_NOT_SET
+    private fun ConfigurationDto.toAstronomicalOffsetsConfigurationOrNull() =
+        if (astroGateSunSetOffset != null || astroGateSunRiseOffset != null) toAstronomicalOffsetsConfiguration() else null
+
+    private fun ConfigurationDto.toCommunicationConfigurationOrNull() =
+        if (communicationTimeout != null ||
+            communicationNumberOfRetries != null ||
+            communicationPauseTimeBetweenConnectionTrials != null
+        ) {
+            toCommunicationConfiguration()
+        } else {
+            null
         }
 
-    private fun ConfigurationDto.hasAstronomicalOffsetConfiguration() = astroGateSunSetOffset != null || astroGateSunRiseOffset != null
+    private fun ConfigurationDto.toDaylightSavingsTimeConfigurationOrNull() =
+        if (automaticSummerTimingEnabled != null ||
+            summerTimeDetails != null ||
+            winterTimeDetails != null
+        ) {
+            toDaylightSavingsTimeConfiguration()
+        } else {
+            null
+        }
 
-    private fun ConfigurationDto.hasCommunicationConfiguration() =
-        communicationTimeout != null || communicationNumberOfRetries != null || communicationPauseTimeBetweenConnectionTrials != null
+    private fun ConfigurationDto.toDeviceAddressConfigurationOrNull() =
+        if (deviceFixedIp != null || dhcpEnabled != null) toDeviceAddressConfiguration() else null
 
-    private fun ConfigurationDto.hasDaylightSavingsConfiguration() =
-        automaticSummerTimingEnabled != null || summerTimeDetails != null || winterTimeDetails != null
+    private fun ConfigurationDto.toPlatformAddressConfigurationOrNull() =
+        if (osgpIpAddress != null || osgpPortNumber != null) toPlatformAddressConfiguration() else null
 
-    private fun ConfigurationDto.hasDeviceAddressConfiguration() = deviceFixedIp != null || dhcpEnabled != null
-
-    private fun ConfigurationDto.hasPlatformAddressConfiguration() = osgpIpAddress != null || osgpPortNumber != null
-
-    private fun ConfigurationDto.hasRelayConfiguration() = relayRefreshing != null || relayConfiguration != null || relayLinking != null
+    private fun ConfigurationDto.toRelayConfigurationOrNull() =
+        if (relayRefreshing != null ||
+            relayConfiguration != null ||
+            relayLinking != null
+        ) {
+            toRelayConfiguration()
+        } else {
+            null
+        }
 
     private fun ConfigurationDto.toAstronomicalOffsetsConfiguration() =
         astronomicalOffsetsConfiguration {
@@ -159,12 +166,10 @@ object SetConfigurationRequestMapper {
                         relayLinkDto.masterRelayIndex?.let { masterRelayIndex = it.toByteString() }
                         masterRelayOn = relayLinkDto.masterRelayOn
                         relayLinkDto.indicesOfControlledRelaysOn?.let {
-                            indicesOfControlledRelaysOn =
-                                relayLinkDto.indicesOfControlledRelaysOn.toByteString()
+                            indicesOfControlledRelaysOn = it.toByteString()
                         }
                         relayLinkDto.indicesOfControlledRelaysOff?.let {
-                            indicesOfControlledRelaysOff =
-                                relayLinkDto.indicesOfControlledRelaysOff.toByteString()
+                            indicesOfControlledRelaysOff = it.toByteString()
                         }
                     }
                 },
@@ -176,6 +181,12 @@ object SetConfigurationRequestMapper {
             (this.dayOfWeek.value - 1) +
             String.format("%02d", this.hour) +
             String.format("%02d", this.minute)
+
+    private fun LightTypeDto.toProtobuf() =
+        when (this) {
+            LightTypeDto.RELAY -> LightType.RELAY
+            else -> LightType.LIGHT_TYPE_NOT_SET
+        }
 
     private fun LinkTypeDto.toProtobuf() =
         when (this) {

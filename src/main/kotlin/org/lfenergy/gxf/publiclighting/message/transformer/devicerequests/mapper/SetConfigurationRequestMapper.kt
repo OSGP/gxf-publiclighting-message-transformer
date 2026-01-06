@@ -58,7 +58,7 @@ object SetConfigurationRequestMapper {
                     dto.lightType?.let { lightType = dto.lightType.toProtobuf() }
                     dto.testButtonEnabled?.let { testButtonEnabled = dto.testButtonEnabled }
                     dto.timeSyncFrequency?.let { timeSyncFrequency = dto.timeSyncFrequency }
-                    // TODO - switching delay
+                    dto.switchingDelays?.let { switchingDelay.addAll(dto.switchingDelays.filterNotNull()) }
                 }
         }
     }

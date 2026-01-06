@@ -36,8 +36,7 @@ object OutboundResponsePayloadFactory {
             automaticSummerTimingEnabled = ConfigurationConstants.DaylightSavingsTimeConfiguration.AUTO_ENABLED,
             astroGateSunRiseOffset = ConfigurationConstants.AstronomicalOffsetConfiguration.SUNRISE_OFFSET_IN_SECONDS,
             astroGateSunSetOffset = ConfigurationConstants.AstronomicalOffsetConfiguration.SUNSET_OFFSET_IN_SECONDS,
-            // TODO - implement switching delays
-            switchingDelays = null,
+            switchingDelays = ConfigurationConstants.SWITCHING_DELAYS,
             relayLinking = ConfigurationConstants.RelayConfiguration.RELAY_LINKING_DTO,
             relayRefreshing = ConfigurationConstants.RelayConfiguration.RELAY_REFRESHING_ENABLED,
             summerTimeDetails = ConfigurationConstants.DaylightSavingsTimeConfiguration.BEGIN_OF_DAYLIGHT_SAVINGS_TIME_DTO,

@@ -17,15 +17,18 @@ import org.opensmartgridplatform.dto.valueobjects.RelayConfigurationDto
 import org.opensmartgridplatform.dto.valueobjects.RelayMapDto
 import org.opensmartgridplatform.dto.valueobjects.RelayMatrixDto
 import org.opensmartgridplatform.dto.valueobjects.RelayTypeDto
+import java.time.DayOfWeek
+import java.time.Month
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
+import java.time.temporal.TemporalAdjusters
 
 object ConfigurationConstants {
     val LIGHT_TYPE_DTO_RELAY = LightTypeDto.RELAY
     val LIGHT_TYPE_PROTOC_RELAY = LightType.RELAY
     const val TEST_BUTTON_ENABLED = true
     const val TIME_SYNC_FREQUENCY_IN_SECONDS = 600
-    val switchingDelays: MutableList<Int?> = mutableListOf(10, 20)
+    val SWITCHING_DELAYS: MutableList<Int?> = mutableListOf(10, 20, 30, 40)
 
     object AstronomicalOffsetConfiguration {
         const val SUNRISE_OFFSET_IN_SECONDS = -900 // 15 minutes
@@ -35,13 +38,11 @@ object ConfigurationConstants {
     object DaylightSavingsTimeConfiguration {
         const val AUTO_ENABLED = true
 
-        // TODO - Is this local or UTC time? Local time is switched from 02:00 to 03:00, UTC time will remain 01:00
-        val BEGIN_OF_DAYLIGHT_SAVINGS_TIME_DTO: ZonedDateTime = ZonedDateTime.of(2025, 3, 30, 1, 0, 0, 0, ZoneOffset.UTC)
+        val BEGIN_OF_DAYLIGHT_SAVINGS_TIME_DTO: ZonedDateTime = lastSundayOfMonth(Month.MARCH)
         const val BEGIN_OF_DAYLIGHT_SAVINGS_TIME = "0360100" // Last sunday of March at 01:00 UTC
 
-        // TODO - Is this correct? Shouldn't this be 01:00 UTC as well? Local time is switched back from 03:00 to 02:00, UTC time will then be 01:00
-        val END_OF_DAYLIGHT_SAVINGS_TIME_DTO: ZonedDateTime = ZonedDateTime.of(2025, 10, 26, 2, 0, 0, 0, ZoneOffset.UTC)
-        const val END_OF_DAYLIGHT_SAVINGS_TIME = "1060200" // Last sunday of October at 02:00 UTC
+        val END_OF_DAYLIGHT_SAVINGS_TIME_DTO: ZonedDateTime = lastSundayOfMonth(Month.OCTOBER)
+        const val END_OF_DAYLIGHT_SAVINGS_TIME = "1060100" // Last sunday of October at 01:00 UTC
     }
 
     object CommunicationConfiguration {
@@ -136,4 +137,15 @@ object ConfigurationConstants {
             .split(".")
             .map { it.toInt().toByte() }
             .let { ByteString.copyFrom(it.toByteArray()) }
+
+    private fun lastSundayOfMonth(month: Month) =
+        ZonedDateTime
+            .now(ZoneOffset.UTC)
+            .withMonth(month.value)
+            .with(TemporalAdjusters.lastDayOfMonth())
+            .with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
+            .withHour(1)
+            .withMinute(0)
+            .withSecond(0)
+            .withNano(0)
 }

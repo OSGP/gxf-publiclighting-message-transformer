@@ -56,11 +56,9 @@ object DeviceRequestMessageMapper {
                 RequestType.REBOOT_REQUEST,
                 RequestType.START_SELF_TEST_REQUEST,
                 RequestType.STOP_SELF_TEST_REQUEST,
-                -> {
-                } // No payload for these requests
-                RequestType.SET_CONFIGURATION_REQUEST -> {
+                -> { /* No payload for these requests */ }
+                RequestType.SET_CONFIGURATION_REQUEST ->
                     setConfigurationRequest = (message.`object` as ConfigurationDto).toProtobufMessage()
-                }
 
                 RequestType.SET_EVENT_NOTIFICATION_MASK_REQUEST ->
                     setEventNotificationMaskRequest =

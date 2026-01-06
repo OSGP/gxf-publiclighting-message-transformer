@@ -58,10 +58,9 @@ object DeviceStatusConstants {
     const val EVENT_NOTIFICATIONS_MASK = 1
     const val NUMBER_OF_OUTPUTS = 3
 
-    // TODO - Update to more realistic values
-    const val DC_OUTPUT_VOLTAGE_MAXIMUM = 150
-    const val DC_OUTPUT_VOLTAGE_CURRENT = 100
-    const val MAXIMUM_OUTPUT_POWER_ON_DC_OUTPUT = 50
+    const val DC_OUTPUT_VOLTAGE_MAXIMUM = 24000
+    const val DC_OUTPUT_VOLTAGE_CURRENT = 44
+    const val MAXIMUM_OUTPUT_POWER_ON_DC_OUTPUT = 15000
 
     const val SERIAL_NUMBER = "AAA0002025"
     val SERIAL_NUMBER_BYTES = SERIAL_NUMBER.toByteString()

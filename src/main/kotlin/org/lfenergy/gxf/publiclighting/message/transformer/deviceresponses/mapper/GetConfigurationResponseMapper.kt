@@ -57,8 +57,7 @@ object GetConfigurationResponseMapper {
             relayRefreshing = this.relayConfiguration.relayRefreshingEnabled,
             // others
             lightType = this.lightType.toDto(),
-            // TODO - Map switching delays
-            switchingDelays = null,
+            switchingDelays = this.switchingDelayList.toMutableList(),
             testButtonEnabled = this.testButtonEnabled,
             timeSyncFrequency = this.timeSyncFrequency,
         )

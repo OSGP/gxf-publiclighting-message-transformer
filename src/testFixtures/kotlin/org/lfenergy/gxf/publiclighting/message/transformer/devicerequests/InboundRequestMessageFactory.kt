@@ -94,7 +94,7 @@ object InboundRequestMessageFactory {
                 ),
             relayRefreshing = ConfigurationConstants.RelayConfiguration.RELAY_REFRESHING_ENABLED,
             summerTimeDetails = DaylightSavingsTimeConfiguration.BEGIN_OF_DAYLIGHT_SAVINGS_TIME_DTO,
-            switchingDelays = ConfigurationConstants.switchingDelays,
+            switchingDelays = ConfigurationConstants.SWITCHING_DELAYS,
             timeSyncFrequency = 600,
             testButtonEnabled = ConfigurationConstants.TEST_BUTTON_ENABLED,
             winterTimeDetails = DaylightSavingsTimeConfiguration.END_OF_DAYLIGHT_SAVINGS_TIME_DTO,

@@ -124,9 +124,7 @@ class DeviceRequestMessageMapperTest {
         assertThat(configuration.lightType).isEqualTo(ConfigurationConstants.LIGHT_TYPE_PROTOC_RELAY)
         assertThat(configuration.testButtonEnabled).isEqualTo(ConfigurationConstants.TEST_BUTTON_ENABLED)
         assertThat(configuration.timeSyncFrequency).isEqualTo(ConfigurationConstants.TIME_SYNC_FREQUENCY_IN_SECONDS)
-
-        // TODO - Check switching delay
-        //  repeated uint32 switching_delay = 10;
+        assertThat(configuration.switchingDelayList).isNotEmpty.isEqualTo(ConfigurationConstants.SWITCHING_DELAYS)
     }
 
     private fun verifyAstronomicalOffsetConfiguration(config: AstronomicalOffsetsConfiguration) {

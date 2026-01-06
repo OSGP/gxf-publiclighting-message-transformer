@@ -64,8 +64,7 @@ object InboundResponsePayloadFactory {
                     lightType = ConfigurationConstants.LIGHT_TYPE_PROTOC_RELAY
                     testButtonEnabled = ConfigurationConstants.TEST_BUTTON_ENABLED
                     timeSyncFrequency = ConfigurationConstants.TIME_SYNC_FREQUENCY_IN_SECONDS
-                    // TODO - switching delay
-//                    switchingDelay =
+                    switchingDelay.addAll(ConfigurationConstants.SWITCHING_DELAYS.filterNotNull())
                 }
         }
 

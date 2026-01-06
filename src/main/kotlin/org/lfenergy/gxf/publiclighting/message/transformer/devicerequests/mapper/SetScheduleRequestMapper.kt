@@ -53,8 +53,6 @@ object SetScheduleRequestMapper {
             dto.lightValue?.let { value.addAll(dto.lightValue.map { it!!.toProtobuf() }) }
             dto.triggerType?.let { triggerType = dto.triggerType.toProtobuf() }
             dto.index?.let { index = it }
-            // TODO - Is isEnabled needed in schedule entry?
-//            dto.isEnabled?.let { enabled = it }
             dto.minimumLightsOn?.let { minimumLightsOn = it }
         }
     }

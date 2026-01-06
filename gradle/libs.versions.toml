@@ -1,7 +1,6 @@
 [versions]
 assertJ = "3.27.6"
 cucumber = "7.32.0"
-cucumberQuery = "14.7.0"
 dependencyManagement = "1.1.7"
 gradleWrapperUpgrade = "0.12"
 # JodaTime needed for compatibiility with OSGP DTOs
@@ -58,7 +57,6 @@ springModulithStarterTest = { group = "org.springframework.modulith", name = "sp
 # Integration test dependencies
 cucumberJava = { group = "io.cucumber", name = "cucumber-java", version.ref = "cucumber" }
 cucumberJunitPlatformEngine = { group = "io.cucumber", name = "cucumber-junit-platform-engine", version.ref = "cucumber" }
-cucumberQuery = { group = "io.cucumber", name="query", version.ref = "cucumberQuery" }
 cucumberSpring = { group = "io.cucumber", name = "cucumber-spring", version.ref = "cucumber" }
 junitJupiterApi = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junitJupiterApi" }
 junitPlatformSuite = { group = "org.junit.platform", name = "junit-platform-suite", version.ref = "junitPlatform" }

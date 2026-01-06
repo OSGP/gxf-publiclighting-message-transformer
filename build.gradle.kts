@@ -126,7 +126,6 @@ testing {
                 implementation(libs.assertJ)
                 implementation(libs.cucumberJava)
                 implementation(libs.cucumberJunitPlatformEngine)
-                implementation(libs.cucumberQuery)
                 implementation(libs.cucumberSpring)
                 implementation(libs.junitJupiterApi)
                 implementation(libs.junitPlatformSuite)

@@ -15,7 +15,7 @@ import org.opensmartgridplatform.shared.infra.jms.RequestMessage
 
 class DeviceEventMessageMapperTest {
     @Test
-    fun `should create device registration event dto from protobuf message`() {
+    fun `should create request message containing dto for device registration protobuf message`() {
         // Arrange
         val message = DeviceEventMessageFactory.protobufMessageForEventOfType(EventType.DEVICE_REGISTRATION)
 
@@ -28,7 +28,7 @@ class DeviceEventMessageMapperTest {
     }
 
     @Test
-    fun `should create device registration confirmation event dto from protobuf message`() {
+    fun `should create empty request message for device registration confirmation protobuf message`() {
         // Arrange
         val message = DeviceEventMessageFactory.protobufMessageForEventOfType(EventType.DEVICE_REGISTRATION_CONFIRMATION)
 
@@ -41,7 +41,7 @@ class DeviceEventMessageMapperTest {
     }
 
     @Test
-    fun `should create device notification event dto from protobuf message`() {
+    fun `should create request message containing dto for device notification protobuf message`() {
         // Arrange
         val message = DeviceEventMessageFactory.protobufMessageForEventOfType(EventType.DEVICE_NOTIFICATION)
 

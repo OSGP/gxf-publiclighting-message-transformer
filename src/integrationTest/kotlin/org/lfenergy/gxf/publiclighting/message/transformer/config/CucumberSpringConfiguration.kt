@@ -12,12 +12,10 @@ import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageE
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.testcontainers.context.ImportTestcontainers
-import org.springframework.test.annotation.DirtiesContext
 
 @CucumberContextConfiguration()
 @SpringBootTest
 @ImportTestcontainers(ArtemisContainerConfiguration::class)
-@DirtiesContext
 class CucumberSpringConfiguration {
     @ParameterType("DEVICE_REGISTRATION|DEVICE_REGISTRATION_CONFIRMATION|DEVICE_NOTIFICATION|UNRECOGNIZED")
     fun eventType(type: String) = EventType.valueOf(type)

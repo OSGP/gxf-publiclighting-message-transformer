@@ -3,7 +3,7 @@ assertJ = "3.27.6"
 cucumber = "7.32.0"
 dependencyManagement = "1.1.7"
 gradleWrapperUpgrade = "0.12"
-# JodaTime needed for compatibiility with OSGP DTOs
+# JodaTime needed for compatibility with OSGP DTOs
 jodaTime = "2.14.0"
 junitJupiterApi = "5.14.1"
 junitPlatform = "1.14.1"

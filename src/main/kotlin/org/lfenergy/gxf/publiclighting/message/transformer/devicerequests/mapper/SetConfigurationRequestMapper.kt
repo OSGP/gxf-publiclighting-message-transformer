@@ -176,8 +176,18 @@ object SetConfigurationRequestMapper {
             )
         }
 
+    /**
+     * Converts a zoned date time into a string of length 7 format consisting of month, day of week and time
+     * as expected by the protocol adapter.
+     *
+     * For example `0360100` for the start of DST, means DST will start at the last sunday of March at 01:00 UTC:
+     * - `03` - month: March
+     * - `6` - day of week (0-based): Sunday
+     * - `0100` - time (UTC): 01:00
+     */
     private fun ZonedDateTime.toProtobufDaylightSavingsDetail() =
         String.format("%02d", this.monthValue) +
+            // Java time day of week starts with MONDAY = 1, modify to zero-based value by subtracting 1
             (this.dayOfWeek.value - 1) +
             String.format("%02d", this.hour) +
             String.format("%02d", this.minute)

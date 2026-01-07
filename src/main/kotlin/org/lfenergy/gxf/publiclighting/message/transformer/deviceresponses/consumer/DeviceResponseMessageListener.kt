@@ -33,7 +33,7 @@ class DeviceResponseMessageListener(
         try {
             deviceResponseMessageSender.send(bytesMessage.parse())
         } catch (e: InvalidProtocolBufferException) {
-            logger.error { "Received invalid protocol buffer message with correlation uid $correlationId." }
+            logger.error(e) { "Received invalid protocol buffer message with correlation uid $correlationId." }
         } catch (e: IllegalArgumentException) {
             logger.error(e) { "Received invalid response for device $deviceId in message with correlation uid $correlationId." }
         }

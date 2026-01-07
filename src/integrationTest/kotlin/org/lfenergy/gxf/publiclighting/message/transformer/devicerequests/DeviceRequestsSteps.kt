@@ -201,12 +201,12 @@ class DeviceRequestsSteps(
         assertThat(message.hasSetEventNotificationMaskRequest()).isTrue
         with(message.setEventNotificationMaskRequest) {
             assertThat(this).isNotNull
-            assertThat(this.notificationTypesList).isNotEmpty().hasSize(3)
+            assertThat(this.notificationTypesList).isNotEmpty.hasSize(3)
         }
     }
 
     private fun verifySetLightPayload(message: DeviceRequestMessage) {
-        assertThat(message.hasSetLightRequest()).isTrue()
+        assertThat(message.hasSetLightRequest()).isTrue
         with(message.getSetLightRequest()) {
             assertThat(this).isNotNull
             assertThat(lightValuesCount).isEqualTo(2)
@@ -222,9 +222,9 @@ class DeviceRequestsSteps(
     }
 
     private fun verifySetSchedulePayload(message: DeviceRequestMessage) {
-        assertThat(message.hasSetScheduleRequest()).isTrue()
+        assertThat(message.hasSetScheduleRequest()).isTrue
         with(message.getSetScheduleRequest()) {
-            assertThat(this).isNotNull()
+            assertThat(this).isNotNull
             assertThat(scheduleEntriesList.size).isEqualTo(4)
             with(this.scheduleEntriesList[0]) {
                 assertThat(weekday).isEqualTo(Weekday.ALL_DAYS)
@@ -233,7 +233,7 @@ class DeviceRequestsSteps(
                 assertThat(valueList.size).isEqualTo(1)
                 with(this.valueList[0]) {
                     assertThat(index).isEqualTo(RelayIndex.ALL_RELAYS)
-                    assertThat(lightOn).isTrue()
+                    assertThat(lightOn).isTrue
                 }
             }
             with(this.scheduleEntriesList[1]) {
@@ -243,7 +243,7 @@ class DeviceRequestsSteps(
                 assertThat(valueList.size).isEqualTo(1)
                 with(this.valueList[0]) {
                     assertThat(index).isEqualTo(RelayIndex.ALL_RELAYS)
-                    assertThat(lightOn).isFalse()
+                    assertThat(lightOn).isFalse
                 }
             }
             with(this.scheduleEntriesList[2]) {
@@ -253,7 +253,7 @@ class DeviceRequestsSteps(
                 assertThat(valueList.size).isEqualTo(1)
                 with(this.valueList[0]) {
                     assertThat(index).isEqualTo(RelayIndex.RELAY_THREE)
-                    assertThat(lightOn).isFalse()
+                    assertThat(lightOn).isFalse
                 }
             }
             with(this.scheduleEntriesList[3]) {
@@ -263,7 +263,7 @@ class DeviceRequestsSteps(
                 assertThat(valueList.size).isEqualTo(1)
                 with(this.valueList[0]) {
                     assertThat(index).isEqualTo(RelayIndex.RELAY_THREE)
-                    assertThat(lightOn).isTrue()
+                    assertThat(lightOn).isTrue
                 }
             }
         }

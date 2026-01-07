@@ -43,7 +43,7 @@ class DeviceEventsSteps(
 
     @Then("a device event object message of type {objectMessageEventType} should be sent to the outbound events queue")
     fun thenObjectMessageShouldBeSent(expectedMessageType: ObjectMessageEventType) {
-        val outboundMessage = jmsTemplate.receive(scenarioContext.outboundQueue)!! as ObjectMessage
+        val outboundMessage = jmsTemplate.receive(scenarioContext.outboundQueue) as ObjectMessage
         verifyObjectMessage(outboundMessage, expectedMessageType)
         scenarioContext.outboundEventMessage = outboundMessage.`object` as RequestMessage
     }

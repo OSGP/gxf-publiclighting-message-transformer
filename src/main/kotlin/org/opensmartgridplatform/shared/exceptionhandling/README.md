@@ -6,3 +6,5 @@ This means:
 * same class names
 * same field names and types
 * same serialization mechanism (Java serialization)
+
+The original objects can be found at: https://github.com/OSGP/open-smart-grid-platform/tree/development/osgp/shared/shared/src/main/java/org/opensmartgridplatform/shared/exceptionhandling

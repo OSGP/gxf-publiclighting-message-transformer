@@ -33,29 +33,22 @@ object GetConfigurationResponseMapper {
 
     private fun Configuration.toDto(): ConfigurationDto =
         ConfigurationDto(
-            // astronomical offsets configuration
             astroGateSunRiseOffset = this.astronomicalOffsetsConfiguration.sunriseOffset,
             astroGateSunSetOffset = this.astronomicalOffsetsConfiguration.sunsetOffset,
-            // communication configuration
             communicationTimeout = this.communicationConfiguration.connectionTimeout,
             communicationNumberOfRetries = this.communicationConfiguration.numberOfRetries,
             communicationPauseTimeBetweenConnectionTrials = this.communicationConfiguration.delayBetweenConnectionAttempts,
             preferredLinkType = this.communicationConfiguration.preferredLinkType.toDto(),
-            // daylight savings configuration
             automaticSummerTimingEnabled = this.daylightSavingsTimeConfiguration.automaticSummerTimingEnabled,
             summerTimeDetails = this.daylightSavingsTimeConfiguration.summerTimeDetails.toZonedDateTime(),
             winterTimeDetails = this.daylightSavingsTimeConfiguration.winterTimeDetails.toZonedDateTime(),
-            // device address configuration
             deviceFixedIp = this.deviceAddressConfiguration.toDto(),
             dhcpEnabled = this.deviceAddressConfiguration.dhcpEnabled,
-            // platform address configuration
             osgpIpAddress = this.platformAddressConfiguration.ipAddress.toIpv4String(),
             osgpPortNumber = this.platformAddressConfiguration.portNumber,
-            // relay configuration
             relayConfiguration = this.relayConfiguration.relayMapping.toDto(),
             relayLinking = this.relayConfiguration.relayLinking.toDto(),
             relayRefreshing = this.relayConfiguration.relayRefreshingEnabled,
-            // others
             lightType = this.lightType.toDto(),
             switchingDelays = this.switchingDelayList.toMutableList(),
             testButtonEnabled = this.testButtonEnabled,

@@ -15,8 +15,10 @@ import jakarta.jms.BytesMessage
 import jakarta.jms.Session
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.DeviceRequestMessage
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.RequestType
 import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants.DEVICE_IDENTIFICATION
@@ -49,67 +51,9 @@ class DeviceRequestMessageSenderTest {
         every { jmsTemplate.send(any<String>(), any<MessageCreator>()) } just runs
     }
 
-    @Test
-    fun `should send protobuf bytes message for get configuration request`() {
-        verifyBytesMessageIsSentForRequestType(RequestType.GET_CONFIGURATION_REQUEST)
-    }
-
-    @Test
-    fun `should send protobuf bytes message for get firmware version request`() {
-        verifyBytesMessageIsSentForRequestType(RequestType.GET_FIRMWARE_VERSION_REQUEST)
-    }
-
-    @Test
-    fun `should send protobuf bytes message for get status request`() {
-        verifyBytesMessageIsSentForRequestType(RequestType.GET_STATUS_REQUEST)
-    }
-
-    @Test
-    fun `should send protobuf bytes message for reboot request`() {
-        verifyBytesMessageIsSentForRequestType(RequestType.REBOOT_REQUEST)
-    }
-
-    @Test
-    fun `should send protobuf bytes message for set configuration request`() {
-        verifyBytesMessageIsSentForRequestType(RequestType.SET_CONFIGURATION_REQUEST)
-    }
-
-    @Test
-    fun `should send protobuf bytes message for resume schedule request`() {
-        verifyBytesMessageIsSentForRequestType(RequestType.RESUME_SCHEDULE_REQUEST)
-    }
-
-    @Test
-    fun `should send protobuf bytes message for set event notifications request`() {
-        verifyBytesMessageIsSentForRequestType(RequestType.SET_EVENT_NOTIFICATION_MASK_REQUEST)
-    }
-
-    @Test
-    fun `should send protobuf bytes message for set light request`() {
-        verifyBytesMessageIsSentForRequestType(RequestType.SET_LIGHT_REQUEST)
-    }
-
-    @Test
-    fun `should send protobuf bytes message for set schedule request`() {
-        verifyBytesMessageIsSentForRequestType(RequestType.SET_SCHEDULE_REQUEST)
-    }
-
-    @Test
-    fun `should send protobuf bytes message for set transition request`() {
-        verifyBytesMessageIsSentForRequestType(RequestType.SET_TRANSITION_REQUEST)
-    }
-
-    @Test
-    fun `should send protobuf bytes message for start self test request`() {
-        verifyBytesMessageIsSentForRequestType(RequestType.START_SELF_TEST_REQUEST)
-    }
-
-    @Test
-    fun `should send protobuf bytes message for stop self test request`() {
-        verifyBytesMessageIsSentForRequestType(RequestType.STOP_SELF_TEST_REQUEST)
-    }
-
-    fun verifyBytesMessageIsSentForRequestType(requestType: RequestType) {
+    @ParameterizedTest(name = "with request type: {0}")
+    @MethodSource("requestTypeProvider")
+    fun `should send protobuf bytes message`(requestType: RequestType) {
         val message = OutboundRequestMessageFactory.deviceRequestMessage(requestType)
 
         deviceRequestMessageSender.send(message)
@@ -132,18 +76,7 @@ class DeviceRequestMessageSenderTest {
                     val deviceRequestMessage = DeviceRequestMessage.parseFrom(bytes)
                     assertThat(deviceRequestMessage.header.deviceIdentification).isEqualTo(DEVICE_IDENTIFICATION)
                     assertThat(deviceRequestMessage.header.requestType).isEqualTo(requestType)
-                    when (requestType) {
-                        RequestType.RESUME_SCHEDULE_REQUEST -> assertThat(deviceRequestMessage.hasResumeScheduleRequest()).isTrue
-                        RequestType.SET_CONFIGURATION_REQUEST -> assertThat(deviceRequestMessage.hasSetConfigurationRequest()).isTrue
-                        RequestType.SET_LIGHT_REQUEST -> assertThat(deviceRequestMessage.hasSetLightRequest()).isTrue
-                        RequestType.SET_EVENT_NOTIFICATION_MASK_REQUEST ->
-                            assertThat(
-                                deviceRequestMessage.hasSetEventNotificationMaskRequest(),
-                            ).isTrue
-                        RequestType.SET_SCHEDULE_REQUEST -> assertThat(deviceRequestMessage.hasSetScheduleRequest()).isTrue
-                        RequestType.SET_TRANSITION_REQUEST -> assertThat(deviceRequestMessage.hasSetTransitionRequest()).isTrue
-                        else -> { /* no payload */ }
-                    }
+                    PAYLOAD_PER_REQUEST_TYPE_ASSERTIONS[requestType]?.invoke(deviceRequestMessage)
                 },
             )
         }
@@ -151,5 +84,23 @@ class DeviceRequestMessageSenderTest {
 
     companion object {
         private const val OUTBOUND_QUEUE_NAME = "queue"
+
+        private val PAYLOAD_PER_REQUEST_TYPE_ASSERTIONS: Map<RequestType, DeviceRequestMessage.() -> Unit> =
+            mapOf(
+                RequestType.RESUME_SCHEDULE_REQUEST to { assertThat(hasResumeScheduleRequest()).isTrue },
+                RequestType.SET_CONFIGURATION_REQUEST to { assertThat(hasSetConfigurationRequest()).isTrue },
+                RequestType.SET_LIGHT_REQUEST to { assertThat(hasSetLightRequest()).isTrue },
+                RequestType.SET_EVENT_NOTIFICATION_MASK_REQUEST to { assertThat(hasSetEventNotificationMaskRequest()).isTrue },
+                RequestType.SET_SCHEDULE_REQUEST to { assertThat(hasSetScheduleRequest()).isTrue },
+                RequestType.SET_TRANSITION_REQUEST to { assertThat(hasSetTransitionRequest()).isTrue },
+                // For other types, no payload assertion is needed
+            )
+
+        @JvmStatic
+        fun requestTypeProvider() =
+            RequestType.entries
+                .filterNot { it == RequestType.UNRECOGNIZED }
+                .map { Arguments.of(it) }
+                .stream()
     }
 }

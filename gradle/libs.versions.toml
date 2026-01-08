@@ -12,7 +12,7 @@ pooledJms = "3.1.7"
 protobufKotlin = "4.32.1"
 sonarqube = "6.3.1.5724"
 spotless = "8.0.0"
-springBoot = "3.5.6"
+springBoot = "4.0.1"
 springModulith = "1.4.3"
 testcontainers = "1.21.3"
 

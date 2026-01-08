@@ -22,7 +22,7 @@ import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationCon
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_ORGANIZATION_IDENTIFICATION
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.InboundResponseMessageFactory
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.config.DeviceResponsesConfigurationProperties
-import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.mapper.DeviceResponseMessageMapper.toDto
+import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.mapper.DeviceResponseMessageMapper.toMessageType
 import org.opensmartgridplatform.dto.valueobjects.ConfigurationDto
 import org.opensmartgridplatform.dto.valueobjects.DeviceStatusDto
 import org.opensmartgridplatform.dto.valueobjects.FirmwareVersionDto
@@ -118,7 +118,7 @@ class DeviceResponseMessageSenderTest {
 
         // Assert
         assertThat(capturedOutput.out)
-            .contains("Failed to send device response message for device")
+            .contains("Failed to send device response message")
             .contains("Unsupported message type: UNRECOGNIZED")
     }
 
@@ -145,7 +145,7 @@ class DeviceResponseMessageSenderTest {
     }
 
     private fun verifyObjectMessageProperties() {
-        verify { objectMessage.jmsType = message.header.responseType.toDto() }
+        verify { objectMessage.jmsType = message.header.responseType.toMessageType() }
         verify { objectMessage.jmsCorrelationID = message.header.correlationUid }
         verify { objectMessage.setStringProperty(JMS_PROPERTY_DEVICE_IDENTIFICATION, message.header.deviceIdentification) }
         verify { objectMessage.setStringProperty(JMS_PROPERTY_ORGANIZATION_IDENTIFICATION, message.header.organizationIdentification) }
@@ -163,7 +163,7 @@ class DeviceResponseMessageSenderTest {
             assertThat(correlationUid).isEqualTo(message.header.correlationUid)
             assertThat(deviceIdentification).isEqualTo(message.header.deviceIdentification)
             assertThat(organisationIdentification).isEqualTo(message.header.organizationIdentification)
-            assertThat(messageType).isEqualTo(responseType.toDto())
+            assertThat(messageType).isEqualTo(responseType.toMessageType())
             assertThat(result).isEqualTo(ResponseMessageResultType.OK)
 
             when (responseType) {

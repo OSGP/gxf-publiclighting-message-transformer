@@ -24,7 +24,7 @@ object DeviceResponseMessageMapper {
             this.header.deviceIdentification,
             this.header.organizationIdentification,
             this.header.correlationUid,
-            this.header.responseType.toDto(),
+            this.header.responseType.toMessageType(),
             this.header.priority,
             false,
             null,
@@ -74,7 +74,7 @@ object DeviceResponseMessageMapper {
         }
     }
 
-    fun ResponseType.toDto() =
+    fun ResponseType.toMessageType() =
         when (this) {
             ResponseType.GET_CONFIGURATION_RESPONSE -> "GET_CONFIGURATION"
             ResponseType.GET_FIRMWARE_VERSION_RESPONSE -> "GET_FIRMWARE_VERSION"

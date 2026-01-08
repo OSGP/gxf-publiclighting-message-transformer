@@ -12,7 +12,7 @@ import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationCon
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_DOMAIN_VERSION
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_ORGANIZATION_IDENTIFICATION
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.config.DeviceResponsesConfigurationProperties
-import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.mapper.DeviceResponseMessageMapper.toDto
+import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.mapper.DeviceResponseMessageMapper.toMessageType
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.mapper.DeviceResponseMessageMapper.toResponseDto
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.jms.core.JmsTemplate
@@ -27,14 +27,19 @@ class DeviceResponseMessageSender(
 
     fun send(protobufMessage: DeviceResponseMessage) {
         val header = protobufMessage.header
+        val correlationUid = header.correlationUid
         val deviceIdentification = header.deviceIdentification
-        val messageType = header.responseType.toDto()
+        val messageType = header.responseType
 
-        logger.info { "Sending device response message for device $deviceIdentification of type $messageType." }
+        logger.info {
+            "Sending device response message with correlation uid $correlationUid for device $deviceIdentification of type $messageType."
+        }
         try {
             jmsTemplate.send(properties.producer.outboundQueue) { session -> createObjectMessage(session, protobufMessage) }
         } catch (e: Exception) {
-            logger.error(e) { "Failed to send device response message for device $deviceIdentification of type $messageType." }
+            logger.error(e) {
+                "Failed to send device response message with correlation uid $correlationUid for device $deviceIdentification of type $messageType."
+            }
         }
     }
 
@@ -44,7 +49,7 @@ class DeviceResponseMessageSender(
     ): ObjectMessage {
         val header = message.header
         return session.createObjectMessage().apply {
-            jmsType = header.responseType.toDto()
+            jmsType = header.responseType.toMessageType()
             jmsCorrelationID = header.correlationUid
             jmsPriority = header.priority
             setStringProperty(JMS_PROPERTY_DEVICE_IDENTIFICATION, header.deviceIdentification)

@@ -116,7 +116,7 @@ class DeviceEventMessageSenderTest {
 
         // Assert
         assertThat(capturedOutput.out)
-            .contains("Failed to send device event message for device")
+            .contains("Failed to send device event message")
             .contains("Unsupported event type: UNRECOGNIZED")
     }
 

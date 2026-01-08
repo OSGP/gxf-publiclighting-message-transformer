@@ -8,7 +8,7 @@ import java.io.Serializable
 data class RelayMapDto(
     val index: Int? = null,
     val address: Int? = null,
-    val relayType: org.opensmartgridplatform.dto.valueobjects.RelayTypeDto? = null,
+    val relayType: RelayTypeDto? = null,
     val alias: String? = null,
 ) : Serializable {
     companion object {

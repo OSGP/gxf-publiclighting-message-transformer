@@ -32,7 +32,6 @@ management:
 
 # MODULE CONFIGURATIONS
 device-events:
-  enabled: true
   consumer:
     inbound-queue: device-events.inbound.IT
     min-concurrency: 2
@@ -46,12 +45,19 @@ device-events:
       time-to-live: 0
 
 device-message-logs:
-  enabled: true
-  inbound-queue: device-message-logs.inbound.IT
-  outbound-queue: device-message-logs.outbound.IT
+  consumer:
+    inbound-queue: device-message-logs.inbound.IT
+    min-concurrency: 2
+    max-concurrency: 10
+  producer:
+    outbound-queue: device-message-logs.outbound.IT
+    quality-of-service:
+      explicit-qos-enabled: true
+      delivery-persistent: true
+      priority: 4
+      time-to-live: 0
 
 device-requests:
-  enabled: true
   consumer:
     inbound-queue: device-requests.inbound.IT
     min-concurrency: 2
@@ -65,7 +71,6 @@ device-requests:
       time-to-live: 0
 
 device-responses:
-  enabled: true
   consumer:
     inbound-queue: device-responses.inbound.IT
     min-concurrency: 2

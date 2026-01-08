@@ -5,13 +5,11 @@ package org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.confi
 
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ModuleConfiguration
 import org.messaginghub.pooled.jms.JmsPoolConnectionFactory
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-@ConditionalOnProperty("device-requests.enabled", havingValue = "true")
 @EnableConfigurationProperties(DeviceRequestsConfigurationProperties::class)
 class DeviceRequestsModuleConfiguration(
     private val connectionFactory: JmsPoolConnectionFactory,

@@ -8,12 +8,10 @@ import jakarta.jms.ObjectMessage
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_DEVICE_IDENTIFICATION
 import org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.mapper.DeviceRequestMessageMapper.toProtobufMessage
 import org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.producer.DeviceRequestMessageSender
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.jms.annotation.JmsListener
 import org.springframework.stereotype.Component
 
 @Component
-@ConditionalOnProperty("device-requests.enabled", havingValue = "true")
 class DeviceRequestMessageListener(
     private val deviceRequestMessageSender: DeviceRequestMessageSender,
 ) {

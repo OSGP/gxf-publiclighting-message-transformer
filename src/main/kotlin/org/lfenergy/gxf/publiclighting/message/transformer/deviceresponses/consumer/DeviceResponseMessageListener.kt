@@ -9,12 +9,10 @@ import jakarta.jms.BytesMessage
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.DeviceResponseMessage
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_DEVICE_IDENTIFICATION
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.producer.DeviceResponseMessageSender
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.jms.annotation.JmsListener
 import org.springframework.stereotype.Component
 
 @Component
-@ConditionalOnProperty("device-responses.enabled", havingValue = "true")
 class DeviceResponseMessageListener(
     private val deviceResponseMessageSender: DeviceResponseMessageSender,
 ) {

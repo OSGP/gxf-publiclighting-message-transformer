@@ -4,7 +4,6 @@
 package org.lfenergy.gxf.publiclighting.message.transformer.common
 
 open class ModuleConfigurationProperties(
-    var enabled: Boolean,
     var consumer: ConsumerProperties,
     var producer: ProducerProperties,
 ) {

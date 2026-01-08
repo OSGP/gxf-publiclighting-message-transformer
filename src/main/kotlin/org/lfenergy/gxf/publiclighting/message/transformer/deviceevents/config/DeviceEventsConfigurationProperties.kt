@@ -8,7 +8,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 
 @ConfigurationProperties(prefix = "device-events")
 class DeviceEventsConfigurationProperties(
-    enabled: Boolean,
     consumer: ConsumerProperties,
     producer: ProducerProperties,
-) : ModuleConfigurationProperties(enabled, consumer, producer)
+) : ModuleConfigurationProperties(consumer, producer)

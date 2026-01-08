@@ -1,6 +1,6 @@
-Feature: Device response message processing
+Feature: Transforming device response messages from bytes messages to object messages
 
-  Scenario Outline: Transform device response from bytes to object message
+  Scenario Outline: Transform <inboundResponseType> response message
     Given a device response bytes message of type <inboundResponseType>
     When the bytes message is sent to the inbound responses queue
     Then a device response object message of type <outboundResponseType> should be sent to the outbound responses queue

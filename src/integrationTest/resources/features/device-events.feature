@@ -1,4 +1,4 @@
-Feature: Device event message processing
+Feature: Transforming device event messages from bytes messages to object messages
 
   Scenario: Transform device registration event from bytes to object message
     Given a device event bytes message of type DEVICE_REGISTRATION

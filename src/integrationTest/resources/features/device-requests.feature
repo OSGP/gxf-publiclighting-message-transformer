@@ -1,6 +1,6 @@
-Feature: Device request message processing
+Feature: Transforming device request messages from object messages to bytes messages
 
-  Scenario Outline:
+  Scenario Outline: Transform <inboundRequestType> request message
     Given a device request object message of type <inboundRequestType>
     When the object message is sent to the inbound requests queue
     Then a device request bytes message of type <outboundRequestType> should be sent to the outbound requests queue

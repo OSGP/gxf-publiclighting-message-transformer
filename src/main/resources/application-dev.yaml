@@ -21,7 +21,6 @@ management:
 
 # MODULE CONFIGURATION
 device-events:
-  enabled: true
   consumer:
     inbound-queue: device-events.inbound.DEV
     min-concurrency: 2
@@ -30,16 +29,19 @@ device-events:
     outbound-queue: device-events.outbound.DEV
 
 device-message-logs:
-  enabled: true
-  inbound-queue: device-message-logs.inbound.DEV
-  outbound-queue: device-message-logs.outbound.DEV
+  consumer:
+    inbound-queue: device-message-logs.inbound.DEV
+  producer:
+    outbound-queue: device-message-logs.outbound.DEV
 
 device-requests:
-  enabled: true
-  inbound-queue: device-requests.inbound.DEV
-  outbound-queue: device-requests.outbound.DEV
+  consumer:
+    inbound-queue: device-requests.inbound.DEV
+  producer:
+    outbound-queue: device-requests.outbound.DEV
 
 device-responses:
-  enabled: true
-  inbound-queue: device-responses.inbound.DEV
-  outbound-queue: device-responses.outbound.DEV
+  consumer:
+    inbound-queue: device-responses.inbound.DEV
+  producer:
+    outbound-queue: device-responses.outbound.DEV

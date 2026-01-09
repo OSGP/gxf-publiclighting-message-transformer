@@ -17,16 +17,11 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_events.DeviceEventMessage
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_events.EventType
-import org.lfenergy.gxf.publiclighting.message.transformer.ProtobufTestMessageFactory
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_DEVICE_IDENTIFICATION
-import org.lfenergy.gxf.publiclighting.message.transformer.deviceevents.domain.DeviceEventMessageDto
+import org.lfenergy.gxf.publiclighting.message.transformer.deviceevents.DeviceEventMessageFactory
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceevents.producer.DeviceEventMessageSender
-import org.opensmartgridplatform.dto.valueobjects.DeviceRegistrationDataDto
-import org.springframework.boot.test.system.CapturedOutput
-import org.springframework.boot.test.system.OutputCaptureExtension
 
 @ExtendWith(MockKExtension::class)
-@ExtendWith(OutputCaptureExtension::class)
 class DeviceEventMessageListenerTest {
     @MockK
     lateinit var deviceEventMessageSender: DeviceEventMessageSender
@@ -37,9 +32,9 @@ class DeviceEventMessageListenerTest {
     @Test
     fun `should receive protobuf event and send dto`() {
         // Arrange
-        val event = ProtobufTestMessageFactory.protobufMessageForEventOfType(EventType.DEVICE_REGISTRATION)
+        val event = DeviceEventMessageFactory.protobufMessageForEventOfType(EventType.DEVICE_REGISTRATION)
         val bytesMessage = setupBytesMessageMock(event)
-        every { deviceEventMessageSender.send(any<DeviceEventMessageDto>()) } just Runs
+        every { deviceEventMessageSender.send(any<DeviceEventMessage>()) } just Runs
 
         // Act
         deviceEventMessageListener.onMessage(bytesMessage)
@@ -48,27 +43,12 @@ class DeviceEventMessageListenerTest {
         verify {
             deviceEventMessageSender.send(
                 withArg {
-                    assertThat(it).isInstanceOf(DeviceEventMessageDto::class.java)
-                    assertThat(it.payload).isInstanceOf(DeviceRegistrationDataDto::class.java)
+                    assertThat(it).isInstanceOf(DeviceEventMessage::class.java)
+                    assertThat(it.hasDeviceRegistrationReceivedEvent()).isTrue
+                    assertThat(it.deviceRegistrationReceivedEvent).isNotNull
                 },
             )
         }
-    }
-
-    @Test
-    fun `should log unrecognized protobuf event and not send dto`(capturedOutput: CapturedOutput) {
-        // Arrange
-        val event = ProtobufTestMessageFactory.protobufMessageForEventOfType(EventType.UNRECOGNIZED)
-        val bytesMessage = setupBytesMessageMock(event)
-
-        // Act
-        deviceEventMessageListener.onMessage(bytesMessage)
-
-        // Assert
-        assertThat(capturedOutput.out)
-            .contains("Received invalid event for device")
-            .contains("Unsupported event type")
-        verify(exactly = 0) { deviceEventMessageSender.send(any()) }
     }
 
     private fun setupBytesMessageMock(deviceEventMessage: DeviceEventMessage): BytesMessage {

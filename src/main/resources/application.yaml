@@ -38,7 +38,6 @@ management:
 
 # MODULE CONFIGURATIONS
 device-events:
-  enabled: true
   consumer:
     inbound-queue: gxf.publiclighting.device-events.inbound-protobuf
     min-concurrency: 2
@@ -52,16 +51,40 @@ device-events:
       time-to-live: 0
 
 device-message-logs:
-  enabled: true
-  inbound-queue: gxf.publiclighting.device-message-logs.inbound-protobuf
-  outbound-queue: gxf.publiclighting.device-message-logs.outbound-objectmessage
+  consumer:
+    inbound-queue: gxf.publiclighting.device-message-logs.inbound-protobuf
+    min-concurrency: 2
+    max-concurrency: 10
+  producer:
+    outbound-queue: gxf.publiclighting.device-message-logs.outbound-objectmessage
+    quality-of-service:
+      explicit-qos-enabled: true
+      delivery-persistent: true
+      priority: 4
+      time-to-live: 0
 
 device-requests:
-  enabled: true
-  inbound-queue: gxf.publiclighting.device-requests.inbound-objectmessage
-  outbound-queue: gxf.publiclighting.device-requests.outbound-protobuf
+  consumer:
+    inbound-queue: gxf.publiclighting.device-requests.inbound-objectmessage
+    min-concurrency: 2
+    max-concurrency: 10
+  producer:
+    outbound-queue: gxf.publiclighting.device-requests.outbound-protobuf
+    quality-of-service:
+      explicit-qos-enabled: true
+      delivery-persistent: true
+      priority: 4
+      time-to-live: 0
 
 device-responses:
-  enabled: true
-  inbound-queue: gxf.publiclighting.device-responses.inbound-protobuf
-  outbound-queue: gxf.publiclighting.device-responses.outbound-objectmessage
+  consumer:
+    inbound-queue: gxf.publiclighting.device-responses.inbound-protobuf
+    min-concurrency: 2
+    max-concurrency: 10
+  producer:
+    outbound-queue: gxf.publiclighting.device-responses.outbound-objectmessage
+    quality-of-service:
+      explicit-qos-enabled: true
+      delivery-persistent: true
+      priority: 4
+      time-to-live: 0

@@ -1,8 +1,12 @@
 [versions]
 assertJ = "3.27.6"
-awaitility = "4.3.0"
+cucumber = "7.32.0"
 dependencyManagement = "1.1.7"
 gradleWrapperUpgrade = "0.12"
+# JodaTime needed for compatibility with OSGP DTOs
+jodaTime = "2.14.0"
+junitJupiterApi = "5.14.1"
+junitPlatform = "1.14.1"
 kotlin = "2.2.20"
 kotlinLogging = "7.0.13"
 micrometer = "1.15.4"
@@ -14,7 +18,7 @@ sonarqube = "6.3.1.5724"
 spotless = "8.0.0"
 springBoot = "3.5.6"
 springModulith = "1.4.3"
-testcontainers = "1.21.3"
+testcontainers = "2.0.2"
 
 [libraries]
 # Annotation processors
@@ -25,6 +29,7 @@ springBootCompose = { group = "org.springframework.boot", name = "spring-boot-do
 springBootDevtools = { group = "org.springframework.boot", name = "spring-boot-devtools", version.ref = "springBoot" }
 
 # Implementation dependencies
+jodaTime = { group = "joda-time", name = "joda-time", version.ref = "jodaTime" }
 kotlinLoggingJvm = { group = "io.github.oshai", name = "kotlin-logging-jvm", version.ref = "kotlinLogging" }
 kotlinReflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
 micrometerRegistryPrometheus = { group = "io.micrometer", name = "micrometer-registry-prometheus", version.ref = "micrometer" }
@@ -41,7 +46,6 @@ springModulithObservability = { group = "org.springframework.modulith", name = "
 
 # Test dependencies
 assertJ = { group = "org.assertj", name = "assertj-core", version.ref = "assertJ" }
-awaitility = { group = "org.awaitility", name = "awaitility", version.ref = "awaitility" }
 junitLauncher = { group = "org.junit.platform", name = "junit-platform-launcher" }
 kotlinJunit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit5", version.ref = "kotlin" }
 mockkJvm = { group = "io.mockk", name = "mockk-jvm", version.ref = "mockk" }
@@ -49,9 +53,17 @@ mockkSpring = { group = "com.ninja-squad", name = "springmockk", version.ref = "
 springBootStarterTest = { group = "org.springframework.boot", name = "spring-boot-starter-test", version.ref = "springBoot" }
 springBootTestcontainers = { group = "org.springframework.boot", name = "spring-boot-testcontainers", version.ref = "springBoot" }
 springModulithStarterTest = { group = "org.springframework.modulith", name = "spring-modulith-starter-test", version.ref = "springModulith" }
+
+# Integration test dependencies
+cucumberJava = { group = "io.cucumber", name = "cucumber-java", version.ref = "cucumber" }
+cucumberJunitPlatformEngine = { group = "io.cucumber", name = "cucumber-junit-platform-engine", version.ref = "cucumber" }
+cucumberSpring = { group = "io.cucumber", name = "cucumber-spring", version.ref = "cucumber" }
+junitJupiterApi = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junitJupiterApi" }
+junitPlatformSuite = { group = "org.junit.platform", name = "junit-platform-suite", version.ref = "junitPlatform" }
+junitPlatformConsole = { group = "org.junit.platform", name = "junit-platform-console", version.ref = "junitPlatform" }
 testContainers = { group = "org.testcontainers", name = "testcontainers", version.ref = "testcontainers" }
-testContainersJUnit = { group = "org.testcontainers", name = "junit-jupiter", version.ref = "testcontainers" }
-testContainersArtemis = { group = "org.testcontainers", name = "activemq", version.ref = "testcontainers" }
+testContainersJUnit = { group = "org.testcontainers", name = "testcontainers-junit-jupiter", version.ref = "testcontainers" }
+testContainersArtemis = { group = "org.testcontainers", name = "testcontainers-activemq", version.ref = "testcontainers" }
 
 [plugins]
 dependencyManagement = { id = "io.spring.dependency-management", version.ref = "dependencyManagement" }

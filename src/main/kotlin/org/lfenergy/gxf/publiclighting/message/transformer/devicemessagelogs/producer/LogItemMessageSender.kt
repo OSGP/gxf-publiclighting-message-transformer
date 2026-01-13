@@ -15,7 +15,6 @@ import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationCon
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_ORGANIZATION_IDENTIFICATION
 import org.lfenergy.gxf.publiclighting.message.transformer.devicemessagelogs.config.DeviceMessageLogsConfigurationProperties
 import org.lfenergy.gxf.publiclighting.message.transformer.devicemessagelogs.mapper.LogItemMessageMapper.toDecodedMessage
-import org.lfenergy.gxf.publiclighting.message.transformer.devicemessagelogs.mapper.LogItemMessageMapper.toEncodedMessage
 import org.lfenergy.gxf.publiclighting.message.transformer.devicemessagelogs.mapper.LogItemMessageMapper.toIsIncoming
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.jms.core.JmsTemplate

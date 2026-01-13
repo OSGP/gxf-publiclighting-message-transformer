@@ -22,8 +22,7 @@ import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.Inbou
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.producer.DeviceResponseMessageSender
 import org.springframework.boot.test.system.OutputCaptureExtension
 
-@ExtendWith(MockKExtension::class)
-@ExtendWith(OutputCaptureExtension::class)
+@ExtendWith(MockKExtension::class, OutputCaptureExtension::class)
 class DeviceResponseMessageListenerTest {
     @MockK
     lateinit var deviceResponseMessageSender: DeviceResponseMessageSender

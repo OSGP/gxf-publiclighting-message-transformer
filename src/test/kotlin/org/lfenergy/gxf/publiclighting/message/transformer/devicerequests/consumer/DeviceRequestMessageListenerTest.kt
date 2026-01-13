@@ -20,8 +20,7 @@ import org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.produc
 import org.springframework.boot.test.system.OutputCaptureExtension
 import org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.DeviceRequestObjectMessageMockFactory as MockFactory
 
-@ExtendWith(MockKExtension::class)
-@ExtendWith(OutputCaptureExtension::class)
+@ExtendWith(MockKExtension::class, OutputCaptureExtension::class)
 class DeviceRequestMessageListenerTest {
     @MockK
     lateinit var deviceRequestMessageSender: DeviceRequestMessageSender

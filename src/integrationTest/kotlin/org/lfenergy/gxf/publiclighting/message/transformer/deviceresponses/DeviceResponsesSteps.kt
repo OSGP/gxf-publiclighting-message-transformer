@@ -64,6 +64,7 @@ class DeviceResponsesSteps(
             when (objectMessageType) {
                 ObjectMessageType.GET_CONFIGURATION -> verifyGetConfigurationResponse(this.dataObject)
                 ObjectMessageType.GET_FIRMWARE_VERSION -> verifyGetFirmwareVersionResponse(this.dataObject)
+                ObjectMessageType.GET_LIGHT_STATUS -> verifyGetStatusResponse(this.dataObject)
                 ObjectMessageType.GET_STATUS -> verifyGetStatusResponse(this.dataObject)
                 else -> assertThat(this.dataObject).isNull()
             }

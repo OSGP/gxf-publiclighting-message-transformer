@@ -52,6 +52,7 @@ object DeviceRequestMessageMapper {
             when (messageType) {
                 RequestType.GET_CONFIGURATION_REQUEST,
                 RequestType.GET_FIRMWARE_VERSION_REQUEST,
+                RequestType.GET_LIGHT_STATUS_REQUEST,
                 RequestType.GET_STATUS_REQUEST,
                 RequestType.REBOOT_REQUEST,
                 RequestType.START_SELF_TEST_REQUEST,
@@ -85,6 +86,7 @@ object DeviceRequestMessageMapper {
         when (this) {
             "GET_CONFIGURATION" -> RequestType.GET_CONFIGURATION_REQUEST
             "GET_FIRMWARE_VERSION" -> RequestType.GET_FIRMWARE_VERSION_REQUEST
+            "GET_LIGHT_STATUS" -> RequestType.GET_LIGHT_STATUS_REQUEST
             "GET_STATUS" -> RequestType.GET_STATUS_REQUEST
             "RESUME_SCHEDULE" -> RequestType.RESUME_SCHEDULE_REQUEST
             "SET_CONFIGURATION" -> RequestType.SET_CONFIGURATION_REQUEST

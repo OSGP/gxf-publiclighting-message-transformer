@@ -18,6 +18,7 @@ object InboundResponseMessageFactory {
             ResponseType.GET_CONFIGURATION_RESPONSE -> getConfigurationResponseMessage()
             ResponseType.GET_FIRMWARE_VERSION_RESPONSE -> getFirmwareVersionResponseMessage()
             ResponseType.GET_STATUS_RESPONSE -> getStatusResponseMessage()
+            ResponseType.GET_LIGHT_STATUS_RESPONSE -> getLightStatusResponseMessage()
             else -> emptyResponseMessage(responseType)
         }
 
@@ -44,6 +45,13 @@ object InboundResponseMessageFactory {
     private fun getStatusResponseMessage() =
         deviceResponseMessage {
             header = responseHeader(ResponseType.GET_STATUS_RESPONSE)
+            result = Result.OK
+            getStatusResponse = InboundResponsePayloadFactory.statusPayload()
+        }
+
+    private fun getLightStatusResponseMessage() =
+        deviceResponseMessage {
+            header = responseHeader(ResponseType.GET_LIGHT_STATUS_RESPONSE)
             result = Result.OK
             getStatusResponse = InboundResponsePayloadFactory.statusPayload()
         }

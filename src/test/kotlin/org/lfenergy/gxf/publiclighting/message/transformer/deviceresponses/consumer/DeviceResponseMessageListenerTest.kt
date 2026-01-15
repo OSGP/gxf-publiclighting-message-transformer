@@ -13,8 +13,10 @@ import io.mockk.mockk
 import io.mockk.verify
 import jakarta.jms.BytesMessage
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.DeviceResponseMessage
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.ResponseType
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_DEVICE_IDENTIFICATION
@@ -30,67 +32,9 @@ class DeviceResponseMessageListenerTest {
     @InjectMockKs
     lateinit var deviceResponseMessageListener: DeviceResponseMessageListener
 
-    @Test
-    fun `should handle get configuration device response message`() {
-        testResponse(ResponseType.GET_CONFIGURATION_RESPONSE)
-    }
-
-    @Test
-    fun `should handle get firmware version device response message`() {
-        testResponse(ResponseType.GET_FIRMWARE_VERSION_RESPONSE)
-    }
-
-    @Test
-    fun `should handle get status device response message`() {
-        testResponse(ResponseType.GET_STATUS_RESPONSE)
-    }
-
-    @Test
-    fun `should handle reboot device response message`() {
-        testResponse(ResponseType.REBOOT_RESPONSE)
-    }
-
-    @Test
-    fun `should handle resume schedule device response message`() {
-        testResponse(ResponseType.RESUME_SCHEDULE_RESPONSE)
-    }
-
-    @Test
-    fun `should handle set configuration device response message`() {
-        testResponse(ResponseType.SET_CONFIGURATION_RESPONSE)
-    }
-
-    @Test
-    fun `should handle set event notification mask device response message`() {
-        testResponse(ResponseType.SET_EVENT_NOTIFICATION_MASK_RESPONSE)
-    }
-
-    @Test
-    fun `should handle set light device response message`() {
-        testResponse(ResponseType.SET_LIGHT_RESPONSE)
-    }
-
-    @Test
-    fun `should handle set schedule device response message`() {
-        testResponse(ResponseType.SET_SCHEDULE_RESPONSE)
-    }
-
-    @Test
-    fun `should handle set transition device response message`() {
-        testResponse(ResponseType.SET_TRANSITION_RESPONSE)
-    }
-
-    @Test
-    fun `should handle start self test device response message`() {
-        testResponse(ResponseType.START_SELF_TEST_RESPONSE)
-    }
-
-    @Test
-    fun `should handle stop self test device response message`() {
-        testResponse(ResponseType.STOP_SELF_TEST_RESPONSE)
-    }
-
-    private fun testResponse(responseType: ResponseType) {
+    @ParameterizedTest(name = "with response type: {0}")
+    @MethodSource("responseTypeProvider")
+    fun `should handle response messages in protobuf bytesmessage format`(responseType: ResponseType) {
         val response = InboundResponseMessageFactory.protobufMessageForResponseOfType(responseType)
         val bytesMessage = setupBytesMessageMock(response)
         every { deviceResponseMessageSender.send(any<DeviceResponseMessage>()) } just Runs
@@ -101,12 +45,7 @@ class DeviceResponseMessageListenerTest {
             deviceResponseMessageSender.send(
                 withArg {
                     assertThat(it).isInstanceOf(DeviceResponseMessage::class.java).isEqualTo(response)
-                    when (responseType) {
-                        ResponseType.GET_FIRMWARE_VERSION_RESPONSE -> assertThat(it.hasGetFirmwareVersionResponse()).isTrue
-                        ResponseType.GET_STATUS_RESPONSE -> assertThat(it.hasGetStatusResponse()).isTrue
-                        ResponseType.GET_CONFIGURATION_RESPONSE -> assertThat(it.hasGetConfigurationResponse()).isTrue
-                        else -> {} // do nothing
-                    }
+                    PAYLOAD_PER_RESPONSE_TYPE_ASSERTIONS[responseType]?.invoke(it)
                 },
             )
         }
@@ -130,5 +69,22 @@ class DeviceResponseMessageListenerTest {
     ): Int {
         System.arraycopy(bytes, 0, buffer, 0, bytes.size)
         return bytes.size
+    }
+
+    companion object {
+        private val PAYLOAD_PER_RESPONSE_TYPE_ASSERTIONS: Map<ResponseType, DeviceResponseMessage.() -> Unit> =
+            mapOf(
+                ResponseType.GET_FIRMWARE_VERSION_RESPONSE to { assertThat(hasGetFirmwareVersionResponse()).isTrue },
+                ResponseType.GET_STATUS_RESPONSE to { assertThat(hasGetStatusResponse()).isTrue },
+                ResponseType.GET_CONFIGURATION_RESPONSE to { assertThat(hasGetConfigurationResponse()).isTrue },
+                ResponseType.GET_LIGHT_STATUS_RESPONSE to { assertThat(hasGetStatusResponse()).isTrue },
+            )
+
+        @JvmStatic
+        private fun responseTypeProvider() =
+            ResponseType.entries
+                .filterNot { it == ResponseType.UNRECOGNIZED }
+                .map { Arguments.of(it) }
+                .stream()
     }
 }

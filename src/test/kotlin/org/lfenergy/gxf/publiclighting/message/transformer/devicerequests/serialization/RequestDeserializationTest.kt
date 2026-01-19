@@ -48,7 +48,7 @@ class RequestDeserializationTest {
     }
 
     @Test
-    fun `should deserialize event notification request serialized by kotlin`() {
+    fun `should deserialize event notification request serialized by java`() {
         val msg =
             javaClass
                 .getResourceAsStream("/event-notification-request.ser")

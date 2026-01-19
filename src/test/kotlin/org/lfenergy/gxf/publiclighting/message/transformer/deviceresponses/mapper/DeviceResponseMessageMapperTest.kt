@@ -4,71 +4,24 @@
 package org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.mapper
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.ResponseType
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType
+import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.DeviceResponseTestHelper.payloadPerResponseTypeAssertions
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.InboundResponseMessageFactory
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.mapper.DeviceResponseMessageMapper.toResponseDto
-import org.opensmartgridplatform.dto.valueobjects.ConfigurationDto
-import org.opensmartgridplatform.dto.valueobjects.DeviceStatusDto
 import org.opensmartgridplatform.shared.infra.jms.ProtocolResponseMessage
 import org.opensmartgridplatform.shared.infra.jms.ResponseMessageResultType
+import java.util.stream.Stream
 
 class DeviceResponseMessageMapperTest {
-    @Test
-    fun `should create get configuration protocol response message dto from protobuf message`() =
-        verifyResponseMessageCreated(ResponseType.GET_CONFIGURATION_RESPONSE, ObjectMessageType.GET_CONFIGURATION)
-
-    @Test
-    fun `should create get firmware version protocol response message dto from protobuf message`() =
-        verifyResponseMessageCreated(ResponseType.GET_FIRMWARE_VERSION_RESPONSE, ObjectMessageType.GET_FIRMWARE_VERSION)
-
-    @Test
-    fun `should create get status protocol response message dto from protobuf message`() =
-        verifyResponseMessageCreated(ResponseType.GET_STATUS_RESPONSE, ObjectMessageType.GET_STATUS)
-
-    @Test
-    fun `should create resume schedule protocol response message dto from protobuf message`() =
-        verifyResponseMessageCreated(ResponseType.RESUME_SCHEDULE_RESPONSE, ObjectMessageType.RESUME_SCHEDULE)
-
-    @Test
-    fun `should create set configuration protocol response message dto from protobuf message`() =
-        verifyResponseMessageCreated(ResponseType.SET_CONFIGURATION_RESPONSE, ObjectMessageType.SET_CONFIGURATION)
-
-    @Test
-    fun `should create set event notification mask protocol response message dto from protobuf message`() =
-        verifyResponseMessageCreated(
-            ResponseType.SET_EVENT_NOTIFICATION_MASK_RESPONSE,
-            ObjectMessageType.SET_EVENT_NOTIFICATIONS,
-        )
-
-    @Test
-    fun `should create set light protocol response message dto from protobuf message`() =
-        verifyResponseMessageCreated(ResponseType.SET_LIGHT_RESPONSE, ObjectMessageType.SET_LIGHT)
-
-    @Test
-    fun `should create set reboot protocol response message dto from protobuf message`() =
-        verifyResponseMessageCreated(ResponseType.REBOOT_RESPONSE, ObjectMessageType.SET_REBOOT)
-
-    @Test
-    fun `should create set schedule protocol response message dto from protobuf message`() =
-        verifyResponseMessageCreated(ResponseType.SET_SCHEDULE_RESPONSE, ObjectMessageType.SET_SCHEDULE)
-
-    @Test
-    fun `should create set transition protocol response message dto from protobuf message`() =
-        verifyResponseMessageCreated(ResponseType.SET_TRANSITION_RESPONSE, ObjectMessageType.SET_TRANSITION)
-
-    @Test
-    fun `should create start self test protocol response message dto from protobuf message`() =
-        verifyResponseMessageCreated(ResponseType.START_SELF_TEST_RESPONSE, ObjectMessageType.START_SELF_TEST)
-
-    @Test
-    fun `should create stop self test protocol response message dto from protobuf message`() =
-        verifyResponseMessageCreated(ResponseType.STOP_SELF_TEST_RESPONSE, ObjectMessageType.STOP_SELF_TEST)
-
-    private fun verifyResponseMessageCreated(
+    @ParameterizedTest(name = "transform {0} to {1}")
+    @MethodSource("messageTypesProvider")
+    fun `should create protocol response message from protobuf message`(
         inboundResponseType: ResponseType,
-        outboundMessageType: ObjectMessageType,
+        expectedOutboundMessageType: ObjectMessageType,
     ) {
         val message = InboundResponseMessageFactory.protobufMessageForResponseOfType(inboundResponseType)
 
@@ -76,13 +29,28 @@ class DeviceResponseMessageMapperTest {
 
         assertThat(result).isInstanceOf(ProtocolResponseMessage::class.java)
         assertThat(result.result).isEqualTo(ResponseMessageResultType.OK)
-        assertThat(result.messageType).isEqualTo(outboundMessageType.name)
+        assertThat(result.messageType).isEqualTo(expectedOutboundMessageType.name)
 
-        when (inboundResponseType) {
-            ResponseType.GET_FIRMWARE_VERSION_RESPONSE -> assertThat(result.dataObject).isNotNull.isInstanceOf(List::class.java)
-            ResponseType.GET_STATUS_RESPONSE -> assertThat(result.dataObject).isNotNull.isInstanceOf(DeviceStatusDto::class.java)
-            ResponseType.GET_CONFIGURATION_RESPONSE -> assertThat(result.dataObject).isNotNull.isInstanceOf(ConfigurationDto::class.java)
-            else -> assertThat(result.dataObject).isNull()
-        }
+        payloadPerResponseTypeAssertions[inboundResponseType]?.invoke(result)
+    }
+
+    companion object {
+        @JvmStatic
+        private fun messageTypesProvider() =
+            Stream.of(
+                Arguments.of(ResponseType.GET_CONFIGURATION_RESPONSE, ObjectMessageType.GET_CONFIGURATION),
+                Arguments.of(ResponseType.GET_FIRMWARE_VERSION_RESPONSE, ObjectMessageType.GET_FIRMWARE_VERSION),
+                Arguments.of(ResponseType.GET_LIGHT_STATUS_RESPONSE, ObjectMessageType.GET_LIGHT_STATUS),
+                Arguments.of(ResponseType.GET_STATUS_RESPONSE, ObjectMessageType.GET_STATUS),
+                Arguments.of(ResponseType.REBOOT_RESPONSE, ObjectMessageType.SET_REBOOT),
+                Arguments.of(ResponseType.RESUME_SCHEDULE_RESPONSE, ObjectMessageType.RESUME_SCHEDULE),
+                Arguments.of(ResponseType.SET_CONFIGURATION_RESPONSE, ObjectMessageType.SET_CONFIGURATION),
+                Arguments.of(ResponseType.SET_EVENT_NOTIFICATION_MASK_RESPONSE, ObjectMessageType.SET_EVENT_NOTIFICATIONS),
+                Arguments.of(ResponseType.SET_LIGHT_RESPONSE, ObjectMessageType.SET_LIGHT),
+                Arguments.of(ResponseType.SET_SCHEDULE_RESPONSE, ObjectMessageType.SET_SCHEDULE),
+                Arguments.of(ResponseType.SET_TRANSITION_RESPONSE, ObjectMessageType.SET_TRANSITION),
+                Arguments.of(ResponseType.START_SELF_TEST_RESPONSE, ObjectMessageType.START_SELF_TEST),
+                Arguments.of(ResponseType.STOP_SELF_TEST_RESPONSE, ObjectMessageType.STOP_SELF_TEST),
+            )
     }
 }

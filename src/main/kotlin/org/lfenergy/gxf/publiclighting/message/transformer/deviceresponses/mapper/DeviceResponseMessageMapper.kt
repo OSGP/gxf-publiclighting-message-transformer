@@ -59,6 +59,7 @@ object DeviceResponseMessageMapper {
         return when (this.header.responseType) {
             ResponseType.GET_CONFIGURATION_RESPONSE -> this.getConfigurationResponse.toDto()
             ResponseType.GET_FIRMWARE_VERSION_RESPONSE -> this.getFirmwareVersionResponse.toDto()
+            ResponseType.GET_LIGHT_STATUS_RESPONSE -> this.getStatusResponse.toDto()
             ResponseType.GET_STATUS_RESPONSE -> this.getStatusResponse.toDto()
             ResponseType.REBOOT_RESPONSE,
             ResponseType.RESUME_SCHEDULE_RESPONSE,
@@ -78,6 +79,7 @@ object DeviceResponseMessageMapper {
         when (this) {
             ResponseType.GET_CONFIGURATION_RESPONSE -> "GET_CONFIGURATION"
             ResponseType.GET_FIRMWARE_VERSION_RESPONSE -> "GET_FIRMWARE_VERSION"
+            ResponseType.GET_LIGHT_STATUS_RESPONSE -> "GET_LIGHT_STATUS"
             ResponseType.GET_STATUS_RESPONSE -> "GET_STATUS"
             ResponseType.REBOOT_RESPONSE -> "SET_REBOOT"
             ResponseType.RESUME_SCHEDULE_RESPONSE -> "RESUME_SCHEDULE"

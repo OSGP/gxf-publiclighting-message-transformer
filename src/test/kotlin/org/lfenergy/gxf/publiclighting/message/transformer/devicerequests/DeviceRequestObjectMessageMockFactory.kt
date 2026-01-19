@@ -10,6 +10,7 @@ import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationCon
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType.GET_CONFIGURATION
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType.GET_FIRMWARE_VERSION
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType.GET_LIGHT_STATUS
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType.GET_STATUS
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType.RESUME_SCHEDULE
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType.SET_CONFIGURATION
@@ -26,22 +27,23 @@ import java.io.Serializable
 object DeviceRequestObjectMessageMockFactory {
     fun deviceRequestObjectMessageMock(requestType: ObjectMessageType) =
         when (requestType) {
-            GET_CONFIGURATION -> setUpDeviceRequestMessage(GET_CONFIGURATION, null)
-            GET_FIRMWARE_VERSION -> setUpDeviceRequestMessage(GET_FIRMWARE_VERSION, null)
-            GET_STATUS -> setUpDeviceRequestMessage(GET_STATUS, null)
-            RESUME_SCHEDULE -> setUpDeviceRequestMessage(RESUME_SCHEDULE, InboundRequestMessageFactory.setResumeScheduleRequestPayload())
-            SET_CONFIGURATION -> setUpDeviceRequestMessage(SET_CONFIGURATION, InboundRequestMessageFactory.setConfigurationRequestPayload())
+            GET_CONFIGURATION -> setUpDeviceRequestMessage(requestType, null)
+            GET_FIRMWARE_VERSION -> setUpDeviceRequestMessage(requestType, null)
+            GET_LIGHT_STATUS -> setUpDeviceRequestMessage(requestType, null)
+            GET_STATUS -> setUpDeviceRequestMessage(requestType, null)
+            RESUME_SCHEDULE -> setUpDeviceRequestMessage(requestType, InboundRequestMessageFactory.setResumeScheduleRequestPayload())
+            SET_CONFIGURATION -> setUpDeviceRequestMessage(requestType, InboundRequestMessageFactory.setConfigurationRequestPayload())
             SET_EVENT_NOTIFICATIONS ->
                 setUpDeviceRequestMessage(
-                    SET_EVENT_NOTIFICATIONS,
+                    requestType,
                     InboundRequestMessageFactory.setEventNotificationsRequestPayload(),
                 )
-            SET_LIGHT -> setUpDeviceRequestMessage(SET_LIGHT, InboundRequestMessageFactory.setLightRequestPayload())
-            SET_REBOOT -> setUpDeviceRequestMessage(SET_REBOOT, null)
-            SET_SCHEDULE -> setUpDeviceRequestMessage(SET_SCHEDULE, InboundRequestMessageFactory.setScheduleRequestPayload())
-            SET_TRANSITION -> setUpDeviceRequestMessage(SET_TRANSITION, InboundRequestMessageFactory.setTransitionRequestPayload())
-            START_SELF_TEST -> setUpDeviceRequestMessage(START_SELF_TEST, null)
-            STOP_SELF_TEST -> setUpDeviceRequestMessage(STOP_SELF_TEST, null)
+            SET_LIGHT -> setUpDeviceRequestMessage(requestType, InboundRequestMessageFactory.setLightRequestPayload())
+            SET_REBOOT -> setUpDeviceRequestMessage(requestType, null)
+            SET_SCHEDULE -> setUpDeviceRequestMessage(requestType, InboundRequestMessageFactory.setScheduleRequestPayload())
+            SET_TRANSITION -> setUpDeviceRequestMessage(requestType, InboundRequestMessageFactory.setTransitionRequestPayload())
+            START_SELF_TEST -> setUpDeviceRequestMessage(requestType, null)
+            STOP_SELF_TEST -> setUpDeviceRequestMessage(requestType, null)
             else -> throw IllegalArgumentException("Unsupported request type: $requestType")
         }
 

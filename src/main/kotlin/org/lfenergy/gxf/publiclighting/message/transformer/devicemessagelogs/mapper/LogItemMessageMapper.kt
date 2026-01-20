@@ -3,21 +3,19 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.lfenergy.gxf.publiclighting.message.transformer.devicemessagelogs.mapper
 
-import com.google.protobuf.ByteString
-import org.lfenergy.gxf.publiclighting.contracts.internal.audittrail.MessageType
+import io.github.oshai.kotlinlogging.KotlinLogging
+import org.lfenergy.gxf.publiclighting.contracts.internal.auditlogging.Direction
 
 object LogItemMessageMapper {
-    private const val MAX_MESSAGE_LENGTH = 8000
+    private val logger = KotlinLogging.logger { }
 
-    fun ByteString.toDecodedMessage(): String {
-        // TODO implement
-        return "decoded message"
-    }
-
-    fun MessageType.toIsIncoming() =
+    fun Direction.toIsIncoming() =
         when (this) {
-            MessageType.FROM_DEVICE -> true.toString()
-            MessageType.TO_DEVICE -> false.toString()
-            else -> throw IllegalArgumentException("Illegal message type: $this")
+            Direction.FROM_DEVICE -> true.toString()
+            Direction.TO_DEVICE -> false.toString()
+            else -> {
+                logger.warn { "Unsupported message type: $this" }
+                null
+            }
         }
 }

@@ -6,7 +6,7 @@ package org.lfenergy.gxf.publiclighting.message.transformer.devicemessagelogs.co
 import com.google.protobuf.InvalidProtocolBufferException
 import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.jms.BytesMessage
-import org.lfenergy.gxf.publiclighting.contracts.internal.audittrail.LogItemMessage
+import org.lfenergy.gxf.publiclighting.contracts.internal.auditlogging.LogItemMessage
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_DEVICE_IDENTIFICATION
 import org.lfenergy.gxf.publiclighting.message.transformer.devicemessagelogs.producer.LogItemMessageSender
 import org.springframework.jms.annotation.JmsListener

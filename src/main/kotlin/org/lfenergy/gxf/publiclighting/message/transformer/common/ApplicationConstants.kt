@@ -16,5 +16,6 @@ object ApplicationConstants {
     const val JMS_PROPERTY_ENCODED_MESSAGE = "EncodedMessage"
     const val JMS_PROPERTY_IS_INCOMING = "IsIncoming"
     const val JMS_PROPERTY_PAYLOAD_MESSAGE_SERIALIZED_SIZE = "PayloadMessageSerializedSize"
-    const val DEVICE_TYPE = "SSLD"
+
+    const val OSLP_LOG_ITEM_REQUEST = "OSLP_LOG_ITEM"
 }

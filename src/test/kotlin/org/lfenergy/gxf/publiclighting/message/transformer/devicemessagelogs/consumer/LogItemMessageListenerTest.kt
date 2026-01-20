@@ -15,7 +15,7 @@ import jakarta.jms.BytesMessage
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.lfenergy.gxf.publiclighting.contracts.internal.audittrail.LogItemMessage
+import org.lfenergy.gxf.publiclighting.contracts.internal.auditlogging.LogItemMessage
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants
 import org.lfenergy.gxf.publiclighting.message.transformer.devicemessagelogs.InboundLogItemMessageFactory
 import org.lfenergy.gxf.publiclighting.message.transformer.devicemessagelogs.producer.LogItemMessageSender
@@ -53,7 +53,7 @@ class LogItemMessageListenerTest {
             logItemMessage.deviceIdentification
         every { bytesMessage.getStringProperty(ApplicationConstants.JMS_PROPERTY_ORGANIZATION_IDENTIFICATION) } returns
             logItemMessage.organizationIdentification
-        every { bytesMessage.jmsType } returns logItemMessage.messageType.name
+        every { bytesMessage.jmsType } returns ApplicationConstants.OSLP_LOG_ITEM_REQUEST
         every { bytesMessage.bodyLength } returns bytes.size.toLong()
         every { bytesMessage.readBytes(any<ByteArray>()) } answers { copyBytesToBuffer(bytes, arg(0)) }
         return bytesMessage

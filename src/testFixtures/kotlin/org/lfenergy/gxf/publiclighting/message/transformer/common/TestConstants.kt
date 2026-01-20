@@ -35,7 +35,6 @@ object TestConstants {
     const val ELEVEN_PM = "230000"
     const val SIX_AM = "060000"
 
-    // TODO - Use more realistic values for device message log
     const val IS_INCOMING = "true"
     const val ENCODED_MESSAGE = "encoded message"
     const val DECODED_MESSAGE = "decoded message"

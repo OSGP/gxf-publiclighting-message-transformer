@@ -8,17 +8,15 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNotNull
 import org.opensmartgridplatform.dto.valueobjects.ActionTimeTypeDto
 import org.opensmartgridplatform.dto.valueobjects.ConfigurationDto
-import org.opensmartgridplatform.dto.valueobjects.EventNotificationDto
-import org.opensmartgridplatform.dto.valueobjects.EventTypeDto
 import org.opensmartgridplatform.dto.valueobjects.LightTypeDto
 import org.opensmartgridplatform.dto.valueobjects.LinkTypeDto
 import org.opensmartgridplatform.dto.valueobjects.ScheduleDto
 import org.opensmartgridplatform.dto.valueobjects.TriggerTypeDto
 import org.opensmartgridplatform.dto.valueobjects.WeekDayTypeDto
 import java.io.ObjectInputStream
+import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import java.time.Instant
 
 class RequestDeserializationTest {
     /**
@@ -65,7 +63,6 @@ class RequestDeserializationTest {
                 .getResourceAsStream("/configuration-request.ser")
                 .use { ObjectInputStream(it).readObject() } as ConfigurationDto
 
-
         assertThat(msg.lightType).isEqualTo(LightTypeDto.RELAY)
         assertThat(msg.daliConfiguration).isNotNull
         assertThat(msg.relayConfiguration).isNotNull
@@ -105,12 +102,16 @@ class RequestDeserializationTest {
         assertThat(relayLinks[1]?.masterRelayIndex).isEqualTo(145)
         assertThat(relayLinks[1]?.masterRelayOn).isFalse
 
-        val expectedSummer = ZonedDateTime.ofInstant(
-            Instant.ofEpochMilli(146L * 24 * 60 * 60 * 1000), ZoneId.systemDefault()
-        )
-        val expectedWinter = ZonedDateTime.ofInstant(
-            Instant.ofEpochMilli(147L * 24 * 60 * 60 * 1000), ZoneId.systemDefault()
-        )
+        val expectedSummer =
+            ZonedDateTime.ofInstant(
+                Instant.ofEpochMilli(146L * 24 * 60 * 60 * 1000),
+                ZoneId.systemDefault(),
+            )
+        val expectedWinter =
+            ZonedDateTime.ofInstant(
+                Instant.ofEpochMilli(147L * 24 * 60 * 60 * 1000),
+                ZoneId.systemDefault(),
+            )
 
         assertThat(msg.summerTimeDetails).isEqualTo(expectedSummer)
         assertThat(msg.winterTimeDetails).isEqualTo(expectedWinter)

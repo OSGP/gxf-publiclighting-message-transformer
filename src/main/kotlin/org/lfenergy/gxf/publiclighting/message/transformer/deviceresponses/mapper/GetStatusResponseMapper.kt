@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.mapper
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.GetStatusResponse
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.LightType
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.LightValue
@@ -14,6 +15,8 @@ import org.opensmartgridplatform.dto.valueobjects.LightValueDto
 import org.opensmartgridplatform.dto.valueobjects.LinkTypeDto
 
 object GetStatusResponseMapper {
+    private val logger = KotlinLogging.logger { }
+
     fun GetStatusResponse.toDto(): DeviceStatusDto =
         DeviceStatusDto(
             this.lightValuesList.toDto(),
@@ -50,7 +53,10 @@ object GetStatusResponseMapper {
             RelayIndex.RELAY_TWO -> 2
             RelayIndex.RELAY_THREE -> 3
             RelayIndex.RELAY_FOUR -> 4
-            else -> throw IllegalArgumentException("Unsupported relay index: $this")
+            else -> {
+                logger.warn { "Unsupported relay index: $this" }
+                null
+            }
         }
 
     private fun LinkType.toDto() =
@@ -58,13 +64,20 @@ object GetStatusResponseMapper {
             LinkType.ETHERNET -> LinkTypeDto.ETHERNET
             LinkType.CDMA -> LinkTypeDto.CDMA
             LinkType.GPRS -> LinkTypeDto.GPRS
-            else -> throw IllegalArgumentException("Unsupported link type: $this")
+            LinkType.LINK_TYPE_NOT_SET -> null
+            else -> {
+                logger.warn { "Unsupported link type: $this" }
+                null
+            }
         }
 
     private fun LightType.toDto() =
         when (this) {
             LightType.RELAY -> LightTypeDto.RELAY
             // Other enum values not used
-            else -> throw IllegalArgumentException("Unsupported light type: $this")
+            else -> {
+                logger.warn { "Unsupported light type: $this" }
+                null
+            }
         }
 }

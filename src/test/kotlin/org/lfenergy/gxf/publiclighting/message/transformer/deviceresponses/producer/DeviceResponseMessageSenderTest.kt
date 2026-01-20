@@ -16,16 +16,17 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.DeviceResponseMessage
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.ResponseType
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_DEVICE_IDENTIFICATION
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_ORGANIZATION_IDENTIFICATION
+import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.DeviceResponseTestHelper.payloadPerResponseTypeAssertions
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.InboundResponseMessageFactory
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.config.DeviceResponsesConfigurationProperties
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.mapper.DeviceResponseMessageMapper.toMessageType
-import org.opensmartgridplatform.dto.valueobjects.ConfigurationDto
-import org.opensmartgridplatform.dto.valueobjects.DeviceStatusDto
-import org.opensmartgridplatform.dto.valueobjects.FirmwareVersionDto
 import org.opensmartgridplatform.shared.infra.jms.ProtocolResponseMessage
 import org.opensmartgridplatform.shared.infra.jms.ResponseMessageResultType
 import org.springframework.boot.test.system.CapturedOutput
@@ -62,50 +63,16 @@ class DeviceResponseMessageSenderTest {
         }
     }
 
-    @Test
-    fun `should send get configuration protocol response message`() =
-        testProtocolResponseMessageForResponseType(ResponseType.GET_CONFIGURATION_RESPONSE)
+    @ParameterizedTest(name = "with response type {0}")
+    @MethodSource("responseTypeProvider")
+    fun `should send protocol response message`(responseType: ResponseType) {
+        message = InboundResponseMessageFactory.protobufMessageForResponseOfType(responseType)
 
-    @Test
-    fun `should send get firmware version protocol response message`() =
-        testProtocolResponseMessageForResponseType(ResponseType.GET_FIRMWARE_VERSION_RESPONSE)
+        deviceResponseMessageSender.send(message)
 
-    @Test
-    fun `should send get status protocol response message`() = testProtocolResponseMessageForResponseType(ResponseType.GET_STATUS_RESPONSE)
-
-    @Test
-    fun `should send reboot response protocol message`() = testProtocolResponseMessageForResponseType(ResponseType.REBOOT_RESPONSE)
-
-    @Test
-    fun `should send resume schedule response protocol message`() =
-        testProtocolResponseMessageForResponseType(ResponseType.RESUME_SCHEDULE_RESPONSE)
-
-    @Test
-    fun `should send set configuration protocol response message`() =
-        testProtocolResponseMessageForResponseType(ResponseType.SET_CONFIGURATION_RESPONSE)
-
-    @Test
-    fun `should send set event notification mask protocol response message`() =
-        testProtocolResponseMessageForResponseType(ResponseType.SET_EVENT_NOTIFICATION_MASK_RESPONSE)
-
-    @Test
-    fun `should send set light protocol response message`() = testProtocolResponseMessageForResponseType(ResponseType.SET_LIGHT_RESPONSE)
-
-    @Test
-    fun `should send set schedule response object message`() =
-        testProtocolResponseMessageForResponseType(ResponseType.SET_SCHEDULE_RESPONSE)
-
-    @Test
-    fun `should send set transition protocol response message`() =
-        testProtocolResponseMessageForResponseType(ResponseType.SET_TRANSITION_RESPONSE)
-
-    @Test
-    fun `should send start self test protocol response message`() =
-        testProtocolResponseMessageForResponseType(ResponseType.START_SELF_TEST_RESPONSE)
-
-    @Test
-    fun `should send stop self test protocol response message`() =
-        testProtocolResponseMessageForResponseType(ResponseType.STOP_SELF_TEST_RESPONSE)
+        verifyObjectMessage()
+        verifyProtocolResponseMessage(responseType)
+    }
 
     @Test
     fun `should log unrecognized protobuf event and not send dto`(capturedOutput: CapturedOutput) {
@@ -119,15 +86,6 @@ class DeviceResponseMessageSenderTest {
         assertThat(capturedOutput.out)
             .contains("Failed to send device response message")
             .contains("Unsupported message type: UNRECOGNIZED")
-    }
-
-    private fun testProtocolResponseMessageForResponseType(responseType: ResponseType) {
-        message = InboundResponseMessageFactory.protobufMessageForResponseOfType(responseType)
-
-        deviceResponseMessageSender.send(message)
-
-        verifyObjectMessage()
-        verifyProtocolResponseMessage(responseType)
     }
 
     private fun verifyObjectMessage() {
@@ -165,23 +123,18 @@ class DeviceResponseMessageSenderTest {
             assertThat(messageType).isEqualTo(responseType.toMessageType())
             assertThat(result).isEqualTo(ResponseMessageResultType.OK)
 
-            when (responseType) {
-                ResponseType.GET_FIRMWARE_VERSION_RESPONSE -> verifyFirmwareVersionResponse(dataObject)
-                ResponseType.GET_STATUS_RESPONSE -> assertThat(dataObject).isNotNull.isInstanceOf(DeviceStatusDto::class.java)
-                ResponseType.GET_CONFIGURATION_RESPONSE -> assertThat(dataObject).isNotNull.isInstanceOf(ConfigurationDto::class.java)
-                else -> assertThat(dataObject).isNull()
-            }
+            payloadPerResponseTypeAssertions[responseType]?.invoke(this)
         }
-    }
-
-    private fun verifyFirmwareVersionResponse(dataObject: Serializable?) {
-        assertThat(dataObject).isNotNull().isInstanceOf(List::class.java)
-        val firmwareVersions = dataObject as List<*>
-        assertThat(firmwareVersions).isNotEmpty.hasSize(1)
-        assertThat(firmwareVersions[0]).isInstanceOf(FirmwareVersionDto::class.java)
     }
 
     companion object {
         private const val OUTBOUND_QUEUE_NAME = "outbound-queue"
+
+        @JvmStatic
+        fun responseTypeProvider() =
+            ResponseType.entries
+                .filterNot { it == ResponseType.UNRECOGNIZED }
+                .map { Arguments.of(it) }
+                .stream()
     }
 }

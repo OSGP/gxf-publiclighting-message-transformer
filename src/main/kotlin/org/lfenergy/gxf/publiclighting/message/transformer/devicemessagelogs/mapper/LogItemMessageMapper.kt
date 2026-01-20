@@ -14,7 +14,7 @@ object LogItemMessageMapper {
             Direction.FROM_DEVICE -> true.toString()
             Direction.TO_DEVICE -> false.toString()
             else -> {
-                logger.warn { "Unsupported message type: $this" }
+                logger.warn { "Unsupported direction: $this" }
                 null
             }
         }

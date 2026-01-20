@@ -24,7 +24,6 @@ class LogItemMessageListener(
     )
     fun onMessage(bytesMessage: BytesMessage) {
         val deviceId = bytesMessage.getStringProperty(JMS_PROPERTY_DEVICE_IDENTIFICATION)
-        val messageType = bytesMessage.jmsType
 
         logger.info { "Received device message log item for device $deviceId." }
         try {

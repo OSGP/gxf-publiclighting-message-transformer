@@ -11,8 +11,8 @@ object LogItemMessageMapper {
 
     fun Direction.toIsIncoming() =
         when (this) {
-            Direction.FROM_DEVICE -> true.toString()
-            Direction.TO_DEVICE -> false.toString()
+            Direction.FROM_DEVICE -> "true"
+            Direction.TO_DEVICE -> "false"
             else -> {
                 logger.warn { "Unsupported direction: $this" }
                 null

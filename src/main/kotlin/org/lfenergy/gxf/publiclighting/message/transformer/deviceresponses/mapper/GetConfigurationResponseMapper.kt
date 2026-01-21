@@ -4,6 +4,7 @@
 package org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.mapper
 
 import com.google.protobuf.ByteString
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.lfenergy.gxf.publiclighting.contracts.internal.configuration.Configuration
 import org.lfenergy.gxf.publiclighting.contracts.internal.configuration.DeviceAddressConfiguration
 import org.lfenergy.gxf.publiclighting.contracts.internal.configuration.LightType
@@ -29,6 +30,8 @@ import java.time.ZonedDateTime
 import java.time.temporal.TemporalAdjusters
 
 object GetConfigurationResponseMapper {
+    private val logger = KotlinLogging.logger { }
+
     fun GetConfigurationResponse.toDto() = this.configuration.toDto()
 
     private fun Configuration.toDto(): ConfigurationDto =
@@ -56,19 +59,25 @@ object GetConfigurationResponseMapper {
         )
 
     private fun ByteString.toIpv4String(): String? {
-        if (size() != 4) return null
+        if (size() != 4) {
+            return null
+        }
         return toByteArray().joinToString(".") { (it.toInt() and 0xFF).toString() }
     }
 
     private fun ByteString.toIntOrNull(): Int? {
         val bytes = toByteArray()
-        if (bytes.isEmpty()) return null
+        if (bytes.isEmpty()) {
+            return null
+        }
         return bytes[0].toInt() and 0xFF
     }
 
     private fun ByteString.toListOfIntOrNull(): MutableList<Int?>? {
         val bytes = toByteArray()
-        if (bytes.isEmpty()) return null
+        if (bytes.isEmpty()) {
+            return null
+        }
         return bytes.map { it.toInt() and 0xFF }.toMutableList()
     }
 
@@ -82,7 +91,10 @@ object GetConfigurationResponseMapper {
     private fun LightType.toDto() =
         when (this) {
             LightType.RELAY -> LightTypeDto.RELAY
-            else -> null
+            else -> {
+                logger.warn { "Unsupported light type $this" }
+                null
+            }
         }
 
     private fun LinkType.toDto() =
@@ -90,7 +102,11 @@ object GetConfigurationResponseMapper {
             LinkType.CDMA -> LinkTypeDto.CDMA
             LinkType.ETHERNET -> LinkTypeDto.ETHERNET
             LinkType.GPRS -> LinkTypeDto.GPRS
-            else -> null
+            LinkType.LINK_TYPE_NOT_SET -> null
+            else -> {
+                logger.warn { "Unsupported link type $this" }
+                null
+            }
         }
 
     private fun RelayLinking.toDto(): MutableList<RelayMatrixDto?> = relayLinkMatrixList.map { it.toDto() }.toMutableList()
@@ -115,7 +131,11 @@ object GetConfigurationResponseMapper {
     private fun RelayType.toDto() =
         when (this) {
             RelayType.LIGHT -> RelayTypeDto.LIGHT
-            else -> null
+            RelayType.RELAY_TYPE_NOT_SET -> null
+            else -> {
+                logger.warn { "Unsupported relay type $this" }
+                null
+            }
         }
 
     /**

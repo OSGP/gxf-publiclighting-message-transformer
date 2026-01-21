@@ -26,16 +26,16 @@ class LogItemMessageSender(
 ) {
     private val logger = KotlinLogging.logger { }
 
-    fun send(protobufMessage: LogItemMessage) {
-        val deviceIdentification = protobufMessage.deviceIdentification
+    fun send(protobufLogItemMessage: LogItemMessage) {
+        val deviceIdentification = protobufLogItemMessage.deviceIdentification
 
         logger.info { "Sending device message log item for device $deviceIdentification." }
         try {
             jmsTemplate.send(properties.producer.outboundQueue) { session ->
-                createObjectMessage(session, protobufMessage)
+                createObjectMessage(session, protobufLogItemMessage)
             }
         } catch (e: Exception) {
-            logger.error { "Failed to send device message log item for device $deviceIdentification." }
+            logger.error(e) { "Failed to send device message log item for device $deviceIdentification." }
         }
     }
 

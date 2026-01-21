@@ -49,8 +49,8 @@ class RequestDeserializationTest {
         val lightValuesOn = scheduleOn.lightValue!!
         assertThat(lightValuesOn).hasSize(1)
 
+        assertThat(lightValuesOn[0]).isNotNull
         val lightValueOn = lightValuesOn[0]!!
-        assertThat(lightValueOn).isNotNull
         assertThat(lightValueOn.index).isEqualTo(2)
         assertThat(lightValueOn.on).isEqualTo(true)
 
@@ -64,8 +64,8 @@ class RequestDeserializationTest {
         val lightValuesOff = scheduleOff.lightValue!!
         assertThat(lightValuesOff).hasSize(1)
 
+        assertThat(lightValuesOff[0]).isNotNull
         val lightValueOff = lightValuesOff[0]!!
-        assertThat(lightValueOff).isNotNull
         assertThat(lightValueOff.index).isEqualTo(2)
         assertThat(lightValueOff.on).isEqualTo(false)
     }

@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.MethodSource
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.DeviceRequestMessage
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.RequestType
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType
+import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants
 import org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.DeviceRequestTestHelper.payloadPerRequestTypeAssertions
 import org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.mapper.DeviceRequestMessageMapper.toProtobufMessage
 import java.util.stream.Stream
@@ -28,6 +29,8 @@ class DeviceRequestMessageMapperTest {
 
         assertThat(result).isInstanceOf(DeviceRequestMessage::class.java)
         assertThat(result.header.requestType).isEqualTo(expectedOutboundRequestType)
+        assertThat(result.header.domain).isEqualTo(TestConstants.DOMAIN)
+        assertThat(result.header.domainVersion).isEqualTo(TestConstants.DOMAIN_VERSION)
         payloadPerRequestTypeAssertions[inboundMessageType]?.invoke(result)
     }
 

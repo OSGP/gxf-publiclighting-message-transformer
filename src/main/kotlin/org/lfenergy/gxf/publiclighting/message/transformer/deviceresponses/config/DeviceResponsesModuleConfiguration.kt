@@ -4,6 +4,7 @@
 package org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.config
 
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ModuleConfiguration
+import org.messaginghub.pooled.jms.JmsPoolConnectionFactory
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -11,7 +12,7 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 @EnableConfigurationProperties(DeviceResponsesConfigurationProperties::class)
 class DeviceResponsesModuleConfiguration(
-    private val connectionFactory: org.messaginghub.pooled.jms.JmsPoolConnectionFactory,
+    private val connectionFactory: JmsPoolConnectionFactory,
     private val properties: DeviceResponsesConfigurationProperties,
 ) : ModuleConfiguration() {
     @Bean("deviceResponsesJmsListenerContainerFactory")

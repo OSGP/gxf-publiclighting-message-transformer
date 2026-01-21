@@ -35,8 +35,7 @@ import org.springframework.jms.core.JmsTemplate
 import org.springframework.jms.core.MessageCreator
 import java.io.Serializable
 
-@ExtendWith(MockKExtension::class)
-@ExtendWith(OutputCaptureExtension::class)
+@ExtendWith(MockKExtension::class, OutputCaptureExtension::class)
 class DeviceResponseMessageSenderTest {
     @MockK
     lateinit var jmsTemplate: JmsTemplate
@@ -129,7 +128,7 @@ class DeviceResponseMessageSenderTest {
     }
 
     companion object {
-        private const val OUTBOUND_QUEUE_NAME = "queue"
+        private const val OUTBOUND_QUEUE_NAME = "outbound-queue"
 
         @JvmStatic
         fun responseTypeProvider() =

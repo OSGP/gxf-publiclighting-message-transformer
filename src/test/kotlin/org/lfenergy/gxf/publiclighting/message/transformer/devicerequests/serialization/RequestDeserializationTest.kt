@@ -35,39 +35,36 @@ class RequestDeserializationTest {
                 .getResourceAsStream("/set-schedule-request.ser")
                 .use { ObjectInputStream(it).readObject() } as ScheduleDto
 
-        assertThat(dto.scheduleList).isNotNull
+        assertThat(dto.scheduleList).isNotNull.hasSize(2)
         val schedules = dto.scheduleList!!
-        assertThat(schedules).hasSize(2)
 
-        assertThat(schedules[0]).isNotNull
-        val scheduleOn = schedules[0]!!
-        assertThat(scheduleOn.weekDay).isEqualTo(WeekDayTypeDto.ALL)
-        assertThat(scheduleOn.triggerType).isEqualTo(TriggerTypeDto.ASTRONOMICAL)
-        assertThat(scheduleOn.actionTime).isEqualTo(ActionTimeTypeDto.SUNSET)
+        assertThat(schedules[0]).isNotNull().satisfies({
+            it!!
+            assertThat(it.weekDay).isEqualTo(WeekDayTypeDto.ALL)
+            assertThat(it.triggerType).isEqualTo(TriggerTypeDto.ASTRONOMICAL)
+            assertThat(it.actionTime).isEqualTo(ActionTimeTypeDto.SUNSET)
 
-        assertThat(scheduleOn.lightValue).isNotNull
-        val lightValuesOn = scheduleOn.lightValue!!
-        assertThat(lightValuesOn).hasSize(1)
+            assertThat(it.lightValue).isNotNull().hasSize(1)
+            assertThat(it.lightValue).element(0).isNotNull().satisfies({ lv ->
+                lv!!
+                assertThat(lv.index).isEqualTo(2)
+                assertThat(lv.on).isTrue
+            })
+        })
 
-        assertThat(lightValuesOn[0]).isNotNull
-        val lightValueOn = lightValuesOn[0]!!
-        assertThat(lightValueOn.index).isEqualTo(2)
-        assertThat(lightValueOn.on).isEqualTo(true)
+        assertThat(schedules[1]).isNotNull().satisfies({
+            it!!
+            assertThat(it.weekDay).isEqualTo(WeekDayTypeDto.ALL)
+            assertThat(it.triggerType).isEqualTo(TriggerTypeDto.ASTRONOMICAL)
+            assertThat(it.actionTime).isEqualTo(ActionTimeTypeDto.SUNRISE)
 
-        assertThat(schedules[1]).isNotNull
-        val scheduleOff = schedules[1]!!
-        assertThat(scheduleOff.weekDay).isEqualTo(WeekDayTypeDto.ALL)
-        assertThat(scheduleOff.triggerType).isEqualTo(TriggerTypeDto.ASTRONOMICAL)
-        assertThat(scheduleOff.actionTime).isEqualTo(ActionTimeTypeDto.SUNRISE)
-
-        assertThat(scheduleOff.lightValue).isNotNull
-        val lightValuesOff = scheduleOff.lightValue!!
-        assertThat(lightValuesOff).hasSize(1)
-
-        assertThat(lightValuesOff[0]).isNotNull
-        val lightValueOff = lightValuesOff[0]!!
-        assertThat(lightValueOff.index).isEqualTo(2)
-        assertThat(lightValueOff.on).isEqualTo(false)
+            assertThat(it.lightValue).isNotNull().hasSize(1)
+            assertThat(it.lightValue).element(0).isNotNull().satisfies({ lv ->
+                lv!!
+                assertThat(lv.index).isEqualTo(2)
+                assertThat(lv.on).isFalse
+            })
+        })
     }
 
     @Test
@@ -101,24 +98,26 @@ class RequestDeserializationTest {
         assertThat(dto.astroGateSunSetOffset).isEqualTo(141)
         assertThat(dto.relayRefreshing).isTrue
 
-        assertThat(dto.deviceFixedIp).isNotNull
-        assertThat(dto.deviceFixedIp?.ipAddress).isEqualTo("ipAddress1")
-        assertThat(dto.deviceFixedIp?.netMask).isEqualTo("netMask1")
-        assertThat(dto.deviceFixedIp?.gateWay).isEqualTo("gateWay1")
-
+        assertThat(dto.deviceFixedIp).isNotNull.satisfies ({
+            it!!
+            assertThat(it.ipAddress).isEqualTo("ipAddress1")
+            assertThat(it.netMask).isEqualTo("netMask1")
+            assertThat(it.gateWay).isEqualTo("gateWay1")
+        })
         assertThat(dto.switchingDelays).containsExactly(142, 143)
 
-        assertThat(dto.relayLinking).isNotNull
-        val relayLinks = dto.relayLinking!!
-        assertThat(relayLinks).hasSize(2)
-        assertThat(relayLinks[0]).isNotNull
-        val relayLink1 = relayLinks[0]!!
-        assertThat(relayLink1.masterRelayIndex).isEqualTo(144)
-        assertThat(relayLink1.masterRelayOn).isTrue
-        assertThat(relayLinks[1]).isNotNull
-        val relayLink2 = relayLinks[1]!!
-        assertThat(relayLink2.masterRelayIndex).isEqualTo(145)
-        assertThat(relayLink2.masterRelayOn).isFalse
+        assertThat(dto.relayLinking).isNotNull.hasSize(2)
+
+        assertThat(dto.relayLinking).element(0).isNotNull.satisfies ({
+            it!!
+            assertThat(it.masterRelayIndex).isEqualTo(144)
+            assertThat(it.masterRelayOn).isTrue
+        })
+        assertThat(dto.relayLinking).element(1).isNotNull.satisfies ({
+            it!!
+            assertThat(it.masterRelayIndex).isEqualTo(145)
+            assertThat(it.masterRelayOn).isFalse
+        })
 
         val expectedSummer =
             ZonedDateTime.ofInstant(

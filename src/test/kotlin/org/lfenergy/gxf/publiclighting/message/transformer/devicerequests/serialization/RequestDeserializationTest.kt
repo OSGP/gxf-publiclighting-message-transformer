@@ -5,7 +5,6 @@ package org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.seria
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertNotNull
 import org.opensmartgridplatform.dto.valueobjects.ActionTimeTypeDto
 import org.opensmartgridplatform.dto.valueobjects.ConfigurationDto
 import org.opensmartgridplatform.dto.valueobjects.LightTypeDto
@@ -30,77 +29,96 @@ class RequestDeserializationTest {
      */
 
     @Test
-    fun `should deserialize set schedule request serialized by java`() {
-        val msg =
+    fun `should deserialize set schedule dto serialized by java`() {
+        val dto =
             javaClass
                 .getResourceAsStream("/set-schedule-request.ser")
                 .use { ObjectInputStream(it).readObject() } as ScheduleDto
 
-        assertNotNull(msg.scheduleList)
-        val scheduleOn = msg.scheduleList[0]
-        assertNotNull(scheduleOn)
+        assertThat(dto.scheduleList).isNotNull
+        val schedules = dto.scheduleList!!
+        assertThat(schedules).hasSize(2)
+
+        assertThat(schedules[0]).isNotNull
+        val scheduleOn = schedules[0]!!
         assertThat(scheduleOn.weekDay).isEqualTo(WeekDayTypeDto.ALL)
         assertThat(scheduleOn.triggerType).isEqualTo(TriggerTypeDto.ASTRONOMICAL)
         assertThat(scheduleOn.actionTime).isEqualTo(ActionTimeTypeDto.SUNSET)
-        assertNotNull(scheduleOn.lightValue)
-        assertThat(scheduleOn.lightValue[0]?.index).isEqualTo(2)
-        assertThat(scheduleOn.lightValue[0]?.on).isEqualTo(true)
 
-        val scheduleOff = msg.scheduleList[1]
-        assertNotNull(scheduleOff)
+        assertThat(scheduleOn.lightValue).isNotNull
+        val lightValuesOn = scheduleOn.lightValue!!
+        assertThat(lightValuesOn).hasSize(1)
+
+        val lightValueOn = lightValuesOn[0]!!
+        assertThat(lightValueOn).isNotNull
+        assertThat(lightValueOn.index).isEqualTo(2)
+        assertThat(lightValueOn.on).isEqualTo(true)
+
+        assertThat(schedules[1]).isNotNull
+        val scheduleOff = schedules[1]!!
         assertThat(scheduleOff.weekDay).isEqualTo(WeekDayTypeDto.ALL)
         assertThat(scheduleOff.triggerType).isEqualTo(TriggerTypeDto.ASTRONOMICAL)
         assertThat(scheduleOff.actionTime).isEqualTo(ActionTimeTypeDto.SUNRISE)
-        assertNotNull(scheduleOff.lightValue)
-        assertThat(scheduleOff.lightValue[0]?.index).isEqualTo(2)
-        assertThat(scheduleOff.lightValue[0]?.on).isEqualTo(false)
+
+        assertThat(scheduleOff.lightValue).isNotNull
+        val lightValuesOff = scheduleOff.lightValue!!
+        assertThat(lightValuesOff).hasSize(1)
+
+        val lightValueOff = lightValuesOff[0]!!
+        assertThat(lightValueOff).isNotNull
+        assertThat(lightValueOff.index).isEqualTo(2)
+        assertThat(lightValueOff.on).isEqualTo(false)
     }
 
     @Test
-    fun `should deserialize configuration request serialized by java`() {
-        val msg =
+    fun `should deserialize configuration dto serialized by java`() {
+        val dto =
             javaClass
                 .getResourceAsStream("/configuration-request.ser")
                 .use { ObjectInputStream(it).readObject() } as ConfigurationDto
 
-        assertThat(msg.lightType).isEqualTo(LightTypeDto.RELAY)
-        assertThat(msg.daliConfiguration).isNotNull
-        assertThat(msg.relayConfiguration).isNotNull
-        assertThat(msg.preferredLinkType).isEqualTo(LinkTypeDto.CDMA)
+        assertThat(dto.lightType).isEqualTo(LightTypeDto.RELAY)
+        assertThat(dto.daliConfiguration).isNotNull
+        assertThat(dto.relayConfiguration).isNotNull
+        assertThat(dto.preferredLinkType).isEqualTo(LinkTypeDto.CDMA)
 
-        assertThat(msg.timeSyncFrequency).isEqualTo(133)
-        assertThat(msg.dhcpEnabled).isTrue
-        assertThat(msg.tlsEnabled).isTrue
-        assertThat(msg.tlsPortNumber).isEqualTo(134)
-        assertThat(msg.commonNameString).isEqualTo("commonNameString1")
-        assertThat(msg.communicationTimeout).isEqualTo(135)
-        assertThat(msg.communicationNumberOfRetries).isEqualTo(136)
-        assertThat(msg.communicationPauseTimeBetweenConnectionTrials).isEqualTo(137)
-        assertThat(msg.osgpIpAddress).isEqualTo("osgpIpAddress1")
-        assertThat(msg.osgpPortNumber).isEqualTo(138)
-        assertThat(msg.ntpHost).isEqualTo("ntpHost1")
-        assertThat(msg.ntpEnabled).isTrue
-        assertThat(msg.ntpSyncInterval).isEqualTo(139)
-        assertThat(msg.testButtonEnabled).isTrue
-        assertThat(msg.automaticSummerTimingEnabled).isTrue
-        assertThat(msg.astroGateSunRiseOffset).isEqualTo(140)
-        assertThat(msg.astroGateSunSetOffset).isEqualTo(141)
-        assertThat(msg.relayRefreshing).isTrue
+        assertThat(dto.timeSyncFrequency).isEqualTo(133)
+        assertThat(dto.dhcpEnabled).isTrue
+        assertThat(dto.tlsEnabled).isTrue
+        assertThat(dto.tlsPortNumber).isEqualTo(134)
+        assertThat(dto.commonNameString).isEqualTo("commonNameString1")
+        assertThat(dto.communicationTimeout).isEqualTo(135)
+        assertThat(dto.communicationNumberOfRetries).isEqualTo(136)
+        assertThat(dto.communicationPauseTimeBetweenConnectionTrials).isEqualTo(137)
+        assertThat(dto.osgpIpAddress).isEqualTo("osgpIpAddress1")
+        assertThat(dto.osgpPortNumber).isEqualTo(138)
+        assertThat(dto.ntpHost).isEqualTo("ntpHost1")
+        assertThat(dto.ntpEnabled).isTrue
+        assertThat(dto.ntpSyncInterval).isEqualTo(139)
+        assertThat(dto.testButtonEnabled).isTrue
+        assertThat(dto.automaticSummerTimingEnabled).isTrue
+        assertThat(dto.astroGateSunRiseOffset).isEqualTo(140)
+        assertThat(dto.astroGateSunSetOffset).isEqualTo(141)
+        assertThat(dto.relayRefreshing).isTrue
 
-        assertNotNull(msg.deviceFixedIp)
-        assertThat(msg.deviceFixedIp.ipAddress).isEqualTo("ipAddress1")
-        assertThat(msg.deviceFixedIp.netMask).isEqualTo("netMask1")
-        assertThat(msg.deviceFixedIp.gateWay).isEqualTo("gateWay1")
+        assertThat(dto.deviceFixedIp).isNotNull
+        assertThat(dto.deviceFixedIp?.ipAddress).isEqualTo("ipAddress1")
+        assertThat(dto.deviceFixedIp?.netMask).isEqualTo("netMask1")
+        assertThat(dto.deviceFixedIp?.gateWay).isEqualTo("gateWay1")
 
-        assertThat(msg.switchingDelays).containsExactly(142, 143)
+        assertThat(dto.switchingDelays).containsExactly(142, 143)
 
-        assertThat(msg.relayLinking).hasSize(2)
-        val relayLinks = msg.relayLinking
-        assertNotNull(relayLinks)
-        assertThat(relayLinks[0]?.masterRelayIndex).isEqualTo(144)
-        assertThat(relayLinks[0]?.masterRelayOn).isTrue
-        assertThat(relayLinks[1]?.masterRelayIndex).isEqualTo(145)
-        assertThat(relayLinks[1]?.masterRelayOn).isFalse
+        assertThat(dto.relayLinking).isNotNull
+        val relayLinks = dto.relayLinking!!
+        assertThat(relayLinks).hasSize(2)
+        assertThat(relayLinks[0]).isNotNull
+        val relayLink1 = relayLinks[0]!!
+        assertThat(relayLink1.masterRelayIndex).isEqualTo(144)
+        assertThat(relayLink1.masterRelayOn).isTrue
+        assertThat(relayLinks[1]).isNotNull
+        val relayLink2 = relayLinks[1]!!
+        assertThat(relayLink2.masterRelayIndex).isEqualTo(145)
+        assertThat(relayLink2.masterRelayOn).isFalse
 
         val expectedSummer =
             ZonedDateTime.ofInstant(
@@ -113,7 +131,7 @@ class RequestDeserializationTest {
                 ZoneId.systemDefault(),
             )
 
-        assertThat(msg.summerTimeDetails).isEqualTo(expectedSummer)
-        assertThat(msg.winterTimeDetails).isEqualTo(expectedWinter)
+        assertThat(dto.summerTimeDetails).isEqualTo(expectedSummer)
+        assertThat(dto.winterTimeDetails).isEqualTo(expectedWinter)
     }
 }

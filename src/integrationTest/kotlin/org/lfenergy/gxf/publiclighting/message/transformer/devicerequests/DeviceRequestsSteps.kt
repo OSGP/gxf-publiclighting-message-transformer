@@ -159,6 +159,8 @@ class DeviceRequestsSteps(
             assertThat(jmsType).isEqualTo(expectedRequestType.name)
             assertThat(jmsCorrelationID).isEqualTo(CORRELATION_UID)
             assertThat(getStringProperty(JMS_PROPERTY_DEVICE_IDENTIFICATION)).isEqualTo(DEVICE_IDENTIFICATION)
+            assertThat(getStringProperty(JMS_PROPERTY_DOMAIN)).isEqualTo(DOMAIN)
+            assertThat(getStringProperty(JMS_PROPERTY_DOMAIN_VERSION)).isEqualTo(DOMAIN_VERSION)
             assertThat(getStringProperty(JMS_PROPERTY_ORGANIZATION_IDENTIFICATION)).isEqualTo(ORGANIZATION_IDENTIFICATION)
         }
     }
@@ -168,11 +170,13 @@ class DeviceRequestsSteps(
         expectedRequestType: RequestType,
     ) {
         with(header) {
-            assertThat(deviceIdentification).isEqualTo(DEVICE_IDENTIFICATION)
             assertThat(correlationUid).isEqualTo(CORRELATION_UID)
+            assertThat(deviceIdentification).isEqualTo(DEVICE_IDENTIFICATION)
+            assertThat(domain).isEqualTo(DOMAIN)
+            assertThat(domainVersion).isEqualTo(DOMAIN_VERSION)
+            assertThat(networkAddress).isEqualTo(NETWORK_ADDRESS)
             assertThat(organizationIdentification).isEqualTo(ORGANIZATION_IDENTIFICATION)
             assertThat(requestType).isEqualTo(expectedRequestType)
-            assertThat(networkAddress).isEqualTo(NETWORK_ADDRESS)
         }
     }
 

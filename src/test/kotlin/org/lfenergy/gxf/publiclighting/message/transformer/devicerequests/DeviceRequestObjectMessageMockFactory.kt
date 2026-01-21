@@ -55,8 +55,8 @@ object DeviceRequestObjectMessageMockFactory {
         every { objectMessage.jmsCorrelationID } returns TestConstants.CORRELATION_UID
         every { objectMessage.getStringProperty(ApplicationConstants.JMS_PROPERTY_DEVICE_IDENTIFICATION) } returns
             TestConstants.DEVICE_IDENTIFICATION
-        every { objectMessage.getStringProperty(ApplicationConstants.JMS_PROPERTY_DOMAIN)} returns TestConstants.DOMAIN
-        every { objectMessage.getStringProperty(ApplicationConstants.JMS_PROPERTY_DOMAIN_VERSION)} returns TestConstants.DOMAIN_VERSION
+        every { objectMessage.getStringProperty(ApplicationConstants.JMS_PROPERTY_DOMAIN) } returns TestConstants.DOMAIN
+        every { objectMessage.getStringProperty(ApplicationConstants.JMS_PROPERTY_DOMAIN_VERSION) } returns TestConstants.DOMAIN_VERSION
         every { objectMessage.getStringProperty(ApplicationConstants.JMS_PROPERTY_NETWORK_ADDRESS) } returns TestConstants.NETWORK_ADDRESS
         every { objectMessage.getStringProperty(ApplicationConstants.JMS_PROPERTY_ORGANIZATION_IDENTIFICATION) } returns
             TestConstants.ORGANIZATION_IDENTIFICATION

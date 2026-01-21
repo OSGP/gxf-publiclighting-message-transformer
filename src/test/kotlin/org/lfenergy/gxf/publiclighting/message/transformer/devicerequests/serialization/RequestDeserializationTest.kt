@@ -23,7 +23,7 @@ class RequestDeserializationTest {
      * open-smart-grid-platform project can be successfully
      * deserialized and interpreted in this project.
      *
-     * <p>The serialized input files located in {@code src/test/resources/} are produced in the
+     * The serialized input files located in {@code src/test/resources/} are produced in the
      * platform project by running the CreateSerializedObjectsTest.
      * Copy those files into this project's {@code src/test/resources/} directory.
      */
@@ -98,7 +98,7 @@ class RequestDeserializationTest {
         assertThat(dto.astroGateSunSetOffset).isEqualTo(141)
         assertThat(dto.relayRefreshing).isTrue
 
-        assertThat(dto.deviceFixedIp).isNotNull.satisfies ({
+        assertThat(dto.deviceFixedIp).isNotNull.satisfies({
             it!!
             assertThat(it.ipAddress).isEqualTo("ipAddress1")
             assertThat(it.netMask).isEqualTo("netMask1")
@@ -108,12 +108,12 @@ class RequestDeserializationTest {
 
         assertThat(dto.relayLinking).isNotNull.hasSize(2)
 
-        assertThat(dto.relayLinking).element(0).isNotNull.satisfies ({
+        assertThat(dto.relayLinking).element(0).isNotNull.satisfies({
             it!!
             assertThat(it.masterRelayIndex).isEqualTo(144)
             assertThat(it.masterRelayOn).isTrue
         })
-        assertThat(dto.relayLinking).element(1).isNotNull.satisfies ({
+        assertThat(dto.relayLinking).element(1).isNotNull.satisfies({
             it!!
             assertThat(it.masterRelayIndex).isEqualTo(145)
             assertThat(it.masterRelayOn).isFalse

@@ -18,12 +18,16 @@ import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.Transi
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.TriggerType
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.Weekday
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_DEVICE_IDENTIFICATION
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_DOMAIN
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_DOMAIN_VERSION
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_NETWORK_ADDRESS
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_ORGANIZATION_IDENTIFICATION
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType
 import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants.CORRELATION_UID
 import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants.DEFAULT_PRIORITY
 import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants.DEVICE_IDENTIFICATION
+import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants.DOMAIN
+import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants.DOMAIN_VERSION
 import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants.NETWORK_ADDRESS
 import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants.ORGANIZATION_IDENTIFICATION
 import org.springframework.beans.factory.annotation.Qualifier
@@ -135,8 +139,10 @@ class DeviceRequestsSteps(
                 message.jmsCorrelationID = correlationUid
                 message.jmsPriority = DEFAULT_PRIORITY
                 message.setStringProperty(JMS_PROPERTY_DEVICE_IDENTIFICATION, deviceIdentification)
-                message.setStringProperty(JMS_PROPERTY_ORGANIZATION_IDENTIFICATION, organisationIdentification)
+                message.setStringProperty(JMS_PROPERTY_DOMAIN, DOMAIN)
+                message.setStringProperty(JMS_PROPERTY_DOMAIN_VERSION, DOMAIN_VERSION)
                 message.setStringProperty(JMS_PROPERTY_NETWORK_ADDRESS, ipAddress)
+                message.setStringProperty(JMS_PROPERTY_ORGANIZATION_IDENTIFICATION, organisationIdentification)
                 if (request != null) {
                     message.`object` = request
                 }
@@ -153,6 +159,8 @@ class DeviceRequestsSteps(
             assertThat(jmsType).isEqualTo(expectedRequestType.name)
             assertThat(jmsCorrelationID).isEqualTo(CORRELATION_UID)
             assertThat(getStringProperty(JMS_PROPERTY_DEVICE_IDENTIFICATION)).isEqualTo(DEVICE_IDENTIFICATION)
+            assertThat(getStringProperty(JMS_PROPERTY_DOMAIN)).isEqualTo(DOMAIN)
+            assertThat(getStringProperty(JMS_PROPERTY_DOMAIN_VERSION)).isEqualTo(DOMAIN_VERSION)
             assertThat(getStringProperty(JMS_PROPERTY_ORGANIZATION_IDENTIFICATION)).isEqualTo(ORGANIZATION_IDENTIFICATION)
         }
     }
@@ -162,11 +170,13 @@ class DeviceRequestsSteps(
         expectedRequestType: RequestType,
     ) {
         with(header) {
-            assertThat(deviceIdentification).isEqualTo(DEVICE_IDENTIFICATION)
             assertThat(correlationUid).isEqualTo(CORRELATION_UID)
+            assertThat(deviceIdentification).isEqualTo(DEVICE_IDENTIFICATION)
+            assertThat(domain).isEqualTo(DOMAIN)
+            assertThat(domainVersion).isEqualTo(DOMAIN_VERSION)
+            assertThat(networkAddress).isEqualTo(NETWORK_ADDRESS)
             assertThat(organizationIdentification).isEqualTo(ORGANIZATION_IDENTIFICATION)
             assertThat(requestType).isEqualTo(expectedRequestType)
-            assertThat(networkAddress).isEqualTo(NETWORK_ADDRESS)
         }
     }
 

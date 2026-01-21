@@ -20,6 +20,8 @@ import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.setEve
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.setLightRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.setTransitionRequest
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_DEVICE_IDENTIFICATION
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_DOMAIN
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_DOMAIN_VERSION
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_NETWORK_ADDRESS
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_ORGANIZATION_IDENTIFICATION
 import org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.mapper.CommonMappingFunctions.toRelayIndex
@@ -43,10 +45,12 @@ object DeviceRequestMessageMapper {
         return deviceRequestMessage {
             header =
                 requestHeader {
-                    deviceIdentification = message.getStringProperty(JMS_PROPERTY_DEVICE_IDENTIFICATION)
                     correlationUid = message.jmsCorrelationID
-                    organizationIdentification = message.getStringProperty(JMS_PROPERTY_ORGANIZATION_IDENTIFICATION)
+                    deviceIdentification = message.getStringProperty(JMS_PROPERTY_DEVICE_IDENTIFICATION)
+                    domain = message.getStringProperty(JMS_PROPERTY_DOMAIN)
+                    domainVersion = message.getStringProperty(JMS_PROPERTY_DOMAIN_VERSION)
                     networkAddress = message.getStringProperty(JMS_PROPERTY_NETWORK_ADDRESS)
+                    organizationIdentification = message.getStringProperty(JMS_PROPERTY_ORGANIZATION_IDENTIFICATION)
                     requestType = messageType
                 }
             when (messageType) {

@@ -37,6 +37,7 @@ object TestConstants {
 
     const val IS_INCOMING = "true"
     const val ENCODED_MESSAGE = "encoded message"
+    const val ENCODED_MESSAGE_BASE_64 = "ZW5jb2RlZCBtZXNzYWdl"
     const val DECODED_MESSAGE = "decoded message"
     const val PAYLOAD_SIZE = ENCODED_MESSAGE.length
 }

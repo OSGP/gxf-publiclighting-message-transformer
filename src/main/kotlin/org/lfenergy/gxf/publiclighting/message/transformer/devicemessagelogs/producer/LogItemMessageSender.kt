@@ -14,6 +14,7 @@ import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationCon
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_IS_INCOMING
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_ORGANIZATION_IDENTIFICATION
 import org.lfenergy.gxf.publiclighting.message.transformer.devicemessagelogs.config.DeviceMessageLogsConfigurationProperties
+import org.lfenergy.gxf.publiclighting.message.transformer.devicemessagelogs.mapper.LogItemMessageMapper.toBase64
 import org.lfenergy.gxf.publiclighting.message.transformer.devicemessagelogs.mapper.LogItemMessageMapper.toIsIncoming
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.jms.core.JmsTemplate
@@ -48,7 +49,7 @@ class LogItemMessageSender(
             setStringProperty(JMS_PROPERTY_DEVICE_IDENTIFICATION, message.deviceIdentification)
             setStringProperty(JMS_PROPERTY_ORGANIZATION_IDENTIFICATION, message.organizationIdentification)
             setStringProperty(JMS_PROPERTY_DECODED_MESSAGE, message.decodedData)
-            setStringProperty(JMS_PROPERTY_ENCODED_MESSAGE, message.rawData.toStringUtf8())
+            setStringProperty(JMS_PROPERTY_ENCODED_MESSAGE, message.rawData.toBase64())
             setStringProperty(JMS_PROPERTY_IS_INCOMING, message.direction.toIsIncoming())
             setIntProperty(ApplicationConstants.JMS_PROPERTY_PAYLOAD_MESSAGE_SERIALIZED_SIZE, message.rawData.size())
         }

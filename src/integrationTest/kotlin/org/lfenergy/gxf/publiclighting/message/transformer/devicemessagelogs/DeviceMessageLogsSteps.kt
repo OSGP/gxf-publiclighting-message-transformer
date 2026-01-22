@@ -17,7 +17,7 @@ import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationCon
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_PAYLOAD_MESSAGE_SERIALIZED_SIZE
 import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants.DECODED_MESSAGE
 import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants.DEVICE_IDENTIFICATION
-import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants.ENCODED_MESSAGE
+import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants.ENCODED_MESSAGE_BASE_64
 import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants.IS_INCOMING
 import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants.ORGANIZATION_IDENTIFICATION
 import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants.PAYLOAD_SIZE
@@ -57,7 +57,7 @@ class DeviceMessageLogsSteps(
             assertThat(this.getStringProperty(JMS_PROPERTY_DEVICE_IDENTIFICATION)).isEqualTo(DEVICE_IDENTIFICATION)
             assertThat(this.getStringProperty(JMS_PROPERTY_ORGANIZATION_IDENTIFICATION)).isEqualTo(ORGANIZATION_IDENTIFICATION)
             assertThat(this.getStringProperty(JMS_PROPERTY_IS_INCOMING)).isEqualTo(IS_INCOMING)
-            assertThat(this.getStringProperty(JMS_PROPERTY_ENCODED_MESSAGE)).isEqualTo(ENCODED_MESSAGE)
+            assertThat(this.getStringProperty(JMS_PROPERTY_ENCODED_MESSAGE)).isEqualTo(ENCODED_MESSAGE_BASE_64)
             assertThat(this.getStringProperty(JMS_PROPERTY_DECODED_MESSAGE)).isEqualTo(DECODED_MESSAGE)
             assertThat(this.getIntProperty(JMS_PROPERTY_PAYLOAD_MESSAGE_SERIALIZED_SIZE)).isEqualTo(PAYLOAD_SIZE)
         }

@@ -25,7 +25,7 @@ import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationCon
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_PAYLOAD_MESSAGE_SERIALIZED_SIZE
 import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants.DECODED_MESSAGE
 import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants.DEVICE_IDENTIFICATION
-import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants.ENCODED_MESSAGE
+import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants.ENCODED_MESSAGE_BASE_64
 import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants.IS_INCOMING
 import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants.ORGANIZATION_IDENTIFICATION
 import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants.PAYLOAD_SIZE
@@ -84,7 +84,7 @@ class LogItemMessageSenderTest {
 
         verify { objectMessage.setStringProperty(JMS_PROPERTY_IS_INCOMING, IS_INCOMING) }
         verify { objectMessage.setStringProperty(JMS_PROPERTY_DECODED_MESSAGE, DECODED_MESSAGE) }
-        verify { objectMessage.setStringProperty(JMS_PROPERTY_ENCODED_MESSAGE, ENCODED_MESSAGE) }
+        verify { objectMessage.setStringProperty(JMS_PROPERTY_ENCODED_MESSAGE, ENCODED_MESSAGE_BASE_64) }
         verify { objectMessage.setIntProperty(JMS_PROPERTY_PAYLOAD_MESSAGE_SERIALIZED_SIZE, PAYLOAD_SIZE) }
     }
 

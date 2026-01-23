@@ -15,8 +15,8 @@ Feature: Transforming device request messages from object messages to bytes mess
       | SET_CONFIGURATION       | SET_CONFIGURATION_REQUEST           |
       | SET_EVENT_NOTIFICATIONS | SET_EVENT_NOTIFICATION_MASK_REQUEST |
       | SET_LIGHT               | SET_LIGHT_REQUEST                   |
+      | SET_LIGHT_SCHEDULE      | SET_SCHEDULE_REQUEST                |
       | SET_REBOOT              | REBOOT_REQUEST                      |
-      | SET_SCHEDULE            | SET_SCHEDULE_REQUEST                |
       | SET_TRANSITION          | SET_TRANSITION_REQUEST              |
       | START_SELF_TEST         | START_SELF_TEST_REQUEST             |
       | STOP_SELF_TEST          | STOP_SELF_TEST_REQUEST              |

@@ -86,7 +86,7 @@ object DeviceResponseMessageMapper {
             ResponseType.SET_CONFIGURATION_RESPONSE -> "SET_CONFIGURATION"
             ResponseType.SET_EVENT_NOTIFICATION_MASK_RESPONSE -> "SET_EVENT_NOTIFICATIONS"
             ResponseType.SET_LIGHT_RESPONSE -> "SET_LIGHT"
-            ResponseType.SET_SCHEDULE_RESPONSE -> "SET_SCHEDULE"
+            ResponseType.SET_SCHEDULE_RESPONSE -> "SET_LIGHT_SCHEDULE"
             ResponseType.SET_TRANSITION_RESPONSE -> "SET_TRANSITION"
             ResponseType.START_SELF_TEST_RESPONSE -> "START_SELF_TEST"
             ResponseType.STOP_SELF_TEST_RESPONSE -> "STOP_SELF_TEST"

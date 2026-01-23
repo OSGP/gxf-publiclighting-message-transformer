@@ -120,7 +120,7 @@ class DeviceRequestMessageListenerTest {
 
     @Test
     fun `should handle set schedule device request message`() {
-        val message = MockFactory.deviceRequestObjectMessageMock(ObjectMessageType.SET_SCHEDULE)
+        val message = MockFactory.deviceRequestObjectMessageMock(ObjectMessageType.SET_LIGHT_SCHEDULE)
         every { deviceRequestMessageSender.send(any<DeviceRequestMessage>()) } just Runs
 
         deviceRequestMessageListener.onMessage(message)

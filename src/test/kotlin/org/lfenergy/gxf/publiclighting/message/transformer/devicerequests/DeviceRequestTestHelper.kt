@@ -28,7 +28,7 @@ object DeviceRequestTestHelper {
             ObjectMessageType.SET_EVENT_NOTIFICATIONS to { verifySetEventNotificationPayload() },
             ObjectMessageType.SET_LIGHT to { verifySetLightPayload() },
             ObjectMessageType.SET_REBOOT to { verifyNoPayload() },
-            ObjectMessageType.SET_SCHEDULE to { verifySetSchedulePayload() },
+            ObjectMessageType.SET_LIGHT_SCHEDULE to { verifySetSchedulePayload() },
             ObjectMessageType.SET_TRANSITION to { verifySetTransitionPayload() },
             ObjectMessageType.START_SELF_TEST to { verifyNoPayload() },
             ObjectMessageType.STOP_SELF_TEST to { verifyNoPayload() },

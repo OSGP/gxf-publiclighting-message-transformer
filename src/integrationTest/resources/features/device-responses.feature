@@ -16,7 +16,7 @@ Feature: Transforming device response messages from bytes messages to object mes
       | SET_CONFIGURATION_RESPONSE           | SET_CONFIGURATION       |
       | SET_EVENT_NOTIFICATION_MASK_RESPONSE | SET_EVENT_NOTIFICATIONS |
       | SET_LIGHT_RESPONSE                   | SET_LIGHT               |
-      | SET_SCHEDULE_RESPONSE                | SET_SCHEDULE            |
+      | SET_SCHEDULE_RESPONSE                | SET_LIGHT_SCHEDULE      |
       | SET_TRANSITION_RESPONSE              | SET_TRANSITION          |
       | START_SELF_TEST_RESPONSE             | START_SELF_TEST         |
       | STOP_SELF_TEST_RESPONSE              | STOP_SELF_TEST          |

@@ -54,7 +54,7 @@ object InboundRequestMessageFactory {
                 ObjectMessageType.RESUME_SCHEDULE -> setResumeScheduleRequestPayload()
                 ObjectMessageType.SET_EVENT_NOTIFICATIONS -> setEventNotificationsRequestPayload()
                 ObjectMessageType.SET_LIGHT -> setLightRequestPayload()
-                ObjectMessageType.SET_SCHEDULE -> setScheduleRequestPayload()
+                ObjectMessageType.SET_LIGHT_SCHEDULE -> setScheduleRequestPayload()
                 ObjectMessageType.SET_TRANSITION -> setTransitionRequestPayload()
                 else -> null // no payload for other types
             },

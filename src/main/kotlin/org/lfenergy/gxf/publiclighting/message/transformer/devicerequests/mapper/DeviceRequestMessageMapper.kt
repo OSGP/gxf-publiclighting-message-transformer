@@ -97,7 +97,7 @@ object DeviceRequestMessageMapper {
             "SET_EVENT_NOTIFICATIONS" -> RequestType.SET_EVENT_NOTIFICATION_MASK_REQUEST
             "SET_LIGHT" -> RequestType.SET_LIGHT_REQUEST
             "SET_REBOOT" -> RequestType.REBOOT_REQUEST
-            "SET_SCHEDULE" -> RequestType.SET_SCHEDULE_REQUEST
+            "SET_LIGHT_SCHEDULE" -> RequestType.SET_SCHEDULE_REQUEST
             "SET_TRANSITION" -> RequestType.SET_TRANSITION_REQUEST
             "START_SELF_TEST" -> RequestType.START_SELF_TEST_REQUEST
             "STOP_SELF_TEST" -> RequestType.STOP_SELF_TEST_REQUEST

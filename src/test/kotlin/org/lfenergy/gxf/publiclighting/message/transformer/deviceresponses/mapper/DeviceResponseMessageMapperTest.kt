@@ -47,7 +47,7 @@ class DeviceResponseMessageMapperTest {
                 Arguments.of(ResponseType.SET_CONFIGURATION_RESPONSE, ObjectMessageType.SET_CONFIGURATION),
                 Arguments.of(ResponseType.SET_EVENT_NOTIFICATION_MASK_RESPONSE, ObjectMessageType.SET_EVENT_NOTIFICATIONS),
                 Arguments.of(ResponseType.SET_LIGHT_RESPONSE, ObjectMessageType.SET_LIGHT),
-                Arguments.of(ResponseType.SET_SCHEDULE_RESPONSE, ObjectMessageType.SET_SCHEDULE),
+                Arguments.of(ResponseType.SET_SCHEDULE_RESPONSE, ObjectMessageType.SET_LIGHT_SCHEDULE),
                 Arguments.of(ResponseType.SET_TRANSITION_RESPONSE, ObjectMessageType.SET_TRANSITION),
                 Arguments.of(ResponseType.START_SELF_TEST_RESPONSE, ObjectMessageType.START_SELF_TEST),
                 Arguments.of(ResponseType.STOP_SELF_TEST_RESPONSE, ObjectMessageType.STOP_SELF_TEST),

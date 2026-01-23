@@ -16,8 +16,8 @@ import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageT
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType.SET_CONFIGURATION
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType.SET_EVENT_NOTIFICATIONS
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType.SET_LIGHT
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType.SET_LIGHT_SCHEDULE
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType.SET_REBOOT
-import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType.SET_SCHEDULE
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType.SET_TRANSITION
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType.START_SELF_TEST
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType.STOP_SELF_TEST
@@ -40,7 +40,7 @@ object DeviceRequestObjectMessageMockFactory {
                 )
             SET_LIGHT -> setUpDeviceRequestMessage(requestType, InboundRequestMessageFactory.setLightRequestPayload())
             SET_REBOOT -> setUpDeviceRequestMessage(requestType, null)
-            SET_SCHEDULE -> setUpDeviceRequestMessage(requestType, InboundRequestMessageFactory.setScheduleRequestPayload())
+            SET_LIGHT_SCHEDULE -> setUpDeviceRequestMessage(requestType, InboundRequestMessageFactory.setScheduleRequestPayload())
             SET_TRANSITION -> setUpDeviceRequestMessage(requestType, InboundRequestMessageFactory.setTransitionRequestPayload())
             START_SELF_TEST -> setUpDeviceRequestMessage(requestType, null)
             STOP_SELF_TEST -> setUpDeviceRequestMessage(requestType, null)

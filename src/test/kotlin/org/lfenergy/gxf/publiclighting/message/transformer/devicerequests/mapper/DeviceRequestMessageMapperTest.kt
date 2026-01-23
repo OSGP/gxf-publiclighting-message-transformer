@@ -47,7 +47,7 @@ class DeviceRequestMessageMapperTest {
                 Arguments.of(ObjectMessageType.SET_EVENT_NOTIFICATIONS, RequestType.SET_EVENT_NOTIFICATION_MASK_REQUEST),
                 Arguments.of(ObjectMessageType.SET_LIGHT, RequestType.SET_LIGHT_REQUEST),
                 Arguments.of(ObjectMessageType.SET_REBOOT, RequestType.REBOOT_REQUEST),
-                Arguments.of(ObjectMessageType.SET_SCHEDULE, RequestType.SET_SCHEDULE_REQUEST),
+                Arguments.of(ObjectMessageType.SET_LIGHT_SCHEDULE, RequestType.SET_SCHEDULE_REQUEST),
                 Arguments.of(ObjectMessageType.SET_TRANSITION, RequestType.SET_TRANSITION_REQUEST),
                 Arguments.of(ObjectMessageType.START_SELF_TEST, RequestType.START_SELF_TEST_REQUEST),
                 Arguments.of(ObjectMessageType.STOP_SELF_TEST, RequestType.STOP_SELF_TEST_REQUEST),

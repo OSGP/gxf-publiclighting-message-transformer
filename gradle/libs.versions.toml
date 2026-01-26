@@ -5,7 +5,7 @@ dependencyManagement = "1.1.7"
 gradleWrapperUpgrade = "0.12"
 # JodaTime needed for compatibility with OSGP DTOs
 jodaTime = "2.14.0"
-junitJupiterApi = "5.14.1"
+junitJupiterApi = "6.0.2"
 junitPlatform = "1.14.1"
 kotlin = "2.3.0"
 kotlinLogging = "7.0.14"

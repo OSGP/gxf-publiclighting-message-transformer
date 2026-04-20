@@ -51,6 +51,15 @@ class DeviceEventMessageListenerTest {
         }
     }
 
+    @Test
+    fun `should handle unexpected exception for event`() {
+        val bytesMessage = mockk<BytesMessage>()
+        every { deviceEventMessageSender.send(any<DeviceEventMessage>()) } just Runs
+        every { bytesMessage.jmsCorrelationID } throws Exception("Whoops")
+
+        deviceEventMessageListener.onMessage(bytesMessage)
+    }
+
     private fun setupBytesMessageMock(deviceEventMessage: DeviceEventMessage): BytesMessage {
         val bytesMessage = mockk<BytesMessage>()
         val bytes = deviceEventMessage.toByteArray()

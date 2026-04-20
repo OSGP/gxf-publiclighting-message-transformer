@@ -13,6 +13,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import jakarta.jms.BytesMessage
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -49,6 +50,15 @@ class DeviceResponseMessageListenerTest {
                 },
             )
         }
+    }
+
+    @Test
+    fun `should handle unexpected exception for event`() {
+        val bytesMessage = mockk<BytesMessage>()
+        every { deviceResponseMessageSender.send(any<DeviceResponseMessage>()) } just Runs
+        every { bytesMessage.jmsCorrelationID } throws Exception("Whoops")
+
+        deviceResponseMessageListener.onMessage(bytesMessage)
     }
 
     private fun setupBytesMessageMock(deviceResponseMessage: DeviceResponseMessage): BytesMessage {

@@ -59,6 +59,15 @@ class DeviceRequestMessageListenerTest {
     }
 
     @Test
+    fun `should handle unexpected exception for event`() {
+        val message = MockFactory.deviceRequestObjectMessageMock(ObjectMessageType.RESUME_SCHEDULE)
+        every { deviceRequestMessageSender.send(any<DeviceRequestMessage>()) } just Runs
+        every { message.jmsCorrelationID } throws Exception("Whoops")
+
+        deviceRequestMessageListener.onMessage(message)
+    }
+
+    @Test
     fun `should handle set configuration device request message`() {
         val message = MockFactory.deviceRequestObjectMessageMock(ObjectMessageType.SET_CONFIGURATION)
         every { deviceRequestMessageSender.send(any<DeviceRequestMessage>()) } just Runs

@@ -22,24 +22,25 @@ class DeviceResponseMessageListener(
         destination = $$"${device-responses.consumer.inbound-queue}",
         containerFactory = "deviceResponsesJmsListenerContainerFactory",
     )
-    fun onMessage(bytesMessage: BytesMessage) {
-        val correlationId = bytesMessage.jmsCorrelationID
-        val deviceId = bytesMessage.getStringProperty(JMS_PROPERTY_DEVICE_IDENTIFICATION)
-        val messageType = bytesMessage.jmsType
-
-        logger.info { "Received response for device $deviceId of type $messageType with correlation uid $correlationId." }
+    fun onMessage(bytesMessage: BytesMessage) =
         try {
-            deviceResponseMessageSender.send(bytesMessage.parse())
-        } catch (e: InvalidProtocolBufferException) {
-            logger.error(e) { "Received invalid protocol buffer message with correlation uid $correlationId." }
-        } catch (e: IllegalArgumentException) {
-            logger.error(e) { "Received invalid response for device $deviceId in message with correlation uid $correlationId." }
+            val correlationId = bytesMessage.jmsCorrelationID
+            val deviceId = bytesMessage.getStringProperty(JMS_PROPERTY_DEVICE_IDENTIFICATION)
+            val messageType = bytesMessage.jmsType
+
+            logger.info { "Received response for device $deviceId of type $messageType with correlation uid $correlationId." }
+            try {
+                deviceResponseMessageSender.send(bytesMessage.parse())
+            } catch (e: InvalidProtocolBufferException) {
+                logger.error(e) { "Received invalid protocol buffer message with correlation uid $correlationId." }
+            } catch (e: IllegalArgumentException) {
+                logger.error(e) { "Received invalid response for device $deviceId in message with correlation uid $correlationId." }
+            }
         } catch (e: Exception) {
             logger.error(
                 e,
-            ) { "Unknown exception occurred while receiving response for device $deviceId with correlation uid $correlationId." }
+            ) { "Unknown exception occurred while receiving response for device." }
         }
-    }
 
     private fun BytesMessage.parse(): DeviceResponseMessage {
         val length = this.bodyLength.toInt()

@@ -34,6 +34,8 @@ class DeviceEventMessageListener(
             logger.error { "Received invalid protocol buffer message with correlation uid $correlationId." }
         } catch (e: IllegalArgumentException) {
             logger.error(e) { "Received invalid event for device $deviceId in message with correlation uid $correlationId." }
+        } catch (e: Exception) {
+            logger.error(e) { "Unknown exception occurred while receiving event for device $deviceId with correlation uid $correlationId." }
         }
     }
 

@@ -31,6 +31,10 @@ class DeviceRequestMessageListener(
             deviceRequestMessageSender.send(message.toProtobufMessage())
         } catch (e: IllegalArgumentException) {
             logger.error(e) { "Received invalid request for device $deviceId in message with correlation uid $correlationId." }
+        } catch (e: Exception) {
+            logger.error(
+                e,
+            ) { "Unknown exception occurred while receiving request for device $deviceId with correlation uid $correlationId." }
         }
     }
 }

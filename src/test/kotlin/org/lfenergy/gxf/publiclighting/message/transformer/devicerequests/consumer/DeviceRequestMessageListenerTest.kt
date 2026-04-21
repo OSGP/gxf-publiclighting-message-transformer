@@ -17,6 +17,7 @@ import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.Device
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.RequestType
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType
 import org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.producer.DeviceRequestMessageSender
+import org.springframework.boot.test.system.CapturedOutput
 import org.springframework.boot.test.system.OutputCaptureExtension
 import org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.DeviceRequestObjectMessageMockFactory as MockFactory
 
@@ -59,12 +60,16 @@ class DeviceRequestMessageListenerTest {
     }
 
     @Test
-    fun `should handle unexpected exception for event`() {
+    fun `should handle unexpected exception for request`(capturedOutput: CapturedOutput) {
         val message = MockFactory.deviceRequestObjectMessageMock(ObjectMessageType.RESUME_SCHEDULE)
         every { deviceRequestMessageSender.send(any<DeviceRequestMessage>()) } just Runs
         every { message.jmsCorrelationID } throws Exception("Whoops")
 
         deviceRequestMessageListener.onMessage(message)
+
+        assertThat(capturedOutput.out)
+            .contains("Unknown exception occurred while receiving request for device.")
+            .contains("Whoops")
     }
 
     @Test

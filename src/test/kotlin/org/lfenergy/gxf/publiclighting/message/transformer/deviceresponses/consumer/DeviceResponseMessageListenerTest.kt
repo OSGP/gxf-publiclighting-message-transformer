@@ -23,6 +23,7 @@ import org.lfenergy.gxf.publiclighting.contracts.internal.device_responses.Respo
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_DEVICE_IDENTIFICATION
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.InboundResponseMessageFactory
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceresponses.producer.DeviceResponseMessageSender
+import org.springframework.boot.test.system.CapturedOutput
 import org.springframework.boot.test.system.OutputCaptureExtension
 
 @ExtendWith(MockKExtension::class, OutputCaptureExtension::class)
@@ -53,12 +54,16 @@ class DeviceResponseMessageListenerTest {
     }
 
     @Test
-    fun `should handle unexpected exception for event`() {
+    fun `should handle unexpected exception for response`(capturedOutput: CapturedOutput) {
         val bytesMessage = mockk<BytesMessage>()
         every { deviceResponseMessageSender.send(any<DeviceResponseMessage>()) } just Runs
         every { bytesMessage.jmsCorrelationID } throws Exception("Whoops")
 
         deviceResponseMessageListener.onMessage(bytesMessage)
+
+        assertThat(capturedOutput.out)
+            .contains("Unknown exception occurred while receiving response for device.")
+            .contains("Whoops")
     }
 
     private fun setupBytesMessageMock(deviceResponseMessage: DeviceResponseMessage): BytesMessage {

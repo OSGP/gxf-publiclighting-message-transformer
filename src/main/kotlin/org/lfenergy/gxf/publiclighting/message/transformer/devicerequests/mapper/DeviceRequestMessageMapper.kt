@@ -19,6 +19,7 @@ import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.resume
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.setEventNotificationMaskRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.setLightRequest
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.setTransitionRequest
+import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.updateKeyRequest
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_DEVICE_IDENTIFICATION
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_DOMAIN
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_DOMAIN_VERSION
@@ -61,7 +62,9 @@ object DeviceRequestMessageMapper {
                 RequestType.REBOOT_REQUEST,
                 RequestType.START_SELF_TEST_REQUEST,
                 RequestType.STOP_SELF_TEST_REQUEST,
-                -> { /* No payload for these requests */ }
+                    -> { /* No payload for these requests */
+                }
+
                 RequestType.SET_CONFIGURATION_REQUEST ->
                     setConfigurationRequest = (message.`object` as ConfigurationDto).toProtobufMessage()
 
@@ -80,6 +83,11 @@ object DeviceRequestMessageMapper {
 
                 RequestType.SET_TRANSITION_REQUEST ->
                     setTransitionRequest = (`object` as TransitionMessageDataContainerDto).toProtobufMessage()
+
+                RequestType.UPDATE_KEY_REQUEST ->
+                    updateKeyRequest = updateKeyRequest {
+                        publicKey = `object`.toString()
+                    }
 
                 else -> throw IllegalArgumentException("Unsupported message type: $jmsType")
             }
@@ -101,6 +109,7 @@ object DeviceRequestMessageMapper {
             "SET_TRANSITION" -> RequestType.SET_TRANSITION_REQUEST
             "START_SELF_TEST" -> RequestType.START_SELF_TEST_REQUEST
             "STOP_SELF_TEST" -> RequestType.STOP_SELF_TEST_REQUEST
+            "UPDATE_KEY" -> RequestType.UPDATE_KEY_REQUEST
             else -> throw IllegalArgumentException("Unsupported message type: $this")
         }
 

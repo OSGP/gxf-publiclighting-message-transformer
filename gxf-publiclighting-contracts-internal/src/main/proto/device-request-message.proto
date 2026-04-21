@@ -20,6 +20,7 @@ message DeviceRequestMessage {
     SetTransitionRequest set_transition_request = 5;
     SetEventNotificationMaskRequest set_event_notification_mask_request = 6;
     SetConfigurationRequest set_configuration_request = 7;
+    UpdateKeyRequest update_key_request = 8;
   }
 }
 
@@ -82,6 +83,10 @@ message SetEventNotificationMaskRequest {
 
 message SetConfigurationRequest {
   org.lfenergy.gxf.publiclighting.contracts.internal.configuration.Configuration configuration = 1;
+}
+
+message UpdateKeyRequest {
+  string public_key = 1;
 }
 
 message LightValue {

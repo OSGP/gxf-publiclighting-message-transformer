@@ -21,16 +21,21 @@ class DeviceRequestMessageListener(
         destination = $$"${device-requests.consumer.inbound-queue}",
         containerFactory = "deviceRequestsJmsListenerContainerFactory",
     )
-    fun onMessage(message: ObjectMessage) {
-        val correlationId = message.jmsCorrelationID
-        val deviceId = message.getStringProperty(JMS_PROPERTY_DEVICE_IDENTIFICATION)
-        val messageType = message.jmsType
-
-        logger.info { "Received request for device $deviceId of type $messageType with correlation uid $correlationId." }
+    fun onMessage(message: ObjectMessage) =
         try {
-            deviceRequestMessageSender.send(message.toProtobufMessage())
-        } catch (e: IllegalArgumentException) {
-            logger.error(e) { "Received invalid request for device $deviceId in message with correlation uid $correlationId." }
+            val correlationId = message.jmsCorrelationID
+            val deviceId = message.getStringProperty(JMS_PROPERTY_DEVICE_IDENTIFICATION)
+            val messageType = message.jmsType
+
+            logger.info { "Received request for device $deviceId of type $messageType with correlation uid $correlationId." }
+            try {
+                deviceRequestMessageSender.send(message.toProtobufMessage())
+            } catch (e: IllegalArgumentException) {
+                logger.error(e) { "Received invalid request for device $deviceId in message with correlation uid $correlationId." }
+            }
+        } catch (e: Exception) {
+            logger.error(
+                e,
+            ) { "Unknown exception occurred while receiving request for device." }
         }
-    }
 }

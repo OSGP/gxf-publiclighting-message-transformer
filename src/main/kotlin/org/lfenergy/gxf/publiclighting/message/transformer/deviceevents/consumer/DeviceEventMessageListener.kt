@@ -22,20 +22,23 @@ class DeviceEventMessageListener(
         destination = $$"${device-events.consumer.inbound-queue}",
         containerFactory = "deviceEventsJmsListenerContainerFactory",
     )
-    fun onMessage(bytesMessage: BytesMessage) {
-        val correlationId = bytesMessage.jmsCorrelationID
-        val deviceId = bytesMessage.getStringProperty(JMS_PROPERTY_DEVICE_IDENTIFICATION)
-        val messageType = bytesMessage.jmsType
-
-        logger.info { "Received event for device $deviceId of type $messageType with correlation uid $correlationId." }
+    fun onMessage(bytesMessage: BytesMessage) =
         try {
-            deviceEventMessageSender.send(bytesMessage.parse())
-        } catch (e: InvalidProtocolBufferException) {
-            logger.error { "Received invalid protocol buffer message with correlation uid $correlationId." }
-        } catch (e: IllegalArgumentException) {
-            logger.error(e) { "Received invalid event for device $deviceId in message with correlation uid $correlationId." }
+            val correlationId = bytesMessage.jmsCorrelationID
+            val deviceId = bytesMessage.getStringProperty(JMS_PROPERTY_DEVICE_IDENTIFICATION)
+            val messageType = bytesMessage.jmsType
+
+            logger.info { "Received event for device $deviceId of type $messageType with correlation uid $correlationId." }
+            try {
+                deviceEventMessageSender.send(bytesMessage.parse())
+            } catch (e: InvalidProtocolBufferException) {
+                logger.error(e) { "Received invalid protocol buffer message with correlation uid $correlationId." }
+            } catch (e: IllegalArgumentException) {
+                logger.error(e) { "Received invalid event for device $deviceId in message with correlation uid $correlationId." }
+            }
+        } catch (e: Exception) {
+            logger.error(e) { "Unknown exception occurred while receiving event." }
         }
-    }
 
     private fun BytesMessage.parse(): DeviceEventMessage {
         val length = this.bodyLength.toInt()

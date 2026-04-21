@@ -20,8 +20,10 @@ import org.lfenergy.gxf.publiclighting.contracts.internal.device_events.EventTyp
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ApplicationConstants.JMS_PROPERTY_DEVICE_IDENTIFICATION
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceevents.DeviceEventMessageFactory
 import org.lfenergy.gxf.publiclighting.message.transformer.deviceevents.producer.DeviceEventMessageSender
+import org.springframework.boot.test.system.CapturedOutput
+import org.springframework.boot.test.system.OutputCaptureExtension
 
-@ExtendWith(MockKExtension::class)
+@ExtendWith(MockKExtension::class, OutputCaptureExtension::class)
 class DeviceEventMessageListenerTest {
     @MockK
     lateinit var deviceEventMessageSender: DeviceEventMessageSender
@@ -49,6 +51,19 @@ class DeviceEventMessageListenerTest {
                 },
             )
         }
+    }
+
+    @Test
+    fun `should handle unexpected exception for event`(capturedOutput: CapturedOutput) {
+        val bytesMessage = mockk<BytesMessage>()
+        every { deviceEventMessageSender.send(any<DeviceEventMessage>()) } just Runs
+        every { bytesMessage.jmsCorrelationID } throws Exception("Whoops")
+
+        deviceEventMessageListener.onMessage(bytesMessage)
+
+        assertThat(capturedOutput.out)
+            .contains("Unknown exception occurred while receiving event.")
+            .contains("Whoops")
     }
 
     private fun setupBytesMessageMock(deviceEventMessage: DeviceEventMessage): BytesMessage {

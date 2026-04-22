@@ -70,6 +70,7 @@ object DeviceResponseMessageMapper {
             ResponseType.SET_TRANSITION_RESPONSE,
             ResponseType.START_SELF_TEST_RESPONSE,
             ResponseType.STOP_SELF_TEST_RESPONSE,
+            ResponseType.UPDATE_KEY_RESPONSE,
             -> null
             else -> throw IllegalArgumentException("Unsupported message type: ${this.header.responseType}")
         }
@@ -90,6 +91,7 @@ object DeviceResponseMessageMapper {
             ResponseType.SET_TRANSITION_RESPONSE -> "SET_TRANSITION"
             ResponseType.START_SELF_TEST_RESPONSE -> "START_SELF_TEST"
             ResponseType.STOP_SELF_TEST_RESPONSE -> "STOP_SELF_TEST"
+            ResponseType.UPDATE_KEY_RESPONSE -> "UPDATE_KEY"
             ResponseType.UNRECOGNIZED -> "UNRECOGNIZED"
         }
 }

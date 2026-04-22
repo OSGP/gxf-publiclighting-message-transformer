@@ -62,7 +62,7 @@ object DeviceRequestMessageMapper {
                 RequestType.REBOOT_REQUEST,
                 RequestType.START_SELF_TEST_REQUEST,
                 RequestType.STOP_SELF_TEST_REQUEST,
-                    -> { /* No payload for these requests */
+                -> { // No payload for these requests
                 }
 
                 RequestType.SET_CONFIGURATION_REQUEST ->
@@ -85,9 +85,10 @@ object DeviceRequestMessageMapper {
                     setTransitionRequest = (`object` as TransitionMessageDataContainerDto).toProtobufMessage()
 
                 RequestType.UPDATE_KEY_REQUEST ->
-                    updateKeyRequest = updateKeyRequest {
-                        publicKey = `object`.toString()
-                    }
+                    updateKeyRequest =
+                        updateKeyRequest {
+                            publicKey = `object`.toString()
+                        }
 
                 else -> throw IllegalArgumentException("Unsupported message type: $jmsType")
             }

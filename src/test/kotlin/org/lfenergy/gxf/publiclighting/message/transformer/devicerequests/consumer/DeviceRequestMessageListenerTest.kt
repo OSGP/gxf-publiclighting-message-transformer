@@ -187,7 +187,7 @@ class DeviceRequestMessageListenerTest {
                     assertThat(it.updateKeyRequest).isNotNull
                     assertThat(it.updateKeyRequest.publicKey).isNotNull
                     assertThat(it.updateKeyRequest.publicKey).isEqualTo(UPDATE_KEY_PAYLOAD)
-                }
+                },
             )
         }
     }

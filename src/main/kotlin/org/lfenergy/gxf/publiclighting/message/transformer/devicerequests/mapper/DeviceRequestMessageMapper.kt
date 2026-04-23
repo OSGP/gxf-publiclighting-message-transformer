@@ -87,7 +87,7 @@ object DeviceRequestMessageMapper {
                 RequestType.UPDATE_KEY_REQUEST ->
                     updateKeyRequest =
                         updateKeyRequest {
-                            publicKey = `object`.toString()
+                            publicKey = `object` as String
                         }
 
                 else -> throw IllegalArgumentException("Unsupported message type: $jmsType")

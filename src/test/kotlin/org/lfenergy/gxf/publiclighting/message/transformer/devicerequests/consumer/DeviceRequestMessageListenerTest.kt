@@ -184,8 +184,6 @@ class DeviceRequestMessageListenerTest {
                     assertThat(it).isInstanceOf(DeviceRequestMessage::class.java)
                     assertThat(it.header.requestType).isEqualTo(RequestType.UPDATE_KEY_REQUEST)
                     assertThat(it.hasUpdateKeyRequest()).isTrue
-                    assertThat(it.updateKeyRequest).isNotNull
-                    assertThat(it.updateKeyRequest.publicKey).isNotNull
                     assertThat(it.updateKeyRequest.publicKey).isEqualTo(UPDATE_KEY_PAYLOAD)
                 },
             )

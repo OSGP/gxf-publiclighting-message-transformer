@@ -21,6 +21,7 @@ import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageT
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType.SET_TRANSITION
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType.START_SELF_TEST
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType.STOP_SELF_TEST
+import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType.UPDATE_KEY
 import org.lfenergy.gxf.publiclighting.message.transformer.common.TestConstants
 import java.io.Serializable
 
@@ -44,6 +45,7 @@ object DeviceRequestObjectMessageMockFactory {
             SET_TRANSITION -> setUpDeviceRequestMessage(requestType, InboundRequestMessageFactory.setTransitionRequestPayload())
             START_SELF_TEST -> setUpDeviceRequestMessage(requestType, null)
             STOP_SELF_TEST -> setUpDeviceRequestMessage(requestType, null)
+            UPDATE_KEY -> setUpDeviceRequestMessage(requestType, UPDATE_KEY_PAYLOAD)
             else -> throw IllegalArgumentException("Unsupported request type: $requestType")
         }
 
@@ -64,4 +66,6 @@ object DeviceRequestObjectMessageMockFactory {
         every { objectMessage.`object` } returns payload
         return objectMessage
     }
+
+    const val UPDATE_KEY_PAYLOAD = "i_am_a_public_key"
 }

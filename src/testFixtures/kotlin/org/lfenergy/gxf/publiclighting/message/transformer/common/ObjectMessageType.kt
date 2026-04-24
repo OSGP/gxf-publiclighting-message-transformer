@@ -18,4 +18,5 @@ enum class ObjectMessageType {
     SET_TRANSITION,
     START_SELF_TEST,
     STOP_SELF_TEST,
+    UPDATE_KEY,
 }

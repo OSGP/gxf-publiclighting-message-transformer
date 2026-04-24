@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.DeviceRequestMessage
 import org.lfenergy.gxf.publiclighting.contracts.internal.device_requests.RequestType
 import org.lfenergy.gxf.publiclighting.message.transformer.common.ObjectMessageType
+import org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.DeviceRequestObjectMessageMockFactory.UPDATE_KEY_PAYLOAD
 import org.lfenergy.gxf.publiclighting.message.transformer.devicerequests.producer.DeviceRequestMessageSender
 import org.springframework.boot.test.system.CapturedOutput
 import org.springframework.boot.test.system.OutputCaptureExtension
@@ -165,6 +166,25 @@ class DeviceRequestMessageListenerTest {
                     assertThat(it.header.requestType).isEqualTo(RequestType.SET_TRANSITION_REQUEST)
                     assertThat(it.hasSetTransitionRequest()).isTrue
                     assertThat(it.setTransitionRequest).isNotNull
+                },
+            )
+        }
+    }
+
+    @Test
+    fun `should handle update key request message`() {
+        val message = MockFactory.deviceRequestObjectMessageMock(ObjectMessageType.UPDATE_KEY)
+        every { deviceRequestMessageSender.send(any<DeviceRequestMessage>()) } just Runs
+
+        deviceRequestMessageListener.onMessage(message)
+
+        verify {
+            deviceRequestMessageSender.send(
+                withArg {
+                    assertThat(it).isInstanceOf(DeviceRequestMessage::class.java)
+                    assertThat(it.header.requestType).isEqualTo(RequestType.UPDATE_KEY_REQUEST)
+                    assertThat(it.hasUpdateKeyRequest()).isTrue
+                    assertThat(it.updateKeyRequest.publicKey).isEqualTo(UPDATE_KEY_PAYLOAD)
                 },
             )
         }

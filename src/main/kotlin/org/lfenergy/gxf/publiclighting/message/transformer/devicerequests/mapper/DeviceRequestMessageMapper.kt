@@ -63,7 +63,7 @@ object DeviceRequestMessageMapper {
                 RequestType.REBOOT_REQUEST,
                 RequestType.START_SELF_TEST_REQUEST,
                 RequestType.STOP_SELF_TEST_REQUEST,
-                    -> { // No payload for these requests
+                -> { // No payload for these requests
                 }
 
                 RequestType.SET_CONFIGURATION_REQUEST ->

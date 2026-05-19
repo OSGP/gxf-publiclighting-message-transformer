@@ -47,11 +47,12 @@ object DeviceRequestMessageMapper {
             header =
                 requestHeader {
                     correlationUid = message.jmsCorrelationID
-                    deviceIdentification = message.getStringProperty(JMS_PROPERTY_DEVICE_IDENTIFICATION)
-                    domain = message.getStringProperty(JMS_PROPERTY_DOMAIN)
-                    domainVersion = message.getStringProperty(JMS_PROPERTY_DOMAIN_VERSION)
-                    networkAddress = message.getStringProperty(JMS_PROPERTY_NETWORK_ADDRESS)
-                    organizationIdentification = message.getStringProperty(JMS_PROPERTY_ORGANIZATION_IDENTIFICATION)
+                    deviceIdentification = message.getStringProperty(JMS_PROPERTY_DEVICE_IDENTIFICATION) ?: ""
+                    domain = message.getStringProperty(JMS_PROPERTY_DOMAIN) ?: ""
+                    domainVersion = message.getStringProperty(JMS_PROPERTY_DOMAIN_VERSION) ?: ""
+                    networkAddress = message.getStringProperty(JMS_PROPERTY_NETWORK_ADDRESS) ?: ""
+                    organizationIdentification =
+                        message.getStringProperty(JMS_PROPERTY_ORGANIZATION_IDENTIFICATION) ?: ""
                     requestType = messageType
                 }
             when (messageType) {
@@ -62,7 +63,7 @@ object DeviceRequestMessageMapper {
                 RequestType.REBOOT_REQUEST,
                 RequestType.START_SELF_TEST_REQUEST,
                 RequestType.STOP_SELF_TEST_REQUEST,
-                -> { // No payload for these requests
+                    -> { // No payload for these requests
                 }
 
                 RequestType.SET_CONFIGURATION_REQUEST ->
